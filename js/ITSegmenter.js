@@ -67,6 +67,9 @@ var outputRects = {};
 	var contexto = canvaso.getContext("2d");																	//Original image drawing context on the canvas
 	var contextf = canvasf.getContext("2d");																	//Segmented image drawing context on the canvas
 	
+	image.onerror = function() {
+		alert("Image path not valid");
+	}
 	
 	image.onload = function() {
 		width = image.width;
