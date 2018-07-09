@@ -8,6 +8,9 @@
  *
  */
 
+include("js\\findcorners.js");
+include("js\\setOps.js");
+ 
 var outputRects = {};
  
  function textSegment(imgPath, fThreshhold, eps, minPts, sharpness, drawRects, splitRects) {
@@ -41,8 +44,6 @@ var outputRects = {};
  *				Dicitonary of clusters and their corresponding bounding box. outputRects {} = {key = 1 : value = [[xMin1, xMax1, yMin1, yMax1],...],...}
  * 
  */
-
- 
 	if (fThreshhold === undefined) { fThreshhold = 100};
 	if (eps === undefined) { eps = 15};
 	if (minPts === undefined) { minPts = 5};
@@ -84,7 +85,7 @@ var outputRects = {};
 
 		var corArr = findCorners(contextf, width, height, fThreshhold);											//Find corners using FAST and stores the coordinates in an array
  		var P = DBSCAN(corArr, eps, minPts);																	//Group the corners together using DBSCAN and return clusters = {key = 1 : value = [[x1,y1],[x2,y2],...], ...} 
-		outputRects = textRect(contexto, P);																		//Constructs bounding box for each cluster of text		 
+		outputRects = textRect(contexto, P);																	//Constructs bounding box for each cluster of text		 
 
 		if (drawRects == 1) {
 			var fImg = document.createElement("img");															//Create an img element
@@ -96,7 +97,7 @@ var outputRects = {};
 		document.body.appendChild(br);																			//Append line break element
 		
 		if (splitRects == 1) {
-			cropRects(outputRects,image);																				//Crop the image into segments of texts
+			cropRects(outputRects,image);																		//Crop the image into segments of texts
 		}
 		return outputRects;
 	} 
@@ -171,11 +172,11 @@ function textRect(ctx, P) {
 		//if (w < 40) { continue; }
 		//if (h < 40) { continue; }
 		//if (h*w > 2000) { continue; }
-		drawPoly(ctx, [xMin-5, yMin-5], [xMin-5, yMax+5], [xMax+5, yMax+5], [xMax+5, yMin-5]);					//Draw the bounding box for the cluster
+		drawPoly(ctx, [Math.max(0, xMin-5), Math.max(0, yMin-5)], [Math.max(0, xMin-5), Math.max(0, yMax+5)], [Math.max(0, xMax+5), Math.max(0, yMax+5)], [Math.max(0, xMax+5), Math.max(0, yMin-5)]);					//Draw the bounding box for the cluster
 		C = C + 1;																								//Increment the counter
 		
 		
-		rects[C] = [xMin-5, xMax+5, yMin-5, yMax+5];															//Rectangle Object; Rects {} = {Key = C : Value = [xMin, xMax, yMin, yMax]}
+		rects[C] = [Math.max(0, xMin-5), Math.max(0, xMax+5), Math.max(0, yMin-5), Math.max(0, yMax+5)];															//Rectangle Object; Rects {} = {Key = C : Value = [xMin, xMax, yMin, yMax]}
 		
 		centroids.push([Math.round(xMin+(xMax-xMin)/2), Math.round(yMin+(yMax-yMin)/2),,C]);					//Centroids Array; Centroids [] = [[x1, y1], [x2, y2], ...]
 	}
@@ -222,28 +223,44 @@ function cropRects(rects,img) {
  *				Image object
  *
  */				
-	var tempCanvas = document.createElement("canvas");
-	var tCtx = tempCanvas.getContext("2d");
-	for (var i = 1; i <= Object.keys(rects).length; i++) {
-		
-		var width = rects[i][1] - rects[i][0];
-		var height = rects[i][3] - rects[i][2];
-		tempCanvas.width = width;
-		tempCanvas.height = height;
-		tCtx.drawImage(img, rects[i][0], rects[i][2], width, height, 0, 0, width, height);
-		
-		var cimg = tempCanvas.toDataURL("image/png");
-		var cImg = document.createElement("img");
-		cImg.setAttribute('src', tempCanvas.toDataURL("image/png"));
-		cImg.setAttribute("style", "display:block; margin-left: auto; margin-right: auto;");	
-		document.body.appendChild(cImg);
+	var tempCanvas = document.createElement("canvas");															//Create a tempCanvas in the document
+	var tCtx = tempCanvas.getContext("2d");																		//Create a context for the tempCanvas
+	for (var i = 1; i <= Object.keys(rects).length; i++) {														//Loops through every key in rects{}	
+		var width = rects[i][1] - rects[i][0];																	//Set width = xMax - xMin
+		var height = rects[i][3] - rects[i][2];																	//Set height = yMax - yMin
+		tempCanvas.width = width;																				//Set tempCanvas width to width
+		tempCanvas.height = height;																				//Set tempCanvas height to height
+		tCtx.drawImage(img, rects[i][0], rects[i][2], width, height, 0, 0, width, height);						//Draw cropped image on tempCanvas
+
+		var cImg = document.createElement("img");																//Create image element
+		cImg.setAttribute('src', tempCanvas.toDataURL("image/png"));											//Set image src to tempCanvas DataURL
+		cImg.setAttribute("style", "display:block; margin-left: auto; margin-right: auto;");					//Styling of the image
+		document.body.appendChild(cImg);																		//Append image to the document
 	 
-		var br = document.createElement("br");																	
-		document.body.appendChild(br);	
+		var br = document.createElement("br");																	//Create a break element
+		document.body.appendChild(br);																			//Append break element to the document
 	}
 
 		
 }
+
+
+function include(url) {
+/*
+ * Parameters:
+ * -----------
+ * url:		string
+ *			path and filename; path//js//example.js
+ *
+ */			
+	
+    var head = document.getElementsByTagName('head')[0];														//Head elements
+    var script = document.createElement('script');																//Create script element
+    script.type = 'text/javascript';																			//Script type
+    script.src = url;																							//Script source
+    head.appendChild(script);																					//Append script element to the first head element
+}
+
 
 
 /* -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
