@@ -16,8 +16,6 @@ textSegment(imgPath);
 Output will be stored in the global variable outputRects.
 
 ### TODO ###
-* Import/Export js
-* Crop Image
 * Chrome security settings
 * Batch processing
 * Redo sharpening filter
