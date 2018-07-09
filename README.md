@@ -7,10 +7,10 @@ Currently does not work on chrome or firefox.
 Works on IE11 and HTA.
 
 ### Usage ###
-Include the following in the head of the html:
-<script src="js\ITSegmenter.js"></script>
+Include the following in the head of the html:  
+<script src="js\ITSegmenter.js"></script> <br>
 
-Run using:
+Run using:  
 textSegment(imgPath);
 
 Output will be stored in the global variable outputRects.
