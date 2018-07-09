@@ -8,28 +8,47 @@
  *
  */
 
-
+var outputRects = {};
  
- 
- function textSegment(fThreshhold, eps, minPts, sharpness, imgPath) {
+ function textSegment(imgPath, fThreshhold, eps, minPts, sharpness, drawRects, splitRects) {
 /* 
  * Parameters:
  * -----------
+ * imgPath: 	String
+ * 				File path to the image
+ *
  * fThreshhold: int
  * 				Fast Threshhold; Default:100, higher = less corners
  *
  * eps: 		int
- *      		Maximum distance between two points to be considered neighbours
+ *      		Maximum distance between two points to be considered neighbours; Default:15
  *
  * minPts: 		int
- *		   		Minimum number of points required to form a cluster
+ *		   		Minimum number of points required to form a cluster; Default:5
  *
  * sharpness: 	float
  * 				Sharpness filter parameter; Default:0.6
  *
- * imgPath: 	String
- * 				File path to the image 
+ * drawRects: 	bol
+ * 				Option to draw bounding boxes on the image; Default:0
+ *
+ * splitRects: 	bol
+ * 				Option to split the text segments into individual images; Default:0
+ *
+ * Returns:
+ * --------
+ * outputRects:		obj
+ *				Dicitonary of clusters and their corresponding bounding box. outputRects {} = {key = 1 : value = [[xMin1, xMax1, yMin1, yMax1],...],...}
+ * 
  */
+
+ 
+	if (fThreshhold === undefined) { fThreshhold = 100};
+	if (eps === undefined) { eps = 15};
+	if (minPts === undefined) { minPts = 5};
+	if (sharpness === undefined) { sharpness = 0.6};
+	if (drawRects === undefined) { drawRects = 0};
+	if (splitRects === undefined) { splitRects = 0};
  
 	var src = imgPath; 																							
 	var image = new Image();																					//Creating a new image
@@ -46,6 +65,7 @@
 	
 	var contexto = canvaso.getContext("2d");																	//Original image drawing context on the canvas
 	var contextf = canvasf.getContext("2d");																	//Segmented image drawing context on the canvas
+	
 	
 	image.onload = function() {
 		width = image.width;
@@ -64,16 +84,21 @@
 
 		var corArr = findCorners(contextf, width, height, fThreshhold);											//Find corners using FAST and stores the coordinates in an array
  		var P = DBSCAN(corArr, eps, minPts);																	//Group the corners together using DBSCAN and return clusters = {key = 1 : value = [[x1,y1],[x2,y2],...], ...} 
-		textRect(contexto, P);																					//Constructs bounding box for each cluster of text		 
+		outputRects = textRect(contexto, P);																		//Constructs bounding box for each cluster of text		 
 
-	    var fImg = document.createElement("img");																//Create an img element
-		fImg.setAttribute('src', canvaso.toDataURL("image/png"));												//Set the src of the img element to canvaso
-		fImg.setAttribute("style", "display:block; margin-left: auto; margin-right: auto; width: 40%;");		//Styling of the img element
-		document.body.appendChild(fImg);																		//Append the element to body
-		
+		if (drawRects == 1) {
+			var fImg = document.createElement("img");															//Create an img element
+			fImg.setAttribute('src', canvaso.toDataURL("image/png"));											//Set the src of the img element to canvaso
+			fImg.setAttribute("style", "display:block; margin-left: auto; margin-right: auto;");				//Styling of the img element
+			document.body.appendChild(fImg);																	//Append the element to body
+		}
 		var br = document.createElement("br");																	//Create line break element
 		document.body.appendChild(br);																			//Append line break element
 		
+		if (splitRects == 1) {
+			cropRects(outputRects,image);																				//Crop the image into segments of texts
+		}
+		return outputRects;
 	} 
 }
 
@@ -92,12 +117,11 @@ function findCorners(ctx, width, height, fThreshhold) {
  *
  * fThreshhold: 	int
  *					FAST threshhold 
- *
- * return: 			array
+ * Returns:
+ * --------
+ * outArr:			array
  *		   			[[x1,y1],[x2,y2],...]
 */	
-
-	
 	var outArr = [];																							//Initialize output array
 	Fast.THRESHOLD = fThreshhold;																				//Set the FAST Threshhold
 	
@@ -124,9 +148,13 @@ function textRect(ctx, P) {
  * P: 			array
  *        		Output of DBSCAN; P = {key = 1 : value = [[x1,y1],[x2,y2],...], ...}
  *
+ * Returns:
+ * --------
+ * rects:		obj
+ *				Dicitonary of clusters and their corresponding bounding box. rects {} = {key = 1 : value = [[xMin1, xMax1, yMin1, yMax1],...],...}
+ *
+ *
 */	
-	
-
 	var rects = {};																								//Initialize the rects object
 	var centroids = [];																							//Initialize the centroids array
 	
@@ -147,10 +175,11 @@ function textRect(ctx, P) {
 		C = C + 1;																								//Increment the counter
 		
 		
-		rects[C] = [xMin, xMax, yMin, yMax];																	//Rectangle Object; Rects {} = {Key = C : Value = [xMin, xMax, yMin, yMax]}
+		rects[C] = [xMin-5, xMax+5, yMin-5, yMax+5];															//Rectangle Object; Rects {} = {Key = C : Value = [xMin, xMax, yMin, yMax]}
 		
 		centroids.push([Math.round(xMin+(xMax-xMin)/2), Math.round(yMin+(yMax-yMin)/2),,C]);					//Centroids Array; Centroids [] = [[x1, y1], [x2, y2], ...]
 	}
+	return rects;
 }
 
 function drawPoly(ctx, UL, LL, LR, UR) {
@@ -172,18 +201,48 @@ function drawPoly(ctx, UL, LL, LR, UR) {
  * UR: 		array
  *			Upper Right Coordinates; UR = [x,y]
  *
-*/		
-		ctx.beginPath();																						//Context draw begin
-		ctx.moveTo(UL[0],UL[1]);																				//Move to top left corner
-		ctx.lineTo(LL[0],LL[1]);																				//Left line
-		ctx.lineTo(LR[0],LR[1]);																				//Bottom line
-		ctx.lineTo(UR[0],UR[1]);																				//Right line
-		ctx.closePath();																						//Top line to close the contour
-		ctx.stroke();																							//Draw the contour
+ */		
+	ctx.beginPath();																							//Context draw begin
+	ctx.moveTo(UL[0],UL[1]);																					//Move to top left corner
+	ctx.lineTo(LL[0],LL[1]);																					//Left line
+	ctx.lineTo(LR[0],LR[1]);																					//Bottom line
+	ctx.lineTo(UR[0],UR[1]);																					//Right line
+	ctx.closePath();																							//Top line to close the contour
+	ctx.stroke();																								//Draw the contour
 }
 
-function cropRects() {
-	
+function cropRects(rects,img) {
+/*
+ * Parameters:
+ * -----------
+ * rects:		obj
+ *				Dicitonary of clusters and their corresponding bounding box. rects {} = {key = 1 : value = [[xMin1, xMax1, yMin1, yMax1],...],...}
+ *
+ * img: 		obj 
+ *				Image object
+ *
+ */				
+	var tempCanvas = document.createElement("canvas");
+	var tCtx = tempCanvas.getContext("2d");
+	for (var i = 1; i <= Object.keys(rects).length; i++) {
+		
+		var width = rects[i][1] - rects[i][0];
+		var height = rects[i][3] - rects[i][2];
+		tempCanvas.width = width;
+		tempCanvas.height = height;
+		tCtx.drawImage(img, rects[i][0], rects[i][2], width, height, 0, 0, width, height);
+		
+		var cimg = tempCanvas.toDataURL("image/png");
+		var cImg = document.createElement("img");
+		cImg.setAttribute('src', tempCanvas.toDataURL("image/png"));
+		cImg.setAttribute("style", "display:block; margin-left: auto; margin-right: auto;");	
+		document.body.appendChild(cImg);
+	 
+		var br = document.createElement("br");																	
+		document.body.appendChild(br);	
+	}
+
+		
 }
 
 
@@ -286,10 +345,12 @@ function DBSCAN(arr, eps, minPts) {
  * eps: 	int
  *      	Maximum distance between two points to be considered neighbours
  *
- * minPts: int
+ * minPts: 	int
  *		   	Minimum number of points required to form a cluster
  *
- * return: obj
+ * Returns:
+ * --------
+ * clusters: obj
  *		   	clusters = {key = 1 : value = [[x1,y1],[x2,y2],...], ...}
 */
 
