@@ -3,7 +3,7 @@ Image Text Segmentation using FAST corner detection and DBSCAN clustering.
 
 Return the coordinates and draw bounding boxes around text.
 
-Currently does not work on chrome or firefox.
+Currently does not work on chrome for local images.
 Works on IE11 and HTA.
 
 ### Usage ###
