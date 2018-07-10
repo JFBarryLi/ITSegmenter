@@ -7,13 +7,22 @@ Currently does not work on chrome for local images.
 Works on IE11 and HTA.
 
 ### Usage ###
+Download all the JS files and put it in your JS folder
+
+
 Include the following in the head of the html:  
-<script src="js\ITSegmenter.js"></script> <br>
+'<script src="js\ITSegmenter.js"></script>'
+
 
 Run using:  
 textSegment(imgPath);
 
 Output will be stored in the global variable outputRects.
+
+
+### Documentation and Demo ###
+https://jfbarryli.github.io/ITSegmenter/
+
 
 ### TODO ###
 * Chrome security settings
