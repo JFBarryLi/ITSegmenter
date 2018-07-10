@@ -8,8 +8,8 @@
  *
  */
 
-include("js\\findCorners.js");
-include("js\\setOps.js");
+include("src\\findCorners.js");
+include("src\\setOps.js");
  
 var outputRects = {};
  
