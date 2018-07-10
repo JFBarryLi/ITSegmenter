@@ -7,11 +7,11 @@ Currently does not work on chrome for local images.
 Works on IE11 and HTA.
 
 ### Usage ###
-Download all the JS files and put it in your JS folder
-
+Download all the src files and put it in your src folder
+Download ITSegmenter.js from the build folder and place it in your src folder
 
 Include the following in the head of the html:  
-'<script src="js\ITSegmenter.js"></script>'
+'<script src="src\ITSegmenter.js"></script>'
 
 
 Run using:  
