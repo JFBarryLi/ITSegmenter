@@ -250,10 +250,10 @@ function cropRects(rects,img) {
  * Parameters:
  * -----------
  * rects:		obj
- *				Dicitonary of clusters and their corresponding bounding box. rects {} = {key = 1 : value = [[xMin1, xMax1, yMin1, yMax1],...],...}
+ *			Dicitonary of clusters and their corresponding bounding box. rects {} = {key = 1 : value = [[xMin1, xMax1, yMin1, yMax1],...],...}
  *
  * img: 		obj 
- *				Image object
+ *			Image object
  *
  */				
 	var tempCanvas = document.createElement("canvas");
@@ -287,7 +287,7 @@ function include(url) {
 /*
  * Parameters:
  * -----------
- * url:		string
+ * url:			string
  *			path and filename; path//js//example.js
  *
  */			
@@ -394,18 +394,18 @@ function DBSCAN(arr, eps, minPts) {
  *
  * Parameters:
  * -----------
- * arr: 	[x, y, cluster_id]
+ * arr: 		[x, y, cluster_id]
  *			The input array to DBSCAN, where x and y correspond to the coordinates of a point. cluster_id is undefined by default.
  *
- * eps: 	int
- *      	Maximum distance between two points to be considered neighbours
+ * eps: 		int
+ *      		Maximum distance between two points to be considered neighbours
  *
- * minPts: 	int
+ * minPts: 		int
  *		   	Minimum number of points required to form a cluster
  *
  * Returns:
  * --------
- * clusters: obj
+ * clusters: 		obj
  *		   	clusters = {key = 1 : value = [[x1,y1],[x2,y2],...], ...}
 */
 
