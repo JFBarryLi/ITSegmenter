@@ -1,0 +1,87 @@
+/* ***********************************************************************
+    RESET */
+html {
+    font-size: 14px;
+	background-color: rgb(242, 245, 250);
+}
+
+
+body {
+    font-family: "Lato", sans-serif;
+	background-color: rgb(242, 245, 250);
+
+}
+
+
+/* The sidebar menu */
+.sidebar {
+    height: 100%; /* Full-height: remove this if you want "auto" height */
+    width: 200px; /* Set the width of the sidebar */
+    position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+    z-index: 1; /* Stay on top */
+    top: 0; /* Stay at the top */
+    left: 0;
+    background-color: rgb(35, 35, 35);
+    overflow-x: hidden; /* Disable horizontal scroll */
+    padding-top: 0px;
+}
+
+
+/* The navigation menu links */
+.sidebar a {
+    padding: 6px 8px 10px 40px;
+    text-decoration: none;
+    font-size: 15px;
+    color: rgb(132, 132, 132);
+    display: block;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidebar a:hover {
+    color: rgb(255,255,255);
+	background-color: #f25e5e;
+}
+
+/* Style page content */
+.container {
+    margin-left: 200px; /* Same as the width of the sidebar */
+    padding: 0px 10px;
+}
+
+/* On smaller screens, where height is less than 450px, change the style of the sidebar (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+    .sidebar {padding-top: 15px;}
+    .sidebar a {font-size: 18px;}
+}
+
+#sidebar-title {
+	padding: 15px 8px 10px 16px;
+	border-top: none;
+	font-size: 30px;
+	color: rgb(242, 245, 250);
+	background-color: #f25e5e;
+	display: block;
+    margin-bottom: 0px;
+
+}
+
+#sidebar-title :hover {
+	background-color: rgb(0,0,0);
+	cursor: mouse;
+	
+}
+
+#sidebar-headings {
+	border-top: 1px solid #777;
+    padding: 15px 8px 1px 16px;
+    text-decoration: none;
+    font-size: 18px;
+    color: rgb(100, 100, 100);
+    display: block;
+}
+
+.main-title {
+	font-size: 45px;
+	text-align: centre;
+	display: block;
+}
