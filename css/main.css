@@ -42,12 +42,6 @@ body {
 	background-color: #f25e5e;
 }
 
-/* Style page content */
-.container {
-    margin-left: 200px; /* Same as the width of the sidebar */
-    padding: 0px 10px;
-}
-
 /* On smaller screens, where height is less than 450px, change the style of the sidebar (less padding and a smaller font size) */
 @media screen and (max-height: 450px) {
     .sidebar {padding-top: 15px;}
@@ -80,8 +74,8 @@ body {
     display: block;
 }
 
-.main-title {
-	font-size: 45px;
-	text-align: centre;
-	display: block;
+
+.main-headings {
+	margin-left: 200px;
+	text-align: center;
 }
