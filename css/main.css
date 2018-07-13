@@ -3,31 +3,46 @@
 html {
     font-size: 14px;
 	background-color: rgb(242, 245, 250);
+	height: 100%;
 }
 
 
 body {
     font-family: "Lato", sans-serif;
 	background-color: rgb(242, 245, 250);
+	
 
 }
 
+pre {
+	width: 70%;
+	display: block;
+	margin: auto;
+	padding: 1em;
+	overflow-x: auto;
+	word-wrap: break-word;
+	background-color: #ffffff;
+	white-space: normal;
+	text-align: left;
+}
 
-/* The sidebar menu */
+#layout {
+	position: relative;
+	padding-left: 200px;
+}
 .sidebar {
-    height: 100%; /* Full-height: remove this if you want "auto" height */
-    width: 200px; /* Set the width of the sidebar */
-    position: fixed; /* Fixed Sidebar (stay in place on scroll) */
-    z-index: 1; /* Stay on top */
-    top: 0; /* Stay at the top */
+    height: 100%;
+    width: 200px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
     left: 0;
     background-color: rgb(35, 35, 35);
-    overflow-x: hidden; /* Disable horizontal scroll */
+    overflow-x: hidden;
     padding-top: 0px;
+	
 }
 
-
-/* The navigation menu links */
 .sidebar a {
     padding: 6px 8px 10px 40px;
     text-decoration: none;
@@ -36,13 +51,11 @@ body {
     display: block;
 }
 
-/* When you mouse over the navigation links, change their color */
 .sidebar a:hover {
     color: rgb(255,255,255);
 	background-color: #f25e5e;
 }
 
-/* On smaller screens, where height is less than 450px, change the style of the sidebar (less padding and a smaller font size) */
 @media screen and (max-height: 450px) {
     .sidebar {padding-top: 15px;}
     .sidebar a {font-size: 18px;}
@@ -56,6 +69,7 @@ body {
 	background-color: #f25e5e;
 	display: block;
     margin-bottom: 0px;
+	text-decoration: none;
 
 }
 
@@ -63,6 +77,12 @@ body {
 	background-color: rgb(0,0,0);
 	cursor: mouse;
 	
+}
+
+#sidebar-title a:hover {
+	background-color: rgb(0,0,0);
+	cursor: mouse;
+	text-decoration: none;
 }
 
 #sidebar-headings {
@@ -74,8 +94,37 @@ body {
     display: block;
 }
 
+#main-container {
+	height: 100%;
+	background-color: rgb(242, 245, 250);
+	display: block;
+	margin: 0px;
+	padding: 0px 0px 0px 0px;
+	width: 100%;
+}
+
+#main-title {
+	text-align: center;
+	border-bottom: 1px solid #dcdcdc;
+	padding: 50px 38px 0 38px;
+	color:#f25e5e
+}
+
 
 .main-headings {
-	margin-left: 200px;
 	text-align: center;
+	border-bottom: 1px solid #dcdcdc;
+	padding: 50px 38px 0 38px;
+	color: #adadad
+
 }
+
+.sub-headings {
+	text-align: left;
+}
+
+.main-content {
+	margin: auto;
+	padding: 4em;
+}
+
