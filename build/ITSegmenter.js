@@ -13,11 +13,11 @@ include("src\\setOps.js");
  
 var outputRects = {};
  
- function textSegment(imgPath, fThreshhold, eps, minPts, sharpness, drawRects, splitRects, convertToImage) {
+ function textSegment(imgPath, fThreshhold, eps, minPts, sharpness, drawRects, splitRects, convertToImage, canvasId) {
 /* 
  * Parameters:
  * -----------
- * imgPath: 			String
+ * imgPath: 			string
  * 				File path to the image
  *
  * fThreshhold: 		int
@@ -41,6 +41,9 @@ var outputRects = {};
  * convertToImage:		bol
  *				Option to convert canvas to image
  *
+ * canvasId:		string
+ *				Option to segment a specific canvas
+ *
  *
  * Returns:
  * --------
@@ -60,12 +63,18 @@ var outputRects = {};
 	var image = new Image();
 	image.src = src;
 	
-	//Create a canvas for the original image
-	var canvaso = document.createElement("CANVAS");	
+	if (canvasId === undefined) {
+		//Create a canvas for the original image
+		var canvaso = document.createElement("CANVAS");	
+	} else {
+		var canvaso = document.getElementById(canvasId);	
+	}
+	
+	
 	//Create a canvas for the segmented image
 	var canvasf = document.createElement("CANVAS");	
 	
-	if (convertToImage == 0) {
+	if (convertToImage == 0 && canvasId === undefined) {
 		canvaso.setAttribute("style", "display:block; margin-left: auto; margin-right: auto;");
 		document.body.appendChild(canvaso);
 	}
