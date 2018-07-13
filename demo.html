@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>ITSegmenter</title>
+    <meta name="theme-color" content="#ffffff">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<!-- Css -->
+	<link rel="stylesheet" type="text/css" href="css\bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css\main.css">
+	
+	
+	<!-- Javascripts -->
+	<script src="src\tether.min.js"></script>
+    <script src="src\jquery.min.js"></script>
+    <script src="src\jquery.mousewheel.min.js"></script>
+	<script src="src\bootstrap.min.js"></script>
+    <script src="src\path.min.js"></script>
+    <script src="src\jquery.scrollTo.min.js"></script>
+	<script src="src\ITSegmenter.js"></script>
+	<script src="src\main.js"></script>
+	<script src="src\demo.js"></script>
+</head>
+
+<body>
+	<!-- Side navigation -->
+	<div id="layout">
+		<div class="sidebar">
+			<a href="#/home" id=sidebar-title>ITSegmenter</a>
+			<p id=sidebar-headings>DOCUMENTATIONS</p>
+			<a href="#/intro">Introduction</a>
+			<a href="#/its">ITSegmenter.js</a>
+			<a href="#/batch">Batch Processing</a>
+			<p id=sidebar-headings>EXAMPLES</p>
+			<a href="#">Demo</a>
+			<a href="#">DBSCAN</a>
+			<a href="#">Auto Crop</a>
+			<a href="#">Your Image</a>
+		</div>
+	
+
+		<!-- Content Container -->
+		<div class="container" id="main-container">
+			<div class="main-headings" id="intro">
+				<h2>Demo</h2>
+				<div class="content"> </div>
+			</div>
+			
+			<div class="main-content">
+				Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder
+			</div>
+			
+			<div class="main-content">
+				<canvas id="demo-canvas"></canvas> <br> <br>
+				
+				<input type="text" class="text_box" id="thresh" placeholder="100"></input> <br>
+				<input type="text" class="text_box" id="eps" placeholder="15"></input> <br>
+				<input type="text" class="text_box" id="minPts" placeholder="5"></input> <br>
+				<input type="text" class="text_box" id="sharp" placeholder="0.6"></input> <br>
+				<span class="button" id="submitButton" onclick="submit();">Submit</span>
+			</div>
+			
+		</div>
+	</div>
+	
+
+	
+</body>
+
+
+</html>
