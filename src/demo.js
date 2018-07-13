@@ -18,10 +18,10 @@ window.onload = function() {
 
 function submit() {
 	
-	var thresh = getElementById("");
-	var eps = getElementById("");
-	var minPts = getElementById("");
-	var sharp = getElementById("");
+	var thresh = $("#thresh").val();
+	var eps = $("#eps").val();
+	var minPts = $("#minPts").val();
+	var sharp = $("#sharp").val();
 	
 	textSegment("img/demo.jpg", thresh, eps, minPts, sharp, 1, 0, 0, "demo-canvas");
 }
