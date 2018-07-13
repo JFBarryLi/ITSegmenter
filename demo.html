@@ -55,17 +55,42 @@
 			<div class="main-content">
 				<canvas id="demo-canvas"></canvas> <br> <br>
 				
-				<input type="text" class="text_box" id="thresh" placeholder="100"></input> <br>
-				<input type="text" class="text_box" id="eps" placeholder="15"></input> <br>
-				<input type="text" class="text_box" id="minPts" placeholder="5"></input> <br>
-				<input type="text" class="text_box" id="sharp" placeholder="0.6"></input> <br>
-				<span class="button" id="submitButton" onclick="submit();">Submit</span>
+				<form>
+					<div class="form-group">
+						<label for="thresh"><strong>Thresh:</strong></label>
+						<input type="text" class="form-control" id="thresh" placeholder="100"></input>
+						<small class="form-text text-muted">FAST Threshhold</small>
+					</div>
+					<div class="form-group">
+						<label for="thresh"><strong>Episilon:</strong></label>
+						<input type="text" class="form-control" id="eps" placeholder="15"></input>
+						<small class="form-text text-muted">Episilon distance between points</small>
+					</div>
+					<div class="form-group">
+						<label for="thresh"><strong>Min Points:</strong></label>
+						<input type="text" class="form-control" id="minPts" placeholder="5"></input>
+						<small class="form-text text-muted">Minimum # of points to form a cluster</small>
+					</div>					
+					<div class="form-group">
+						<label for="thresh"><strong>Sharpness:</strong></label>
+						<input type="text" class="form-control" id="sharp" placeholder="0.6"></input>
+						<small class="form-text text-muted">Sharpness filter (between 0.1 and 0.9)</small>
+					</div>		
+					<span class="button" id="submitButton" onclick="submit();">Submit</span>
+				</form>
+				
+				
+				<!-- <input type="text" class="text_box" id="thresh" placeholder="100"></input> <br> -->
+				<!-- <input type="text" class="text_box" id="eps" placeholder="15"></input> <br> -->
+				<!-- <input type="text" class="text_box" id="minPts" placeholder="5"></input> <br> -->
+				<!-- <input type="text" class="text_box" id="sharp" placeholder="0.6"></input> <br> -->
+				<!-- <span class="button" id="submitButton" onclick="submit();">Submit</span> -->
+				
+				
 			</div>
 			
 		</div>
 	</div>
-	
-
 	
 </body>
 
