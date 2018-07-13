@@ -13,7 +13,7 @@ include("src\\setOps.js");
  
 var outputRects = {};
  
- function textSegment(imgPath, fThreshhold, eps, minPts, sharpness, drawRects, splitRects) {
+ function textSegment(imgPath, fThreshhold, eps, minPts, sharpness, drawRects, splitRects, convertToImage) {
 /* 
  * Parameters:
  * -----------
@@ -38,6 +38,10 @@ var outputRects = {};
  * splitRects: 			bol
  * 				Option to split the text segments into individual images; Default:0
  *
+ * convertToImage:		bol
+ *				Option to convert canvas to image
+ *
+ *
  * Returns:
  * --------
  * outputRects:			obj
@@ -50,6 +54,7 @@ var outputRects = {};
 	if (sharpness === undefined) { sharpness = 0.6};
 	if (drawRects === undefined) { drawRects = 0};
 	if (splitRects === undefined) { splitRects = 0};
+	if (convertToImage === undefined) { convertToImage = 1};
  
 	var src = imgPath; 																							
 	var image = new Image();
@@ -60,8 +65,10 @@ var outputRects = {};
 	//Create a canvas for the segmented image
 	var canvasf = document.createElement("CANVAS");	
 	
-	//canvaso.setAttribute("style", "display:block; margin-left: auto; margin-right: auto; width: 40%;");
-	//document.body.appendChild(canvaso);
+	if (convertToImage == 0) {
+		canvaso.setAttribute("style", "display:block; margin-left: auto; margin-right: auto;");
+		document.body.appendChild(canvaso);
+	}
 	
 	var width;
 	var height;
@@ -102,7 +109,7 @@ var outputRects = {};
 		//Constructs bounding box for each cluster of text	
 		outputRects = textRect(contexto, P);																		 
 
-		if (drawRects == 1) {
+		if (drawRects == 1 && convertToImage == 1) {
 			var fImg = document.createElement("img")
 			//Set the src of the img element to canvaso
 			fImg.setAttribute('src', canvaso.toDataURL("image/png"));
