@@ -18,37 +18,37 @@ var outputRects = {};
  * Parameters:
  * -----------
  * imgPath: 			string
- * 				File path to the image
+ * 						File path to the image
  *
  * fThreshhold: 		int
- * 				Fast Threshhold; Default:100, higher = less corners
+ * 						Fast Threshhold; Default:100, higher = less corners
  *
- * eps: 			int
- *      			Maximum distance between two points to be considered neighbours; Default:15
+ * eps: 				int
+ *      				Maximum distance between two points to be considered neighbours; Default:15
  *
- * minPts: 			int
- *		   		Minimum number of points required to form a cluster; Default:5
+ * minPts: 				int
+ *		   				Minimum number of points required to form a cluster; Default:5
  *
  * sharpness: 			float
- * 				Sharpness filter parameter; Default:0.6
+ * 						Sharpness filter parameter; Default:0.6
  *
  * drawRects: 			bol
- * 				Option to draw bounding boxes on the image; Default:0
+ * 						Option to draw bounding boxes on the image; Default:0
  *
  * splitRects: 			bol
- * 				Option to split the text segments into individual images; Default:0
+ * 						Option to split the text segments into individual images; Default:0
  *
  * convertToImage:		bol
- *				Option to convert canvas to image
+ *						Option to convert canvas to image
  *
- * canvasId:		string
- *				Option to segment a specific canvas
+ * canvasId:			string
+ *						Option to segment a specific canvas
  *
  *
  * Returns:
  * --------
  * outputRects:			obj
- *				Dicitonary of clusters and their corresponding bounding box. outputRects {} = {key = 1 : value = [[xMin1, xMax1, yMin1, yMax1],...],...}
+ *						Dicitonary of clusters and their corresponding bounding box. outputRects {} = {key = 1 : value = [[xMin1, xMax1, yMin1, yMax1],...],...}
  * 
  */
 	if (fThreshhold === undefined) { fThreshhold = 100};
@@ -140,21 +140,21 @@ function findCorners(ctx, width, height, fThreshhold) {
 /*
  * Parameters:
  * -----------
- * ctx: 			obj 
- *				Canvas context object
+ * ctx: 				obj 
+ *						Canvas context object
  *
- * width:			int
- *        			Width of the canvas
+ * width:				int
+ *        				Width of the canvas
  *
- * height: 			int
- *		   		Height of the Canvas
+ * height: 				int
+ *		   				Height of the Canvas
  *
  * fThreshhold: 		int
- *				FAST threshhold 
+ *						FAST threshhold 
  * Returns:
  * --------
- * outArr:			array
- *		   		[[x1,y1],[x2,y2],...]
+ * outArr:				array
+ *		   				[[x1,y1],[x2,y2],...]
 */	
 	var outArr = [];
 	Fast.THRESHOLD = fThreshhold;
@@ -181,16 +181,16 @@ function textRect(ctx, P) {
 /*
  * Parameters:
  * -----------
- * ctx: 		obj 
- *			Canvas context object
+ * ctx: 				obj 
+ *						Canvas context object
  *
- * P: 			array
- *        		Output of DBSCAN; P = {key = 1 : value = [[x1,y1],[x2,y2],...], ...}
+ * P: 					array
+ *        				Output of DBSCAN; P = {key = 1 : value = [[x1,y1],[x2,y2],...], ...}
  *
  * Returns:
  * --------
- * rects:		obj
- *			Dicitonary of clusters and their corresponding bounding box. rects {} = {key = 1 : value = [[xMin1, xMax1, yMin1, yMax1],...],...}
+ * rects:				obj
+ *						Dicitonary of clusters and their corresponding bounding box. rects {} = {key = 1 : value = [[xMin1, xMax1, yMin1, yMax1],...],...}
  *
  *
 */	
@@ -236,20 +236,20 @@ function drawPoly(ctx, UL, LL, LR, UR) {
 /*
  * Parameters:
  * -----------
- * ctx: 		obj 
- *			Canvas context object
+ * ctx: 			obj 
+ *					Canvas context object
  *
- * UL: 			array
- *        		Upper Left Coordinates; UL = [x,y]
+ * UL: 				array
+ *        			Upper Left Coordinates; UL = [x,y]
  *
- * LL: 			array
- *			Lower Left Coordinates; LL = [x,y]
+ * LL: 				array
+ *					Lower Left Coordinates; LL = [x,y]
  *
- * LR: 			array
- *			Lower Right Coordinates; LR = [x,y]
+ * LR: 				array
+ *					Lower Right Coordinates; LR = [x,y]
  *
- * UR: 			array
- *			Upper Right Coordinates; UR = [x,y]
+ * UR: 				array
+ *					Upper Right Coordinates; UR = [x,y]
  *
  */		
 	ctx.beginPath();
@@ -265,11 +265,11 @@ function cropRects(rects,img) {
 /*
  * Parameters:
  * -----------
- * rects:		obj
- *			Dicitonary of clusters and their corresponding bounding box. rects {} = {key = 1 : value = [[xMin1, xMax1, yMin1, yMax1],...],...}
+ * rects:			obj
+ *					Dicitonary of clusters and their corresponding bounding box. rects {} = {key = 1 : value = [[xMin1, xMax1, yMin1, yMax1],...],...}
  *
- * img: 		obj 
- *			Image object
+ * img: 			obj 
+ *					Image object
  *
  */				
 	var tempCanvas = document.createElement("canvas");
@@ -303,8 +303,8 @@ function include(url) {
 /*
  * Parameters:
  * -----------
- * url:			string
- *			path and filename; path//js//example.js
+ * url:				string
+ *					path and filename; path//js//example.js
  *
  */			
 	
@@ -329,17 +329,17 @@ function sharpen(ctx, w, h, mix) {
 /*
  * Parameters:
  * -----------
- * ctx: 		obj 
- *			Canvas context object
+ * ctx: 			obj 
+ *					Canvas context object
  *
- * w: 			int
- *			Width of the image
+ * w: 				int
+ *					Width of the image
  *
- * h: 			int
- *			Height of the image
+ * h: 				int
+ *					Height of the image
  *
- * mix: 		float
- *			Sharpness parameter; 0.1 to 0.9. Sharpest being 0.9
+ * mix: 			float
+ *					Sharpness parameter; 0.1 to 0.9. Sharpest being 0.9
  *
 */	
 	
@@ -410,19 +410,19 @@ function DBSCAN(arr, eps, minPts) {
  *
  * Parameters:
  * -----------
- * arr: 		[x, y, cluster_id]
- *			The input array to DBSCAN, where x and y correspond to the coordinates of a point. cluster_id is undefined by default.
+ * arr: 			[x, y, cluster_id]
+ *					The input array to DBSCAN, where x and y correspond to the coordinates of a point. cluster_id is undefined by default.
  *
- * eps: 		int
- *      		Maximum distance between two points to be considered neighbours
+ * eps: 			int
+ *      			Maximum distance between two points to be considered neighbours
  *
- * minPts: 		int
- *		   	Minimum number of points required to form a cluster
+ * minPts: 			int
+ *		   			Minimum number of points required to form a cluster
  *
  * Returns:
  * --------
  * clusters: 		obj
- *		   	clusters = {key = 1 : value = [[x1,y1],[x2,y2],...], ...}
+ *		   			clusters = {key = 1 : value = [[x1,y1],[x2,y2],...], ...}
 */
 
 	
