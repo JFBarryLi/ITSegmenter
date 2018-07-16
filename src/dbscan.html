@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>ITSegmenter</title>
+    <meta name="theme-color" content="#ffffff">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<!-- Css -->
+	<link rel="stylesheet" type="text/css" href="css\bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css\main.css">
+	
+	
+	<!-- Javascripts -->
+	<script src="src\tether.min.js"></script>
+    <script src="src\jquery.min.js"></script>
+    <script src="src\jquery.mousewheel.min.js"></script>
+	<script src="src\bootstrap.min.js"></script>
+    <script src="src\path.min.js"></script>
+    <script src="src\jquery.scrollto.min.js"></script>
+	<script src="src\ITSegmenter.js"></script>
+	<script src="src\main.js"></script>
+	<script src="src\dbscan.js"></script>
+</head>
+
+<body>
+	<!-- Side navigation -->
+	<div id="layout">
+		<div class="sidebar">
+			<a href="index.html" id=sidebar-title>ITSegmenter</a>
+			<p id=sidebar-headings>DOCUMENTATIONS</p>
+			<a href="index.html">Introduction</a>
+			<a href="index.html">ITSegmenter.js</a>
+			<a href="index.html">Batch Processing</a>
+			<p id=sidebar-headings>EXAMPLES</p>
+			<a href="demo.html">Demo</a>
+			<a href="dbscan.html">DBSCAN</a>
+			<a href="autocrop.html">Auto Crop</a>
+			<a href="yourimage.html">Your Image</a>
+		</div>
+	
+
+		<!-- Content Container -->
+		<div class="container" id="main-container">
+			<div class="main-headings" id="intro">
+				<h2>DBSCAN</h2>
+				<div class="content"> </div>
+			</div>
+			
+			<div class="main-content">
+				Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder
+			</div>
+			
+			<div class="main-content">
+				<canvas id="demo-canvas"></canvas> <br> <br>
+				<canvas id="dbscan-canvas" style="border:1px solid #000000;"></canvas> <br> <br>
+				
+				<form>
+					<div class="form-group">
+						<label for="thresh"><strong>Thresh:</strong></label>
+						<input type="text" class="form-control" id="thresh" placeholder="100"></input>
+						<small class="form-text text-muted">FAST Threshhold</small>
+					</div>
+					<div class="form-group">
+						<label for="thresh"><strong>Episilon:</strong></label>
+						<input type="text" class="form-control" id="eps" placeholder="15"></input>
+						<small class="form-text text-muted">Episilon distance between points</small>
+					</div>
+					<div class="form-group">
+						<label for="thresh"><strong>Min Points:</strong></label>
+						<input type="text" class="form-control" id="minPts" placeholder="5"></input>
+						<small class="form-text text-muted">Minimum # of points to form a cluster</small>
+					</div>					
+					<div class="form-group">
+						<label for="thresh"><strong>Sharpness:</strong></label>
+						<input type="text" class="form-control" id="sharp" placeholder="0.6"></input>
+						<small class="form-text text-muted">Sharpness filter (between 0.1 and 0.9)</small>
+					</div>		
+					<span class="button" id="submitButton" onclick="submit();">Submit</span>
+				</form>
+						
+			</div>
+			
+		</div>
+	</div>
+	
+</body>
+
+
+</html>
