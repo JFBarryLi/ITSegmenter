@@ -31,3 +31,4 @@ https://jfbarryli.github.io/ITSegmenter/
 * Reduce redundancies
 * Create a better demo
 * Create documentations
+* Find the bottleneck and increase speed
