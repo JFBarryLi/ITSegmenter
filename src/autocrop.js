@@ -23,20 +23,24 @@ function submit() {
 	var minPts = $("#minPts").val();
 	var sharp = $("#sharp").val();
 	
+	// var f1 = function () {
+		// var r = $.Deferred();
+		// textSegment("img/demo.jpg", thresh, eps, minPts, sharp, 1, 1, 1);
+		// return r;
+	// };
+	
+	// var f2 = function () {
+		// $("img").prependTo("form");
+	// }
+	
+	// f1().done(f2());
+
 	textSegment("img/demo.jpg", thresh, eps, minPts, sharp, 1, 1, 1);
 	
-	$("img").css({"margin-left": "auto", "margin-right" : "auto", "display" : "block", "padding-left" : "200px"});
+	//$.when(Object.keys(outputRects).length === 0).then($("img").prependTo("form"))
+	
+	
+	
 	
 
-// canvas {
-	// margin-left: auto;
-	// margin-right: auto;
-	// display: block;
-// }
-
-// #layout {
-	// position: relative;
-	// padding-left: 200px;
-// }
-	
 }
