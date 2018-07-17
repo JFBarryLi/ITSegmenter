@@ -57,10 +57,23 @@
 				<canvas id="demo-canvas"></canvas> <br> <br>
 				
 				<form>
-					<div class="form-group">
-						<label for="Data URL"><strong>Image:</strong></label>
-						<input type="file" id="imagefile" class="form-control-file" onchange="encodeImageFileAsURL(this)"></input>
-					</div>				
+					<div class="row">
+						<div class="col">
+							<div class="form-group">
+								<label for="Data URL"><strong>Image:</strong></label>
+								<input type="file" id="imagefile" class="form-control-file" onchange="encodeImageFileAsURL(this)"></input>
+							</div>
+						</div>
+						<div class="col">
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" value="" id="cropCheck">
+								<label class="form-check-label" for="cropCheck">
+								Auto Crop
+								</label>
+							</div>
+						</div>
+					</div>
+						
 					<div class="form-group">
 						<label for="thresh"><strong>Thresh:</strong></label>
 						<input type="text" class="form-control" id="thresh" placeholder="100"></input>
