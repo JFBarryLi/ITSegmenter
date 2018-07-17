@@ -23,5 +23,10 @@ function submit() {
 	var minPts = $("#minPts").val();
 	var sharp = $("#sharp").val();
 	
+	if (thresh == "") {thresh = 100;}
+	if (eps == "") {eps = 15;}
+	if (minPts == "") {minPts = 5;}
+	if (sharp == "") {sharp = 0.6;}
+		
 	textSegment("img/demo.jpg", thresh, eps, minPts, sharp, 1, 0, 0, "demo-canvas");
 }
