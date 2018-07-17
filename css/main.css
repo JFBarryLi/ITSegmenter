@@ -73,6 +73,7 @@ canvas {
     .sidebar a {font-size: 18px;}
 }
 
+
 #sidebar-title {
 	padding: 15px 8px 10px 16px;
 	border-top: none;
@@ -98,7 +99,7 @@ canvas {
 	text-decoration: none;
 }
 
-#sidebar-headings {
+.sidebar-headings {
 	border-top: 1px solid #777;
     padding: 15px 8px 1px 16px;
     text-decoration: none;
