@@ -1,9 +1,10 @@
 var width, height;
 var canvasf, canvasd;
 var ctxf, ctxd;
+var image;
 
 window.onload = function() {
-	var image = new Image();
+	image = new Image();
 	image.src = "img/demo.jpg";
 	
 	var canvaso = document.getElementById("demo-canvas");
@@ -38,10 +39,17 @@ window.onload = function() {
 
 function submit() {
 	
+	ctxd.clearRect(0, 0, width, height);
+	
 	var thresh = $("#thresh").val();
 	var eps = $("#eps").val();
 	var minPts = $("#minPts").val();
 	var sharp = $("#sharp").val();	
+	
+	if (thresh == "") {thresh = 100;}
+	if (eps == "") {eps = 15;}
+	if (minPts == "") {minPts = 5;}
+	if (sharp == "") {sharp = 0.6;}
 	
 	sharpen(ctxf, width, height, sharp);
 	var corArr = findCorners(ctxf, width, height, thresh);	
@@ -54,4 +62,6 @@ function submit() {
 			ctxd.fillRect(P[key][i][0], P[key][i][1], 3, 3);
 		}
 	}
+	ctxf.clearRect(0, 0, width, height);
+	ctxf.drawImage(image, 0, 0, width, height);
 }
