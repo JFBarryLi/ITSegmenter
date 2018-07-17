@@ -23,6 +23,11 @@ function submit() {
 	var minPts = $("#minPts").val();
 	var sharp = $("#sharp").val();
 	
+	if (thresh == "") {thresh = 100;}
+	if (eps == "") {eps = 15;}
+	if (minPts == "") {minPts = 5;}
+	if (sharp == "") {sharp = 0.6;}
+	
 	// var f1 = function () {
 		// var r = $.Deferred();
 		// textSegment("img/demo.jpg", thresh, eps, minPts, sharp, 1, 1, 1);
@@ -37,10 +42,4 @@ function submit() {
 
 	textSegment("img/demo.jpg", thresh, eps, minPts, sharp, 1, 1, 1);
 	
-	//$.when(Object.keys(outputRects).length === 0).then($("img").prependTo("form"))
-	
-	
-	
-	
-
 }
