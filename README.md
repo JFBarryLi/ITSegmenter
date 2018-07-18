@@ -4,7 +4,6 @@ Image Text Segmentation using FAST corner detection and DBSCAN clustering.
 Return the coordinates and draw bounding boxes around text.
 
 ### Usage ###
-Download all the src files and put it in your src folder
 Download ITSegmenter.js from the build folder and place it in your src folder
 
 Include the following in the head of the html:  
@@ -14,7 +13,7 @@ Include the following in the head of the html:
 Run using:  
 textSegment(imgPath);
 
-Output will be stored in the global variable outputRects.
+Output will be stored in the global variable outputRects asynchronously.
 
 
 ### Documentation and Demo ###
@@ -25,6 +24,5 @@ https://jfbarryli.github.io/ITSegmenter/
 * Batch processing
 * Redo sharpening filter
 * Reduce redundancies
-* Create a better demo
 * Create documentations
 * Find the bottleneck and increase speed
