@@ -10,6 +10,7 @@
 
 include("src\\findCorners.js");
 include("src\\setOps.js");
+include("src\\kdbush.js");
  
 var outputRects = {};
  
@@ -425,7 +426,7 @@ function DBSCAN(arr, eps, minPts) {
  *		   			clusters = {key = 1 : value = [[x1,y1],[x2,y2],...], ...}
 */
 
-	
+	var index = kdbush(arr);	
 	var so = setOps;
 	var cluster_id = {};
 	
@@ -436,7 +437,7 @@ function DBSCAN(arr, eps, minPts) {
 		//Check if already processed
 		if (cluster_id[arr[i]] != undefined) { continue; } 
 		//Find neighbours
-		N = RangeQuery(arr, arr[i], eps); 
+		N = RangeQuery(arr, arr[i], eps, index); 
 		
 		if (N.length < minPts) {
 			//Noise points
@@ -468,7 +469,7 @@ function DBSCAN(arr, eps, minPts) {
 			cluster_id[S[j]] = C
 			
 			//Find neighbours
-			N = RangeQuery(arr, S[j], eps);
+			N = RangeQuery(arr, S[j], eps, index);
 			
 			//Density check
 			if (N.length >= minPts) {
@@ -491,17 +492,21 @@ function DBSCAN(arr, eps, minPts) {
 	return clusters;
 
 }
-
-function RangeQuery(arr, Pt, eps) {
-	var so = setOps;
+function RangeQuery(arr, Pt, eps, index) {
+	
+	var Neighbours = index.within(Pt[0], Pt[1], eps).map((id) => arr[id]);
+	
+	return Neighbours;
+	
+/*  	var so = setOps;
 	Neighbours = [];
 	for (var i = 0; i < arr.length; i++) {
 		if (distFunc(Pt, arr[i]) <= eps) {
-			//Add to Neighbours
+			// Add to Neighbours
 			Neighbours = so.union(Neighbours,[arr[i]]);
 		}
 	}
-	return Neighbours;
+	return Neighbours; */
 }
 
 function distFunc(Q, P) {
