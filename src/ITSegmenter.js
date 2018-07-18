@@ -494,7 +494,7 @@ function DBSCAN(arr, eps, minPts) {
 }
 function RangeQuery(arr, Pt, eps, index) {
 	
-	var Neighbours = index.within(Pt[0], Pt[1], eps).map((id) => arr[id]);
+	var Neighbours = index.within(Pt[0], Pt[1], eps).map(function(id) { return arr[id]; });
 	
 	return Neighbours;
 	
