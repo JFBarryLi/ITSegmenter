@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>ITSegmenter</title>
+    <meta name="theme-color" content="#ffffff">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<!-- Css -->
+	<link rel="stylesheet" type="text/css" href="css\bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css\main.css">
+	
+	
+	<!-- Javascripts -->
+	<script src="src\tether.min.js"></script>
+    <script src="src\jquery.min.js"></script>
+    <script src="src\jquery.mousewheel.min.js"></script>
+	<script src="src\bootstrap.min.js"></script>
+    <script src="src\path.min.js"></script>
+    <script src="src\jquery.scrollto.min.js"></script>
+	<script src="src\main.js"></script>
+</head>
+
+<body>
+	<!-- Side navigation -->
+	<div id="layout">
+		<div class="sidebar">
+			<a href="index.html" id=sidebar-title>ITSegmenter</a>
+			<p class="sidebar-headings">DOCUMENTATIONS</p>
+			<a href="#/intro">Introduction</a>
+			<a href="#/its">ITSegmenter.js</a>
+			<a href="#/batch">Batch Processing</a>
+			<p class="sidebar-headings">EXAMPLES</p>
+			<a href="demo.html">Demo</a>
+			<a href="dbscan.html">DBSCAN</a>
+			<a href="autocrop.html">Auto Crop</a>
+			<a href="yourimage.html">Your Image</a>
+		</div>
+	
+
+		<!-- Content Container -->
+		<div class="container" id="main-container">
+		
+			<div id="main-title">
+				<h1>Image Text Segmenter</h1>
+				<div class="content"> </div>
+			</div>
+			
+			
+			<div class="main-headings" id="intro">
+				<h2>Introduction</h2>
+				<div class="content"> </div>
+			</div>
+			
+			<div class="main-content">
+				The performance of popular Optical Character Recognition (OCR) engines such as Tesseract can be greatly improved by pre-processing of the image. When texts exist in an image alongside with other objects, OCR engines often return random characters and carriage returns. To combat this problem ITSegmenter.js detect and isolate text regions in an image. <br> <br>
+			</div>
+			
+			<img src="img\processflow.png"></img>
+			
+			<div class="main-content">
+				The first step to processing an image is to decode it into pixel data, thankfully that is a built-in feature of the image element. To access the pixel data, the image is drawn on a canvas element, it can then be accessed by the getImageData method. From there a convolution matrix filter is applied to the image data to sharpen it. This improves the results of the next step, feature detection. After sharpening the image, Features from Accelerated Segment Test (FAST) is used to find the corners in the image. Then the corners coordinates stored in an array are used to construct a k-dimensional tree. From there, the Density-based Spatial Clustering of Applications with Noise (DBSCAN) algorithm is applied to corners, which groups them together. Once the clusters are formed, bounding boxes can be drawn based on the maximum and minimum x/y values of each cluster.  <br> <br>
+			</div>
+			
+			<div class="main-content">
+				<h4 class="sub-headings">Getting Started</h4> <br>
+				&nbsp&nbsp&nbsp&nbsp 1. Include the following in the head of the html: <br> <br>
+				<pre>
+					&lt;script src="src\ITSegmenter.js">&lt;/script&gt;
+				</pre>
+				<br>
+				&nbsp&nbsp&nbsp&nbsp 2. Use the following to segment the image: <br> <br>
+				<pre>
+					textSegment(imgPath);
+				</pre>
+				<br>
+				&nbsp&nbsp&nbsp&nbsp 3. The coordinates of the bounding box for each cluster will be stored at outputRects{}: <br> <br>
+				<pre>
+					outputRects = {cluster_id : value = [[xMin1, xMax1, yMin1, yMax1],...],...};
+				</pre>
+				<br>
+				&nbsp&nbsp&nbsp&nbsp 4. To paint the output directly onto a canvas specify the canvas element id in the parameters <br> <br>
+				<pre>
+					textSegment(imgPath, fThreshhold, eps, minPts, sharpness, drawRects, splitRects, convertToImage, canvasId);
+				</pre>
+				<br>
+				
+				
+			</div>
+			
+			
+			
+			<div class="main-headings" id="its">
+				<h2>ITSegmenter.js</h3>
+				<div class="content"> </div>
+			</div>
+			
+			<div class="main-content">
+				<h4 class="sub-headings">Convolution Matrix Filter</h4>
+				<pre>
+					&lt;p&gt;Place holder...&lt;/p&gt;&lt;p&gt;Place holder...&lt;/p&gt;
+				</pre>
+				Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder <br> <br>
+			</div>
+			
+			<div class="main-content">
+				<h4 class="sub-headings">FAST Corner Detection</h4>
+				<pre>
+					&lt;p&gt;Place holder...&lt;/p&gt;&lt;p&gt;Place holder...&lt;/p&gt;
+				</pre>
+				Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder <br> <br>
+			</div>
+			
+			<div class="main-content">
+				<h4 class="sub-headings">K-D Tree</h4>
+				<pre>
+					&lt;p&gt;Place holder...&lt;/p&gt;&lt;p&gt;Place holder...&lt;/p&gt;
+				</pre>
+				Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder <br> <br>
+			</div>
+			
+			<div class="main-content">
+				<h4 class="sub-headings">DBSCAN</h4>
+				<pre>
+					&lt;p&gt;Place holder...&lt;/p&gt;&lt;p&gt;Place holder...&lt;/p&gt;
+				</pre>
+				Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder <br> <br>
+			</div>
+
+			<div class="main-content">
+				<h4 class="sub-headings">Segmented Image</h4>
+				<pre>
+					&lt;p&gt;Place holder...&lt;/p&gt;&lt;p&gt;Place holder...&lt;/p&gt;
+				</pre>
+				Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder <br> <br>
+			</div>			
+				
+			
+			<div class="main-headings" id="batch">
+				<h2>Batch Processing</h4>
+			</div>
+			
+			<div class="main-content">
+				<h4 class="sub-headings">Place Holder</h4>
+				<pre>
+					&lt;p&gt;Place holder...&lt;/p&gt;&lt;p&gt;Place holder...&lt;/p&gt;
+				</pre>
+				Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder <br> <br>
+				
+				<h4 class="sub-headings">Place Holder</h4>
+				<pre>
+					&lt;p&gt;Place holder...&lt;/p&gt;&lt;p&gt;Place holder...&lt;/p&gt;
+				</pre>
+				Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder <br> <br>
+			</div>
+			
+		</div>
+	</div>
+	
+
+	
+</body>
+
+
+</html>
