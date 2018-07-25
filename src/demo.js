@@ -28,8 +28,8 @@ function submit() {
 	if (thresh == "") {thresh = 60;}
 	if (eps == "") {eps = 15;}
 	if (minPts == "") {minPts = 5;}
-	if (dia == "") {sharp = 10;}
-	if (amt == "") {sharp = 1;}
+	if (dia == "") {dia = 10;}
+	if (amt == "") {amt = 1;}
 		
 	textSegment("img/demo.jpg", thresh, eps, minPts, dia, amt, 1, 0, 0, "demo-canvas");
 }
