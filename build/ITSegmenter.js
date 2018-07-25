@@ -354,7 +354,7 @@ function sharpen(ctx, w, h, dia, amt) {
 	
 	//Add the unsharpMask to the original image, thus emphasizing the edges
 	for (i = 0; i < outputData.data.length; i++) {
-		outputData.data[i] = srcBuff[i] + unsharpMask[i];
+		outputData.data[i] = srcBuff[i] + amt*unsharpMask[i];
 	}
 	
 	ctx.putImageData(outputData, 0, 0);
