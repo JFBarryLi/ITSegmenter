@@ -25,7 +25,7 @@ function submit() {
 	var amt = $("#amt").val();
 	
 	
-	if (thresh == "") {thresh = 100;}
+	if (thresh == "") {thresh = 60;}
 	if (eps == "") {eps = 15;}
 	if (minPts == "") {minPts = 5;}
 	if (dia == "") {sharp = 10;}
