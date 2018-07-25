@@ -3,6 +3,8 @@ var canvasf, canvasd;
 var ctxf, ctxd;
 var image;
 
+var begin = Date.now();
+
 window.onload = function() {
 	image = new Image();
 	image.src = "img/demo.jpg";
@@ -31,7 +33,7 @@ window.onload = function() {
 		
 		ctxo.drawImage(image, 0, 0, width, height);	
 		ctxf.drawImage(image, 0, 0, width, height);
-		
+		console.log(Date.now() - begin);
 		
 	}
 	
