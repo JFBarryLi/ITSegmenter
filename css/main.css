@@ -1,6 +1,5 @@
 html {
     font-size: 14px;
-	background-color: rgb(242, 245, 250);
 	height: 100%;
 }
 
@@ -169,3 +168,4 @@ canvas {
 	margin: 0 auto;
 	display: table;
 }
+
