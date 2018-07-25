@@ -34,7 +34,7 @@ function submit() {
 	var amt = $("#amt").val();
 	var autoCrop = document.getElementById("cropCheck").checked;
 	
-	if (thresh == "") {thresh = 100;}
+	if (thresh == "") {thresh = 60;}
 	if (eps == "") {eps = 15;}
 	if (minPts == "") {minPts = 5;}
 	if (dia == "") {dia = 10;}
