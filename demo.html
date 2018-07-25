@@ -54,7 +54,8 @@
 				&nbsp &nbsp &nbsp &nbsp 1. Thresh is the threshhold for FAST (Features from Accelerated Segment Test) corner detection <br>
 				&nbsp &nbsp &nbsp &nbsp 2. Episilon is the maximum distance that 2 points can form a cluster <br>
 				&nbsp &nbsp &nbsp &nbsp 3. Min Points is the minimum amount of points required to form a cluster <br>
-				&nbsp &nbsp &nbsp &nbsp 4. Sharpness affects the sharpness filter in pre-processing
+				&nbsp &nbsp &nbsp &nbsp 4. Diameter is a parameter for Unsharp Masking (USM), it determines the area around each pixel that will be analyzed <br>
+				&nbsp &nbsp &nbsp &nbsp 5. Amount is a parameter for Unsharp Masking (USM), it is a scalar for the unsharp mask, it determine the intensity of the edges <br>
 			</div>
 			
 			<div class="main-content">
@@ -63,24 +64,29 @@
 				<form>
 					<div class="form-group">
 						<label for="thresh"><strong>Thresh:</strong></label>
-						<input type="text" class="form-control" id="thresh" placeholder="100"></input>
+						<input type="text" class="form-control" id="thresh" placeholder="60"></input>
 						<small class="form-text text-muted">FAST Threshhold</small>
 					</div>
 					<div class="form-group">
-						<label for="thresh"><strong>Episilon:</strong></label>
+						<label for="eps"><strong>Episilon:</strong></label>
 						<input type="text" class="form-control" id="eps" placeholder="15"></input>
 						<small class="form-text text-muted">Episilon distance between points</small>
 					</div>
 					<div class="form-group">
-						<label for="thresh"><strong>Min Points:</strong></label>
+						<label for="minPts"><strong>Min Points:</strong></label>
 						<input type="text" class="form-control" id="minPts" placeholder="5"></input>
 						<small class="form-text text-muted">Minimum # of points to form a cluster</small>
 					</div>					
 					<div class="form-group">
-						<label for="thresh"><strong>Sharpness:</strong></label>
-						<input type="text" class="form-control" id="sharp" placeholder="0.6"></input>
-						<small class="form-text text-muted">Sharpness filter (between 0.1 and 0.9)</small>
-					</div>		
+						<label for="dia"><strong>Diameter(USM):</strong></label>
+						<input type="text" class="form-control" id="dia" placeholder="10"></input>
+						<small class="form-text text-muted">Diameter parameter for Gaussian blur, must be greater than 1</small>
+					</div>
+					<div class="form-group">
+						<label for="amt"><strong>Amount(USM):</strong></label>
+						<input type="text" class="form-control" id="amt" placeholder="1"></input>
+						<small class="form-text text-muted">Scalar for unsharp masking</small>
+					</div>	
 					<span class="button" id="submitButton" onclick="submit();">Submit</span>
 				</form>
 				
