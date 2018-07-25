@@ -10,7 +10,7 @@
  
 var outputRects = {};
  
- function textSegment(imgPath, fThreshhold, eps, minPts, sharpness, drawRects, splitRects, convertToImage, canvasId) {
+ function textSegment(imgPath, fThreshhold, eps, minPts, dia, amt, drawRects, splitRects, convertToImage, canvasId) {
 /* 
  * Parameters:
  * -----------
@@ -26,8 +26,11 @@ var outputRects = {};
  * minPts: 				int
  *		   				Minimum number of points required to form a cluster; Default:5
  *
- * sharpness: 			float
- * 						Sharpness filter parameter; Default:0.6
+ * dia: 				float
+ *						diameter Gaussian blur diameter, must be greater than 1.
+ *
+ * amt: 				float
+ *						Scalar of Unsharp Mask
  *
  * drawRects: 			bol
  * 						Option to draw bounding boxes on the image; Default:0
@@ -51,10 +54,13 @@ var outputRects = {};
 	if (fThreshhold === undefined) { fThreshhold = 100};
 	if (eps === undefined) { eps = 15};
 	if (minPts === undefined) { minPts = 5};
-	if (sharpness === undefined) { sharpness = 0.6};
+	if (dia === undefined) { sharpness = 10};
+	if (amt === undefined) { sharpness = 1};
 	if (drawRects === undefined) { drawRects = 0};
 	if (splitRects === undefined) { splitRects = 0};
 	if (convertToImage === undefined) { convertToImage = 1};
+	
+	var begin = Date.now();
  
 	var src = imgPath; 																							
 	var image = new Image();
@@ -104,7 +110,7 @@ var outputRects = {};
 		contextf.drawImage(image, 0, 0, width, height);															
 		
 		//Applies the sharpen filter to canvasf
-		sharpen(contextf, width, height, sharpness);
+		sharpen(contextf, width, height, dia, amt);
 
 		//Find corners using FAST and stores the coordinates in an array
 		var corArr = findCorners(contextf, width, height, fThreshhold);	
@@ -129,6 +135,7 @@ var outputRects = {};
 			//Crop the image into segments of texts
 			cropRects(outputRects,image);
 		}
+		console.log(Date.now() - begin);
 		return outputRects;
 	} 
 }
@@ -211,10 +218,6 @@ function textRect(ctx, P) {
 		
 		//Skip the noise cluster
 		if (key == 'noise') { continue; }
-		//if (h/w > 1) { continue; }
-		//if (w < 40) { continue; }
-		//if (h < 40) { continue; }
-		//if (h*w > 2000) { continue; }
 		
 		//Draw the bounding box for the cluster
 		drawPoly(ctx, [Math.max(0, xMin-5), Math.max(0, yMin-5)], [Math.max(0, xMin-5), Math.max(0, yMax+5)], [Math.max(0, xMax+5), Math.max(0, yMax+5)], [Math.max(0, xMax+5), Math.max(0, yMin-5)]);
@@ -312,17 +315,11 @@ function include(url) {
     head.appendChild(script);
 }
 
-
-
-/* -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
-
 /**
- * Author: Mike Cao
- * Canvas Sharpen
- * "https://gist.github.com/mikecao/65d9fc92dc7197cb8a7c.js"
+ * Image Sharpening using Unsharp Masking
+ * 
  */
-function sharpen(ctx, w, h, mix) {
-	
+function sharpen(ctx, w, h, dia, amt) {
 /*
  * Parameters:
  * -----------
@@ -335,69 +332,44 @@ function sharpen(ctx, w, h, mix) {
  * h: 				int
  *					Height of the image
  *
- * mix: 			float
- *					Sharpness parameter; 0.1 to 0.9. Sharpest being 0.9
+ * dia: 			float
+ *					diameter Gaussian blur diameter, must be greater than 1.
+ *
+ * amt: 			float
+ *					Scalar of Unsharp Mask
  *
 */	
 	
+	var outputData = ctx.createImageData(w, h);
 	
-    var x, sx, sy, r, g, b, a, dstOff, srcOff, wt, cx, cy, scy, scx,
-        weights = [0, -1, 0, -1, 5, -1, 0, -1, 0],
-        katet = Math.round(Math.sqrt(weights.length)),
-        half = (katet * 0.5) | 0,
-        dstData = ctx.createImageData(w, h),
-        dstBuff = dstData.data,
-        srcBuff = ctx.getImageData(0, 0, w, h).data,
-        y = h;
-
-    while (y--) {
-        x = w;
-        while (x--) {
-            sy = y;
-            sx = x;
-            dstOff = (y * w + x) * 4;
-            r = 0;
-            g = 0;
-            b = 0;
-            a = 0;
-
-            for (cy = 0; cy < katet; cy++) {
-                for (cx = 0; cx < katet; cx++) {
-                    scy = sy + cy - half;
-                    scx = sx + cx - half;
-
-                    if (scy >= 0 && scy < h && scx >= 0 && scx < w) {
-                        srcOff = (scy * w + scx) * 4;
-                        wt = weights[cy * katet + cx];
-
-                        r += srcBuff[srcOff] * wt;
-                        g += srcBuff[srcOff + 1] * wt;
-                        b += srcBuff[srcOff + 2] * wt;
-                        a += srcBuff[srcOff + 3] * wt;
-                    }
-                }
-            }
-
-            dstBuff[dstOff] = r * mix + srcBuff[dstOff] * (1 - mix);
-            dstBuff[dstOff + 1] = g * mix + srcBuff[dstOff + 1] * (1 - mix);
-            dstBuff[dstOff + 2] = b * mix + srcBuff[dstOff + 2] * (1 - mix);
-            dstBuff[dstOff + 3] = srcBuff[dstOff + 3];
-        }
-    }
-
-    ctx.putImageData(dstData, 0, 0);
+	var srcBuff = ctx.getImageData(0, 0, w, h).data;
+	
+	//Gaussian Blur on the image
+	var blurred = TImage.blur(srcBuff, w, h, dia);
+	
+	//Create an unsharpMask by subtracting the Gaussian Blurred image from the original
+	var unsharpMask = srcBuff.map(function(item, index) {
+		return item - blurred[index];
+	});
+	
+	//Add the unsharpMask to the original image, thus emphasizing the edges
+	for (i = 0; i < outputData.data.length; i++) {
+		outputData.data[i] = srcBuff[i] + unsharpMask[i];
+	}
+	
+	ctx.putImageData(outputData, 0, 0);
+	
 }
+
 
 /* --------------------------------------------------------------------------------------------------------------- */
 
 
 
 /**
- * Author: Barry Li
- * Javascript Implementation of DBSCAN
+ * Javascript Implementation of DBSCAN using K-Dimensional trees for Range Query
  * 
  */
- 
  
 function DBSCAN(arr, eps, minPts) {
 	
@@ -491,10 +463,9 @@ function DBSCAN(arr, eps, minPts) {
 function RangeQuery(arr, Pt, eps, index) {
 	
 	var Neighbours = index.within(Pt[0], Pt[1], eps).map(function(id) { return arr[id]; });
-	
 	return Neighbours;
 	
-/*  	var so = setOps;
+/*   	var so = setOps;
 	Neighbours = [];
 	for (var i = 0; i < arr.length; i++) {
 		if (distFunc(Pt, arr[i]) <= eps) {
@@ -502,7 +473,7 @@ function RangeQuery(arr, Pt, eps, index) {
 			Neighbours = so.union(Neighbours,[arr[i]]);
 		}
 	}
-	return Neighbours; */
+	return Neighbours;  */
 }
 
 function distFunc(Q, P) {
@@ -1384,6 +1355,3 @@ function distFunc(Q, P) {
         return new s(t,o,n,r,i)
     }
 });
-
-
-
