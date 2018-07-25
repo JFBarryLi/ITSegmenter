@@ -21,12 +21,15 @@ function submit() {
 	var thresh = $("#thresh").val();
 	var eps = $("#eps").val();
 	var minPts = $("#minPts").val();
-	var sharp = $("#sharp").val();
+	var dia = $("#dia").val();
+	var amt = $("#amt").val();
+	
 	
 	if (thresh == "") {thresh = 100;}
 	if (eps == "") {eps = 15;}
 	if (minPts == "") {minPts = 5;}
-	if (sharp == "") {sharp = 0.6;}
+	if (dia == "") {sharp = 10;}
+	if (amt == "") {sharp = 1;}
 		
-	textSegment("img/demo.jpg", thresh, eps, minPts, sharp, 1, 0, 0, "demo-canvas");
+	textSegment("img/demo.jpg", thresh, eps, minPts, dia, amt, 1, 0, 0, "demo-canvas");
 }
