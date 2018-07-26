@@ -353,13 +353,22 @@ function sharpen(ctx, w, h, dia, amt) {
 	var blurred = TImage.blur(srcBuff, w, h, dia);
 	
 	//Create an unsharpMask by subtracting the Gaussian Blurred image from the original
-	var unsharpMask = srcBuff.map(function(item, index) {
-		return item - blurred[index];
-	});
+	//IE doesn't support map on Uint8ClampedArray
+	try {
+		var unsharpMask = srcBuff.map(function(item, index) {
+			return item - blurred[index];
+		});
+	}
+	catch(err) {
+		var srcBuff = Array.prototype.slice.call(srcBuff);
+		var unsharpMask = srcBuff.map(function(item, index) {
+			return item - blurred[index];
+		});
+	}
 	
 	//Add the unsharpMask to the original image, thus emphasizing the edges
 	for (i = 0; i < outputData.data.length; i++) {
-		outputData.data[i] = srcBuff[i] + amt*unsharpMask[i];
+		outputData.data[i] = srcBuff[i] + unsharpMask[i];
 	}
 	
 	ctx.putImageData(outputData, 0, 0);
