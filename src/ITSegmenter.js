@@ -7,6 +7,10 @@
  * https://github.com/JFBarryLi/ITSegmenter
  *
  */
+
+include("src\\findCorners.js");
+include("src\\kdbush.js");
+ 
  
 var outputRects = {};
  
@@ -110,8 +114,9 @@ var outputRects = {};
 		contextf.drawImage(image, 0, 0, width, height);															
 		
 		//Applies the sharpen filter to canvasf
-		sharpen(contextf, width, height, dia, amt);
-
+		if (dia != 0) {
+			sharpen(contextf, width, height, dia, amt);
+		}
 		//Find corners using FAST and stores the coordinates in an array
 		var corArr = findCorners(contextf, width, height, fThreshhold);	
 		
@@ -357,14 +362,20 @@ function sharpen(ctx, w, h, dia, amt) {
 	catch(err) {
 		var srcBuff = Array.prototype.slice.call(srcBuff);
 		var unsharpMask = srcBuff.map(function(item, index) {
-			return item - blurred[index];
+			um = item - blurred[index];
+			if (um > 255) {
+				um = 255;
+			} else if (um < 0) {
+				um = 0;
+			}
+			return Math.round(um);
 		});
 	}
 	
 	//Add the unsharpMask to the original image, thus emphasizing the edges
 	for (i = 0; i < outputData.data.length; i++) {
 		outputData.data[i] = srcBuff[i] + unsharpMask[i];
-	}
+    }
 	
 	ctx.putImageData(outputData, 0, 0);
 	
@@ -381,15 +392,12 @@ function sharpen(ctx, w, h, dia, amt) {
  */
  
 function DBSCAN(arr, eps, minPts) {
-	
+        
 /*
- * Points Dictionary : {Key = [x, y] : Value = cluster_id}
- * Clusters Dicitonary : {Key = cluster_id : Value = [[x1, y1], [x2, y2], ...]}
- *
  * Parameters:
  * -----------
- * arr: 			[x, y, cluster_id]
- *					The input array to DBSCAN, where x and y correspond to the coordinates of a point. cluster_id is undefined by default.
+ * arr: 			[[x1, y1], [x2,y2], ...]
+ *					The input array to DBSCAN, where x and y correspond to the coordinates of a point.
  *
  * eps: 			int
  *      			Maximum distance between two points to be considered neighbours
@@ -400,11 +408,10 @@ function DBSCAN(arr, eps, minPts) {
  * Returns:
  * --------
  * clusters: 		obj
- *		   			clusters = {key = 1 : value = [[x1,y1],[x2,y2],...], ...}
+ *		   			clusters = {key = clusterID : value = [[x1,y1],[x2,y2],...], ...}
 */
 
 	var index = kdbush(arr);	
-	var so = setOps;
 	var cluster_id = {};
 	
 	//Cluster counter
@@ -431,10 +438,10 @@ function DBSCAN(arr, eps, minPts) {
 		cluster_id[arr[i]] = C;
 		
 		//Seed set
-		var S = so.complement(N, [arr[i]]);
+		//Seed set should be the Neighbours set - current point, but it doesn't make any difference, since it will just get ignored
+		var S = N;
 		
 		for (var j = 0; j < S.length; j++) {
-
 			//Change noise to border point
 			if (cluster_id[S[j]] == 'noise') { 
 				cluster_id[S[j]] = C; 					
@@ -451,7 +458,8 @@ function DBSCAN(arr, eps, minPts) {
 			//Density check
 			if (N.length >= minPts) {
 				//Add new neighbours to seed set
-				S = so.union(S,N);
+				S.push.apply(S,N); //Theorectically incorrect, but practically the same result as a union and much faster
+				//S = [...new Set([...S, ...N])]; //Only works for ES6
 			}
 		}		
 	}
@@ -470,19 +478,9 @@ function DBSCAN(arr, eps, minPts) {
 
 }
 function RangeQuery(arr, Pt, eps, index) {
-	
+	//RangeQuery in a k-d tree 
 	var Neighbours = index.within(Pt[0], Pt[1], eps).map(function(id) { return arr[id]; });
 	return Neighbours;
-	
-/*   	var so = setOps;
-	Neighbours = [];
-	for (var i = 0; i < arr.length; i++) {
-		if (distFunc(Pt, arr[i]) <= eps) {
-			// Add to Neighbours
-			Neighbours = so.union(Neighbours,[arr[i]]);
-		}
-	}
-	return Neighbours;  */
 }
 
 function distFunc(Q, P) {
@@ -945,21 +943,23 @@ function distFunc(Q, P) {
     var halfSide = Math.floor(side / 2);
     var output = new Float32Array(width * height * 4);
     var alphaFac = opaque ? 1 : 0;
+	
+	var sy, sx, offset, r, g, b, a, scy, scx, poffset, wt;
 
     for (var y = 0; y < height; y++) {
       for (var x = 0; x < width; x++) {
-        var sy = y;
-        var sx = x;
-        var offset = (y * width + x) * 4;
-        var r = 0;
-        var g = 0;
-        var b = 0;
-        var a = 0;
+        sy = y;
+        sx = x;
+        offset = (y * width + x) * 4;
+        r = 0;
+        g = 0;
+        b = 0;
+        a = 0;
         for (var cx = 0; cx < side; cx++) {
-          var scy = sy;
-          var scx = Math.min(width - 1, Math.max(0, sx + cx - halfSide));
-          var poffset = (scy * width + scx) * 4;
-          var wt = weightsVector[cx];
+          scy = sy;
+          scx = sx + cx - halfSide;
+          poffset = (scy * width + scx) * 4;
+          wt = weightsVector[cx];
           r += pixels[poffset] * wt;
           g += pixels[poffset + 1] * wt;
           b += pixels[poffset + 2] * wt;
@@ -995,20 +995,22 @@ function distFunc(Q, P) {
     var output = new Float32Array(width * height * 4);
     var alphaFac = opaque ? 1 : 0;
 
+	var sy, sx, offset, r, g, b, a, scy, scx, poffset, wt;
+	
     for (var y = 0; y < height; y++) {
       for (var x = 0; x < width; x++) {
-        var sy = y;
-        var sx = x;
-        var offset = (y * width + x) * 4;
-        var r = 0;
-        var g = 0;
-        var b = 0;
-        var a = 0;
+        sy = y;
+        sx = x;
+        offset = (y * width + x) * 4;
+        r = 0;
+        g = 0;
+        b = 0;
+        a = 0;
         for (var cy = 0; cy < side; cy++) {
-          var scy = Math.min(height - 1, Math.max(0, sy + cy - halfSide));
-          var scx = sx;
-          var poffset = (scy * width + scx) * 4;
-          var wt = weightsVector[cy];
+          scy = sy + cy - halfSide;
+          scx = sx;
+          poffset = (scy * width + scx) * 4;
+          wt = weightsVector[cy];
           r += pixels[poffset] * wt;
           g += pixels[poffset + 1] * wt;
           b += pixels[poffset + 2] * wt;
@@ -1112,119 +1114,7 @@ function distFunc(Q, P) {
 }());
 
 
-// setOps.js MIT License © 2014 James Abney http://github.com/jabney
-
-// Set operations union, intersection, symmetric difference,
-// relative complement, equals. Set operations are fast.
-(function(so) {
-'use strict';
-  
-  var uidList = [], uid;
-
-  // Create and push the uid identity method.
-  uidList.push(uid = function() {
-    return this;
-  });
-
-  // Push a new uid method onto the stack. Call this and
-  // supply a unique key generator for sets of objects.
-  so.pushUid = function(method) {
-    uidList.push(method);
-    uid = method;
-    return method;
-  };
-
-  // Pop the previously pushed uid method off the stack and
-  // assign top of stack to uid. Return the previous method.
-  so.popUid = function() {
-    var prev;
-    uidList.length > 1 && (prev = uidList.pop());
-    uid = uidList[uidList.length-1];
-    return prev || null;
-  };
-
-  // Processes a histogram consructed from two arrays, 'a' and 'b'.
-  // This function is used generically by the below set operation 
-  // methods, a.k.a, 'evaluators', to return some subset of
-  // a set union, based on frequencies in the histogram. 
-  function process(a, b, evaluator) {
-    // Create a histogram of 'a'.
-    var hist = Object.create(null), out = [], ukey, k;
-    a.forEach(function(value) {
-      ukey = uid.call(value);
-      if(!hist[ukey]) {
-        hist[ukey] = { value: value, freq: 1 };
-      }
-    });
-    // Merge 'b' into the histogram.
-    b.forEach(function(value) {
-      ukey = uid.call(value);
-      if (hist[ukey]) {
-        if (hist[ukey].freq === 1)
-          hist[ukey].freq = 3;
-      } else {
-        hist[ukey] = { value: value, freq: 2 };
-      }
-    });
-    // Call the given evaluator.
-    if (evaluator) {
-      for (k in hist) {
-        if (evaluator(hist[k].freq)) out.push(hist[k].value);
-      }
-      return out;
-    } else {
-      return hist;
-    }
-  };
-
-  // Join two sets together.
-  // Set.union([1, 2, 2], [2, 3]) => [1, 2, 3]
-  so.union = function(a, b) {
-    return process(a, b, function(freq) {
-      return true;
-    });
-  };
-
-  // Return items common to both sets. 
-  // Set.intersection([1, 1, 2], [2, 2, 3]) => [2]
-  so.intersection = function(a, b) {
-    return process(a, b, function(freq) {
-      return freq === 3;
-    });
-  };
-
-  // Symmetric difference. Items from either set that
-  // are not in both sets.
-  // Set.difference([1, 1, 2], [2, 3, 3]) => [1, 3]
-  so.difference = function(a, b) {
-    return process(a, b, function(freq) {
-      return freq < 3;
-    });
-  };
-
-  // Relative complement. Items from 'a' which are
-  // not also in 'b'.
-  // Set.complement([1, 2, 2], [2, 2, 3]) => [3]
-  so.complement = function(a, b) {
-    return process(a, b, function(freq) {
-      return freq === 1;
-    });
-  };
-
-  // Returns true if both sets are equivalent, false otherwise.
-  // Set.equals([1, 1, 2], [1, 2, 2]) => true
-  // Set.equals([1, 1, 2], [1, 2, 3]) => false
-  so.equals = function(a, b) {
-    var max = 0, min = Math.pow(2, 53), key,
-      hist = process(a, b);
-    for (var key in hist) {
-      max = Math.max(max, hist[key].freq);
-      min = Math.min(min, hist[key].freq);
-    }
-    return min === 3 && max === 3;
-  };
-})(window.setOps = window.setOps || Object.create(null));
-
+/* --------------------------------------------------------------------------------------------------------------- */
 
 
 //https://github.com/mourner/kdbush
@@ -1364,6 +1254,3 @@ function distFunc(Q, P) {
         return new s(t,o,n,r,i)
     }
 });
-
-
-
