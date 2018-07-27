@@ -449,21 +449,23 @@
     var halfSide = Math.floor(side / 2);
     var output = new Float32Array(width * height * 4);
     var alphaFac = opaque ? 1 : 0;
+	
+	var sy, sx, offset, r, g, b, a, scy, scx, poffset, wt;
 
     for (var y = 0; y < height; y++) {
       for (var x = 0; x < width; x++) {
-        var sy = y;
-        var sx = x;
-        var offset = (y * width + x) * 4;
-        var r = 0;
-        var g = 0;
-        var b = 0;
-        var a = 0;
+        sy = y;
+        sx = x;
+        offset = (y * width + x) * 4;
+        r = 0;
+        g = 0;
+        b = 0;
+        a = 0;
         for (var cx = 0; cx < side; cx++) {
-          var scy = sy;
-          var scx = Math.min(width - 1, Math.max(0, sx + cx - halfSide));
-          var poffset = (scy * width + scx) * 4;
-          var wt = weightsVector[cx];
+          scy = sy;
+          scx = sx + cx - halfSide;
+          poffset = (scy * width + scx) * 4;
+          wt = weightsVector[cx];
           r += pixels[poffset] * wt;
           g += pixels[poffset + 1] * wt;
           b += pixels[poffset + 2] * wt;
@@ -499,20 +501,22 @@
     var output = new Float32Array(width * height * 4);
     var alphaFac = opaque ? 1 : 0;
 
+	var sy, sx, offset, r, g, b, a, scy, scx, poffset, wt;
+	
     for (var y = 0; y < height; y++) {
       for (var x = 0; x < width; x++) {
-        var sy = y;
-        var sx = x;
-        var offset = (y * width + x) * 4;
-        var r = 0;
-        var g = 0;
-        var b = 0;
-        var a = 0;
+        sy = y;
+        sx = x;
+        offset = (y * width + x) * 4;
+        r = 0;
+        g = 0;
+        b = 0;
+        a = 0;
         for (var cy = 0; cy < side; cy++) {
-          var scy = Math.min(height - 1, Math.max(0, sy + cy - halfSide));
-          var scx = sx;
-          var poffset = (scy * width + scx) * 4;
-          var wt = weightsVector[cy];
+          scy = sy + cy - halfSide;
+          scx = sx;
+          poffset = (scy * width + scx) * 4;
+          wt = weightsVector[cy];
           r += pixels[poffset] * wt;
           g += pixels[poffset + 1] * wt;
           b += pixels[poffset + 2] * wt;
