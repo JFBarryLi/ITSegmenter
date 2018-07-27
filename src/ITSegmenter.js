@@ -9,7 +9,6 @@
  */
 
 include("src\\findCorners.js");
-include("src\\setOps.js");
 include("src\\kdbush.js");
  
  
@@ -115,8 +114,9 @@ var outputRects = {};
 		contextf.drawImage(image, 0, 0, width, height);															
 		
 		//Applies the sharpen filter to canvasf
-		sharpen(contextf, width, height, dia, amt);
-
+		if (dia != 0) {
+			sharpen(contextf, width, height, dia, amt);
+		}
 		//Find corners using FAST and stores the coordinates in an array
 		var corArr = findCorners(contextf, width, height, fThreshhold);	
 		
@@ -362,14 +362,20 @@ function sharpen(ctx, w, h, dia, amt) {
 	catch(err) {
 		var srcBuff = Array.prototype.slice.call(srcBuff);
 		var unsharpMask = srcBuff.map(function(item, index) {
-			return item - blurred[index];
+			um = item - blurred[index];
+			if (um > 255) {
+				um = 255;
+			} else if (um < 0) {
+				um = 0;
+			}
+			return Math.round(um);
 		});
 	}
 	
 	//Add the unsharpMask to the original image, thus emphasizing the edges
 	for (i = 0; i < outputData.data.length; i++) {
 		outputData.data[i] = srcBuff[i] + unsharpMask[i];
-	}
+    }
 	
 	ctx.putImageData(outputData, 0, 0);
 	
@@ -386,15 +392,12 @@ function sharpen(ctx, w, h, dia, amt) {
  */
  
 function DBSCAN(arr, eps, minPts) {
-	
+        
 /*
- * Points Dictionary : {Key = [x, y] : Value = cluster_id}
- * Clusters Dicitonary : {Key = cluster_id : Value = [[x1, y1], [x2, y2], ...]}
- *
  * Parameters:
  * -----------
- * arr: 			[x, y, cluster_id]
- *					The input array to DBSCAN, where x and y correspond to the coordinates of a point. cluster_id is undefined by default.
+ * arr: 			[[x1, y1], [x2,y2], ...]
+ *					The input array to DBSCAN, where x and y correspond to the coordinates of a point.
  *
  * eps: 			int
  *      			Maximum distance between two points to be considered neighbours
@@ -405,11 +408,10 @@ function DBSCAN(arr, eps, minPts) {
  * Returns:
  * --------
  * clusters: 		obj
- *		   			clusters = {key = 1 : value = [[x1,y1],[x2,y2],...], ...}
+ *		   			clusters = {key = clusterID : value = [[x1,y1],[x2,y2],...], ...}
 */
 
 	var index = kdbush(arr);	
-	var so = setOps;
 	var cluster_id = {};
 	
 	//Cluster counter
@@ -436,10 +438,10 @@ function DBSCAN(arr, eps, minPts) {
 		cluster_id[arr[i]] = C;
 		
 		//Seed set
-		var S = so.complement(N, [arr[i]]);
+		//Seed set should be the Neighbours set - current point, but it doesn't make any difference, since it will just get ignored
+		var S = N;
 		
 		for (var j = 0; j < S.length; j++) {
-
 			//Change noise to border point
 			if (cluster_id[S[j]] == 'noise') { 
 				cluster_id[S[j]] = C; 					
@@ -456,7 +458,8 @@ function DBSCAN(arr, eps, minPts) {
 			//Density check
 			if (N.length >= minPts) {
 				//Add new neighbours to seed set
-				S = so.union(S,N);
+				S.push.apply(S,N); //Theorectically incorrect, but practically the same result as a union and much faster
+				//S = [...new Set([...S, ...N])]; //Only works for ES6
 			}
 		}		
 	}
@@ -475,19 +478,9 @@ function DBSCAN(arr, eps, minPts) {
 
 }
 function RangeQuery(arr, Pt, eps, index) {
-	
+	//RangeQuery in a k-d tree 
 	var Neighbours = index.within(Pt[0], Pt[1], eps).map(function(id) { return arr[id]; });
 	return Neighbours;
-	
-/*   	var so = setOps;
-	Neighbours = [];
-	for (var i = 0; i < arr.length; i++) {
-		if (distFunc(Pt, arr[i]) <= eps) {
-			// Add to Neighbours
-			Neighbours = so.union(Neighbours,[arr[i]]);
-		}
-	}
-	return Neighbours;  */
 }
 
 function distFunc(Q, P) {
@@ -495,6 +488,5 @@ function distFunc(Q, P) {
 	D = Math.sqrt(Math.pow((P[0]-Q[0]),2)+Math.pow((P[1]-Q[1]),2)); 	
 	return D;
 }
-
 
 /* --------------------------------------------------------------------------------------------------------------- */
