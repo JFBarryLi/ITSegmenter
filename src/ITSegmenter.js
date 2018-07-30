@@ -7,10 +7,6 @@
  * https://github.com/JFBarryLi/ITSegmenter
  *
  */
-
-include("src\\findCorners.js");
-include("src\\kdbush.js");
- 
  
 var outputRects = {};
  
