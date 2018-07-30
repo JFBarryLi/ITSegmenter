@@ -82,7 +82,7 @@ var outputRects = {};
 	var canvasf = document.createElement("CANVAS");	
 	
 	if (convertToImage == 0 && canvasId === undefined) {
-		canvaso.setAttribute("style", "display:block; margin-left: auto; margin-right: auto;");
+		//canvaso.setAttribute("style", "display:block; margin-left: auto; margin-right: auto;");
 		document.body.appendChild(canvaso);
 	}
 	
@@ -95,7 +95,7 @@ var outputRects = {};
 	var contextf = canvasf.getContext("2d");																	
 	
 	image.onerror = function() {
-		alert("Image path not valid");
+		alert("Image Error");
 	}
 	
 	image.onload = function() {
@@ -130,11 +130,9 @@ var outputRects = {};
 			var fImg = document.createElement("img")
 			//Set the src of the img element to canvaso
 			fImg.setAttribute('src', canvaso.toDataURL("image/png"));
-			fImg.setAttribute("style", "display:block; margin-left: auto; margin-right: auto;");
+			//fImg.setAttribute("style", "display:block; margin-left: auto; margin-right: auto;");
 			document.body.appendChild(fImg);
 		}
-		var br = document.createElement("br");
-		document.body.appendChild(br);
 		
 		if (splitRects == 1) {
 			//Crop the image into segments of texts
@@ -176,9 +174,6 @@ function findCorners(ctx, width, height, fThreshhold) {
 	var corners = Fast.findCorners(gray, width, height);
 	
 	for (var i = 0; i < corners.length; i += 2) {
-		ctx.fillStyle = '#f00';
-		//Paint a pixel for every corner found
-		ctx.fillRect(corners[i], corners[i + 1], 1, 1);
 		//Append the coordinate of each corner into the output array
 		outArr.push([corners[i],corners[i + 1]]);
 	}
@@ -293,11 +288,8 @@ function cropRects(rects,img) {
 		
 		//Set image src to tempCanvas DataURL
 		cImg.setAttribute('src', tempCanvas.toDataURL("image/png"));
-		cImg.setAttribute("style", "display:block; margin-left: auto; margin-right: auto;");
+		//cImg.setAttribute("style", "display:block; margin-left: auto; margin-right: auto;");
 		document.body.appendChild(cImg);
-	 
-		var br = document.createElement("br");
-		document.body.appendChild(br);
 	}
 
 		
@@ -320,10 +312,6 @@ function include(url) {
     head.appendChild(script);
 }
 
-/**
- * Image Sharpening using Unsharp Masking
- * 
- */
 function sharpen(ctx, w, h, dia, amt) {
 /*
  * Parameters:
@@ -352,29 +340,15 @@ function sharpen(ctx, w, h, dia, amt) {
 	//Gaussian Blur on the image
 	var blurred = TImage.blur(srcBuff, w, h, dia);
 	
-	//Create an unsharpMask by subtracting the Gaussian Blurred image from the original
-	//IE doesn't support map on Uint8ClampedArray
-	try {
-		var unsharpMask = srcBuff.map(function(item, index) {
-			return item - blurred[index];
-		});
-	}
-	catch(err) {
-		var srcBuff = Array.prototype.slice.call(srcBuff);
-		var unsharpMask = srcBuff.map(function(item, index) {
-			um = item - blurred[index];
-			if (um > 255) {
-				um = 255;
-			} else if (um < 0) {
-				um = 0;
-			}
-			return Math.round(um);
-		});
-	}
+ 	//Create an unsharpMask by subtracting the Gaussian Blurred image from the original
+	var unsharpMask = new Uint8ClampedArray(w*h*4);
+		for (var i = 0; i < unsharpMask.length; i++) {
+			unsharpMask[i] = srcBuff[i] - blurred[i];
+		}
 	
 	//Add the unsharpMask to the original image, thus emphasizing the edges
 	for (i = 0; i < outputData.data.length; i++) {
-		outputData.data[i] = srcBuff[i] + unsharpMask[i];
+		outputData.data[i] = srcBuff[i] + amt * unsharpMask[i];
     }
 	
 	ctx.putImageData(outputData, 0, 0);
@@ -396,7 +370,7 @@ function DBSCAN(arr, eps, minPts) {
 /*
  * Parameters:
  * -----------
- * arr: 			[[x1, y1], [x2,y2], ...]
+ * arr: 			Array: [[x1, y1], [x2,y2], ...]
  *					The input array to DBSCAN, where x and y correspond to the coordinates of a point.
  *
  * eps: 			int
