@@ -463,7 +463,7 @@
         a = 0;
         for (var cx = 0; cx < side; cx++) {
           scy = sy;
-          scx = sx + cx - halfSide;
+          scx = Math.min(width - 1, Math.max(0, sx + cx - halfSide));
           poffset = (scy * width + scx) * 4;
           wt = weightsVector[cx];
           r += pixels[poffset] * wt;
@@ -513,7 +513,7 @@
         b = 0;
         a = 0;
         for (var cy = 0; cy < side; cy++) {
-          scy = sy + cy - halfSide;
+          scy = Math.min(height - 1, Math.max(0, sy + cy - halfSide));
           scx = sx;
           poffset = (scy * width + scx) * 4;
           wt = weightsVector[cy];
