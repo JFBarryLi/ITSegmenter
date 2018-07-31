@@ -12,7 +12,8 @@ window.onload = function() {
 			
 			canvas.width = width
 			canvas.height = height
-			ctx.drawImage(image, 0, 0, width, height);	
+			ctx.drawImage(image, 0, 0, width, height);
+			$( "<p>"+width+"x"+height+"</p>" ).insertBefore( $("#"+canvasId).parent() );			
 		}
 	}
 	drawCanvas("img/demo.jpg", "demo-canvas1");
@@ -62,13 +63,16 @@ function submit() {
 	if ($('#radioDemo1').prop('checked')) {
 		src = "img/demo.jpg";
 		canvas = "demo-canvas1";
+		$( "<p>Thresh: "+thresh+" | "+"Eps: "+eps+" | "+"minPts: "+minPts+" | "+"<br>"+"dia: "+dia+" | "+"amt: "+amt+"</p>" ).insertAfter( $("#demo-canvas1").parent() );
 	} else if ($('#radioDemo2').prop('checked')) {
 		src = "img/demo2.jpg";
 		canvas = "demo-canvas2";
+		$( "<p>Thresh: "+thresh+" | "+"Eps: "+eps+" | "+"minPts: "+minPts+" | "+"<br>"+"dia: "+dia+" | "+"amt: "+amt+"</p>" ).insertAfter( $("#demo-canvas2").parent() );
 	} else if ($('#radioDemo3').prop('checked')) {
 		src = "img/demo3.jpg";
 		canvas = "demo-canvas3";
+		$( "<p>Thresh: "+thresh+" | "+"Eps: "+eps+" | "+"minPts: "+minPts+" | "+"<br>"+"dia: "+dia+" | "+"amt: "+amt+"</p>" ).insertAfter( $("#demo-canvas3").parent() );
 	}
-		
+	
 	textSegment(src, thresh, eps, minPts, dia, amt, 1, 0, 0, canvas);
 }
