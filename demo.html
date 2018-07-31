@@ -59,7 +59,27 @@
 			</div>
 			
 			<div class="main-content">
-				<canvas id="demo-canvas"></canvas> <br> <br>
+				<div class="row">
+					<div class="column">
+						<div class="rowItem">
+							<canvas class="canvas" id="demo-canvas1" onclick="canvasSelect('1');"></canvas>
+						</div>
+						<input type="radio" name="canvasSelection" id="radioDemo1" value="1">
+					</div>
+					<div class="column">
+						<div class="rowItem">
+							<canvas class="canvas" id="demo-canvas2" onclick="canvasSelect('2');"></canvas>
+						</div>
+						<input type="radio" name="canvasSelection" id="radioDemo2" value="2">
+					</div>
+					<div class="column">
+						<div class="rowItem">
+							<canvas class="canvas" id="demo-canvas3" onclick="canvasSelect('3');"></canvas>
+						</div>
+						<input type="radio" name="canvasSelection" id="radioDemo3" value="3">
+					</div>
+				</div>
+				 <br> <br>
 				
 				<form>
 					<div class="form-group">
