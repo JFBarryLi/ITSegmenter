@@ -63,15 +63,18 @@ function submit() {
 	if ($('#radioDemo1').prop('checked')) {
 		src = "img/demo.jpg";
 		canvas = "demo-canvas1";
-		$( "<p>Thresh: "+thresh+" | "+"Eps: "+eps+" | "+"minPts: "+minPts+" | "+"<br>"+"dia: "+dia+" | "+"amt: "+amt+"</p>" ).insertAfter( $("#demo-canvas1").parent() );
+		$( "#demo1Param" ).text( "Thresh: "+thresh+" | "+"Eps: "+eps+" | "+"minPts: "+minPts+" | ");
+		$( "#demo11Param" ).text( "dia: "+dia+" | "+"amt: "+amt );
 	} else if ($('#radioDemo2').prop('checked')) {
 		src = "img/demo2.jpg";
 		canvas = "demo-canvas2";
-		$( "<p>Thresh: "+thresh+" | "+"Eps: "+eps+" | "+"minPts: "+minPts+" | "+"<br>"+"dia: "+dia+" | "+"amt: "+amt+"</p>" ).insertAfter( $("#demo-canvas2").parent() );
+		$( "#demo2Param" ).text( "Thresh: "+thresh+" | "+"Eps: "+eps+" | "+"minPts: "+minPts+" | ");
+		$( "#demo22Param" ).text( "dia: "+dia+" | "+"amt: "+amt );
 	} else if ($('#radioDemo3').prop('checked')) {
 		src = "img/demo3.jpg";
 		canvas = "demo-canvas3";
-		$( "<p>Thresh: "+thresh+" | "+"Eps: "+eps+" | "+"minPts: "+minPts+" | "+"<br>"+"dia: "+dia+" | "+"amt: "+amt+"</p>" ).insertAfter( $("#demo-canvas3").parent() );
+		$( "#demo3Param" ).text( "Thresh: "+thresh+" | "+"Eps: "+eps+" | "+"minPts: "+minPts+" | ");
+		$( "#demo33Param" ).text( "dia: "+dia+" | "+"amt: "+amt );
 	}
 	
 	textSegment(src, thresh, eps, minPts, dia, amt, 1, 0, 0, canvas);
