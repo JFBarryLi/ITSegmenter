@@ -67,22 +67,22 @@
 			
 			<div class="main-content">
 				<h4 class="sub-headings">Getting Started</h4> <br>
-				&nbsp&nbsp&nbsp&nbsp 1. Include the following in the head of the html: <br> <br>
+				<div class="main-content-tabbed"> 1. Include the following in the head of the html: </div> <br> <br>
 				<pre>
 					&lt;script src="src\ITSegmenter.js">&lt;/script&gt;
 				</pre>
 				<br>
-				&nbsp&nbsp&nbsp&nbsp 2. Use the following to segment the image: <br> <br>
+				<div class="main-content-tabbed"> 2. Use the following to segment the image: </div> <br> <br>
 				<pre>
 					textSegment(imgPath);
 				</pre>
 				<br>
-				&nbsp&nbsp&nbsp&nbsp 3. The coordinates of the bounding box for each cluster will be stored at outputRects{}: <br> <br>
+				<div class="main-content-tabbed"> 3. The coordinates of the bounding box for each cluster will be stored at outputRects{}: </div> <br> <br>
 				<pre>
 					outputRects = {cluster_id : value = [[xMin1, xMax1, yMin1, yMax1],...],...};
 				</pre>
 				<br>
-				&nbsp&nbsp&nbsp&nbsp 4. To paint the output directly onto a canvas specify the canvas element id in the parameters <br> <br>
+				<div class="main-content-tabbed"> 4. To paint the output directly onto a canvas specify the canvas element id in the parameters</div> <br> <br>
 				<pre>
 					textSegment(imgPath, fThreshhold, eps, minPts, dia, amt, drawRects, splitRects, convertToImage, canvasId);
 				</pre>
@@ -93,9 +93,9 @@
 			
 			<div class="main-content" id="example">
 				<h4 class="sub-headings">Example</h4> <br>
-				&nbsp&nbsp&nbsp&nbsp 1. Create a folder and copy the following html code into a blank html document <br>
-				&nbsp&nbsp&nbsp&nbsp 2. Create a sub-folder named src and place <a href="https://github.com/JFBarryLi/ITSegmenter/blob/master/build/ITSegmenter.js">ITSegmenter.js</a> in it. <br>
-				&nbsp&nbsp&nbsp&nbsp 3. Open the html document and test it <br> <br>
+				<div class="main-content-tabbed"> 1. Create a folder and copy the following html code into a blank html document </div> <br>
+				<div class="main-content-tabbed"> 2. Create a sub-folder named src and place <a href="https://github.com/JFBarryLi/ITSegmenter/blob/master/build/ITSegmenter.js">ITSegmenter.js</a> in it. </div> <br>
+				<div class="main-content-tabbed"> 3. Open the html document and test it </div> <br> <br>
 				<pre>
 					&lt;html&gt; <br>
 					&lt;head&gt; <br>
