@@ -20,15 +20,17 @@
     <script src="src\path.min.js"></script>
     <script src="src\jquery.scrollto.min.js"></script>
 	<script src="src\ITSegmenter.js"></script>
-	<script src="src\main.js"></script>
 	<script src="src\dbscan.js"></script>
 </head>
 
 <body>
-	<!-- Side navigation -->
 	<div id="layout">
-		<div class="sidebar">
-			<a href="index.html" id=sidebar-title>ITSegmenter</a>
+		<a href="#sbar" id="sidebarTog" class="sidebar-tog">
+			<span></span>
+		</a>
+		<!-- Side Bar -->
+		<div id="sbar" class="sidebar">
+			<a href="index.html" id="sidebar-title">ITSegmenter</a>
 			<p class="sidebar-headings">DOCUMENTATIONS</p>
 			<a href="docs.html#/intro">Introduction</a>
 			<a href="docs.html#/its">ITSegmenter.js</a>
@@ -50,12 +52,12 @@
 			
 			<div class="main-content">
 				This demo illustrates the DBSCAN function of ITSegmenter.js. It identifies and group clusters of points based on the parameters provided. <br> <br>
-				There are 4 parameters that you could change to affect the output: <br>
-				&nbsp &nbsp &nbsp &nbsp 1. Thresh is the threshhold for FAST (Features from Accelerated Segment Test) corner detection <br>
-				&nbsp &nbsp &nbsp &nbsp 2. Episilon is the maximum distance that 2 points can form a cluster <br>
-				&nbsp &nbsp &nbsp &nbsp 3. Min Points is the minimum amount of points required to form a cluster <br>
-				&nbsp &nbsp &nbsp &nbsp 4. Diameter is a parameter for Unsharp Masking (USM), it determines the area around each pixel that will be analyzed <br>
-				&nbsp &nbsp &nbsp &nbsp 5. Amount is a parameter for Unsharp Masking (USM), it is a scalar for the unsharp mask, it determine the intensity of the edges <br>
+				There are 4 parameters that you could change to affect the output: <br> <br>
+				<div class="main-content-tabbed"> 1. Thresh is the threshhold for FAST (Features from Accelerated Segment Test) corner detection </div> <br>
+				<div class="main-content-tabbed"> 2. Episilon is the maximum distance that 2 points can form a cluster </div> <br>
+				<div class="main-content-tabbed"> 3. Min Points is the minimum amount of points required to form a cluster </div> <br>
+				<div class="main-content-tabbed"> 4. Diameter is a parameter for Unsharp Masking (USM), it determines the area around each pixel that will be analyzed </div> <br>
+				<div class="main-content-tabbed"> 5. Amount is a parameter for Unsharp Masking (USM), it is a scalar for the unsharp mask, it determine the intensity of the edges </div> <br>
 			</div>
 			
 			<div class="main-content">
@@ -65,27 +67,27 @@
 				<form>
 					<div class="form-group">
 						<label for="thresh"><strong>Thresh:</strong></label>
-						<input type="text" class="form-control" id="thresh" placeholder="60"></input>
+						<input type="text" class="form-control" id="thresh" placeholder="60">
 						<small class="form-text text-muted">FAST Threshhold</small>
 					</div>
 					<div class="form-group">
 						<label for="eps"><strong>Episilon:</strong></label>
-						<input type="text" class="form-control" id="eps" placeholder="15"></input>
+						<input type="text" class="form-control" id="eps" placeholder="15">
 						<small class="form-text text-muted">Episilon distance between points</small>
 					</div>
 					<div class="form-group">
 						<label for="minPts"><strong>Min Points:</strong></label>
-						<input type="text" class="form-control" id="minPts" placeholder="5"></input>
+						<input type="text" class="form-control" id="minPts" placeholder="5">
 						<small class="form-text text-muted">Minimum # of points to form a cluster</small>
 					</div>					
 					<div class="form-group">
 						<label for="dia"><strong>Diameter(USM):</strong></label>
-						<input type="text" class="form-control" id="dia" placeholder="10"></input>
+						<input type="text" class="form-control" id="dia" placeholder="10">
 						<small class="form-text text-muted">Diameter parameter for Gaussian blur, must be greater than 1</small>
 					</div>
 					<div class="form-group">
 						<label for="amt"><strong>Amount(USM):</strong></label>
-						<input type="text" class="form-control" id="amt" placeholder="1"></input>
+						<input type="text" class="form-control" id="amt" placeholder="1">
 						<small class="form-text text-muted">Scalar for unsharp masking</small>
 					</div>	
 					<span class="button" id="submitButton" onclick="submit();">Submit</span>
@@ -98,5 +100,8 @@
 	
 </body>
 
+<footer>
+	<script src="src\main.js"></script>
+</footer>
 
 </html>
