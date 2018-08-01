@@ -19,18 +19,20 @@
 	<script src="src\bootstrap.min.js"></script>
     <script src="src\path.min.js"></script>
     <script src="src\jquery.scrollto.min.js"></script>
-	<script src="src\main.js"></script>
 </head>
 
 <body>
-	<!-- Side navigation -->
 	<div id="layout">
-		<div class="sidebar">
-			<a href="index.html" id=sidebar-title>ITSegmenter</a>
+		<a href="#sbar" id="sidebarTog" class="sidebar-tog">
+			<span></span>
+		</a>
+		<!-- Side Bar -->
+		<div id="sbar" class="sidebar">
+			<a href="index.html" id="sidebar-title">ITSegmenter</a>
 			<p class="sidebar-headings">DOCUMENTATIONS</p>
-			<a href="#/intro">Introduction</a>
-			<a href="#/its">ITSegmenter.js</a>
-			<a href="#/batch">Batch Processing</a>
+			<a href="docs.html#/intro">Introduction</a>
+			<a href="docs.html#/its">ITSegmenter.js</a>
+			<a href="docs.html#/batch">Batch Processing</a>
 			<p class="sidebar-headings">EXAMPLES</p>
 			<a href="demo.html">Demo</a>
 			<a href="dbscan.html">DBSCAN</a>
@@ -202,5 +204,8 @@
 	
 </body>
 
+<footer>
+	<script src="src\main.js"></script>
+</footer>
 
 </html>
