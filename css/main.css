@@ -36,18 +36,116 @@ canvas {
 
 #layout {
 	position: relative;
+	padding-left: 0px;
+}
+
+#layout.active {
+	position: relative;
 	padding-left: 200px;
 }
+
+#layout.active #sbar{
+	left: 200px;
+	width: 200px;
+}
+
+#layout.active .sidebar-tog{
+	left: 200px;
+}
+
+
+#layout, #sbar, .sidebar-tog {
+    -webkit-transition: all .2s ease-out;
+    -moz-transition: all .2s ease-out;
+    -ms-transition: all .2s ease-out;
+    -o-transition: all .2s ease-out;
+    transition: all .2s ease-out;
+}
+
+@media (min-width: 50em) {
+  .header,
+    .main-content {
+    padding-right: 2em;
+    padding-left: 2em;
+  }
+
+  #layout {
+    left: 0;
+    padding-left: 200px;
+  }
+
+  #sbar {
+    left: 200px;
+  }
+
+  .sidebar-tog {
+    position: fixed;
+    left: 200px;
+    display: none;
+  }
+
+  #layout.active .sidebar-tog {
+    left: 200px;
+  }
+}
+
+.sidebar-tog {
+	font-size: 10px;
+	position: fixed;
+	z-index: 5;
+	top: 0;
+	left: 0;
+	display: block;
+	width: 1.5em;
+	height: auto;
+	padding: 2.1em 1.6em;
+	background: #5f5f5f;
+	-webkit-box-sizing: content-box;
+    box-sizing: content-box;
+}
+
+.sidebar-tog:hover,
+.sidebar-tog:focus {
+  background: #2f2e2e;
+}
+
+.sidebar-tog span {
+  position: relative;
+  display: block;
+}
+
+.sidebar-tog span,
+.sidebar-tog span:before,
+.sidebar-tog span:after {
+  width: 100%;
+  height: .2em;
+  background-color: #fff;
+}
+
+.sidebar-tog span:before,
+.sidebar-tog span:after {
+  position: absolute;
+  margin-top: -.6em;
+  content: ' ';
+}
+
+.sidebar-tog span:after {
+  margin-top: .6em;
+}
+
+
 .sidebar {
     height: 100%;
     width: 200px;
     position: fixed;
-    z-index: 1;
+    z-index: 10;
     top: 0;
     left: 0;
     background-color: #5f5f5f;
-    overflow-x: hidden;
     padding-top: 0px;
+	margin-left: -200px;
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
 	
 }
 
@@ -62,11 +160,6 @@ canvas {
 .sidebar a:hover {
     color: rgb(255,255,255);
 	background-color: #f25e5e;
-}
-
-@media screen and (max-height: 450px) {
-    .sidebar {padding-top: 15px;}
-    .sidebar a {font-size: 18px;}
 }
 
 
@@ -104,6 +197,7 @@ canvas {
     display: block;
 }
 
+
 #main-container {
 	height: 100%;
 	display: block;
@@ -136,6 +230,10 @@ canvas {
 	margin: auto;
 	padding: 4em;
 }
+.main-content-tabbed {
+	padding-left: 2em;
+}
+
 
 .button {
 	cursor: pointer;
@@ -208,17 +306,14 @@ canvas {
     opacity: 1;
 }
 
-.canvas {
+.canvasDisplay {
 	-webkit-transition: border 0.5s;
 	transition: border 0.5s;
 }
 
-.canvas:hover {
+.canvasDisplay:hover {
 	border: #f25e5e 3px solid;
 }
-
-
-
 
 input[name="canvasSelection"] {
 	opacity: 0;
