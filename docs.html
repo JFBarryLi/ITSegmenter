@@ -99,29 +99,29 @@
 				<pre>
 					&lt;html&gt; <br>
 					&lt;head&gt; <br>
-					&nbsp&nbsp&nbsp&nbsp &lt;script src="src\ITSegmenter.js">&lt;/script&gt; <br>
+					<div class="code-tabbed">&lt;script src="src\ITSegmenter.js">&lt;/script&gt; </div> <br>
 					&lt;/head&gt; <br> <br>
 					&lt;body&gt; <br>
 					&lt;input type="file" onchange="encodeImageFileAsURL(this)"&gt; &lt;/input&gt; <br>
-					&nbsp&nbsp&nbsp&nbsp &lt;span class="button" style="cursor:pointer; border:1px solid;background-color:#dbe6c4;padding:2px;" onclick="submit();"&gt;Click&lt;/span&gt; <br>
-					&nbsp&nbsp&nbsp&nbsp &lt;canvas id="demo-canvas"&gt;&lt;/canvas&gt; <br>
+					<div class="code-tabbed">&lt;span class="button" style="cursor:pointer; border:1px solid;background-color:#dbe6c4;padding:2px;" onclick="submit();"&gt;Click&lt;/span&gt; </div> <br>
+					<div class="code-tabbed">&lt;canvas id="demo-canvas"&gt;&lt;/canvas&gt; </div><br>
 					&lt;/body&gt;<br> <br>
 					
 					&lt;script&gt; <br>
-					&nbsp&nbsp&nbsp&nbsp function submit() { <br>
-					&nbsp&nbsp&nbsp&nbsp &nbsp&nbsp&nbsp&nbsp textSegment(dataURL, 60, 15, 5, 10, 1, 1, 1, 1, "demo-canvas"); <br>
-					&nbsp&nbsp&nbsp&nbsp } <br>
+					<div class="code-tabbed">function submit() { </div> <br>
+					<div class="code-tabbed"><div class="code-tabbed">textSegment(dataURL, 60, 15, 5, 10, 1, 1, 1, 1, "demo-canvas"); </div> </div> <br>
+					<div class="code-tabbed">} </div> <br>
 					
-					&nbsp&nbsp&nbsp&nbsp var dataURL; <br>
-					&nbsp&nbsp&nbsp&nbsp function encodeImageFileAsURL(element) { <br>
-						&nbsp&nbsp&nbsp&nbsp &nbsp&nbsp&nbsp&nbsp var file = element.files[0]; <br>
-						&nbsp&nbsp&nbsp&nbsp &nbsp&nbsp&nbsp&nbsp var reader = new FileReader(); <br>
-						&nbsp&nbsp&nbsp&nbsp &nbsp&nbsp&nbsp&nbsp reader.onloadend = function() { <br>
-							&nbsp&nbsp&nbsp&nbsp &nbsp&nbsp&nbsp&nbsp &nbsp&nbsp&nbsp&nbsp dataURL = reader.result; <br>
-						&nbsp&nbsp&nbsp&nbsp &nbsp&nbsp&nbsp&nbsp } <br>
-						&nbsp&nbsp&nbsp&nbsp &nbsp&nbsp&nbsp&nbsp reader.readAsDataURL(file); <br>
+					<div class="code-tabbed">var dataURL; </div> <br>
+					<div class="code-tabbed">function encodeImageFileAsURL(element) { </div> <br>
+						<div class="code-tabbed"><div class="code-tabbed">var file = element.files[0]; </div> </div> <br>
+						<div class="code-tabbed"><div class="code-tabbed">var reader = new FileReader(); </div> </div> <br>
+						<div class="code-tabbed"><div class="code-tabbed">reader.onloadend = function() { </div </div> <br>
+							<div class="code-tabbed"><div class="code-tabbed"><div class="code-tabbed">dataURL = reader.result; </div></div></div><br>
+						<div class="code-tabbed"><div class="code-tabbed">} </div> </div> <br>
+						<div class="code-tabbed"><div class="code-tabbed">reader.readAsDataURL(file); </div> </div><br>
 						
-					&nbsp&nbsp&nbsp&nbsp } <br>			
+					<div class="code-tabbed">} </div> <br>			
 					
 					&lt;/script&gt; <br>
 					
