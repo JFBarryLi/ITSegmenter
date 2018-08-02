@@ -26,16 +26,26 @@ img {
 	margin-left: auto;
 	margin-right: auto;
 	display: block;
-	width: 100%;
-	height: auto;
+}
+
+@media (max-width: 50em) {
+	img {
+		width: 80%;
+		height: auto;
+	}
 }
 
 canvas {
 	margin-left: auto;
 	margin-right: auto;
-	width: 100%;
-	height: auto;
 	display: block;
+}
+
+@media (max-width: 50em) {
+	canvas {
+		width: 100%;
+		height: auto;
+	}
 }
 
 #layout {
@@ -234,10 +244,9 @@ canvas {
 	margin: auto;
 	padding: 4em;
 }
-.main-content-tabbed .code-tabbed{
+.main-content-tabbed{
 	padding-left: 2em;
 }
-
 
 .button {
 	cursor: pointer;
@@ -324,3 +333,6 @@ input[name="canvasSelection"] {
 	cursor: default;
 }
 
+.code-tabbed {
+	padding-left: 2em;
+}
