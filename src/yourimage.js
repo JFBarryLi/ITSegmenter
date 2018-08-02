@@ -6,10 +6,35 @@ function encodeImageFileAsURL(element) {
 	var reader = new FileReader();
 	reader.onloadend = function() {
 		dataurl = reader.result;
+		drawCanvas(dataurl, "demo-canvas")
 	}
 	reader.readAsDataURL(file);
 
 }
+
+function drawCanvas(src, canvasId) {
+	var image = new Image();
+	image.src = src;
+	
+	var canvas = document.getElementById(canvasId);
+	var ctx = canvas.getContext("2d");
+	
+	image.onload = function() {
+		width = image.width;
+		height = image.height;
+		
+		canvas.width = width
+		canvas.height = height
+		
+		if ($(window).width() < 1.5*width) {
+			$('#' + canvasId).css('width', '75%');
+		}
+		
+		ctx.drawImage(image, 0, 0, width, height);
+		$('#imgDim').text(width+"x"+height);		
+	}
+}
+
 
 
 function submit() {
