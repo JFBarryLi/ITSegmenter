@@ -30,17 +30,17 @@ window.onload = function() {
 function canvasSelect(id) {
 	$('#radioDemo' + id).prop('checked', true);
 	if (id == '1') {
-		document.getElementById('demo-canvas1').style.border = '#f25e5e 3px solid'
-		document.getElementById('demo-canvas2').style.border = ''
-		document.getElementById('demo-canvas3').style.border = ''
+		$('#demo-canvas1').css('border', '#f25e5e 3px solid');
+		$('#demo-canvas2').css('border', '');
+		$('#demo-canvas3').css('border', '');
 	} else if (id == '2') {
-		document.getElementById('demo-canvas1').style.border = ''
-		document.getElementById('demo-canvas2').style.border = '#f25e5e 3px solid'
-		document.getElementById('demo-canvas3').style.border = ''
+		$('#demo-canvas1').css('border', '');
+		$('#demo-canvas2').css('border', '#f25e5e 3px solid');
+		$('#demo-canvas3').css('border', '');
 	} else if (id == '3') {
-		document.getElementById('demo-canvas1').style.border = ''
-		document.getElementById('demo-canvas2').style.border = ''
-		document.getElementById('demo-canvas3').style.border = '#f25e5e 3px solid'
+		$('#demo-canvas1').css('border', '');
+		$('#demo-canvas2').css('border', '');
+		$('#demo-canvas3').css('border', '#f25e5e 3px solid');
 	}
 }
 
