@@ -101,6 +101,7 @@ canvas {
   #layout.active .sidebar-tog {
     left: 200px;
   }
+  
 }
 
 .sidebar-tog {
@@ -113,38 +114,38 @@ canvas {
 	width: 1.5em;
 	height: auto;
 	padding: 2.1em 1.6em;
-	background: #5f5f5f;
+	background: #ffffff00;
 	-webkit-box-sizing: content-box;
     box-sizing: content-box;
 }
 
 .sidebar-tog:hover,
 .sidebar-tog:focus {
-  background: #2f2e2e;
+	background: #ffffff00;
 }
 
 .sidebar-tog span {
-  position: relative;
-  display: block;
+	position: relative;
+	display: block;
 }
 
 .sidebar-tog span,
 .sidebar-tog span:before,
 .sidebar-tog span:after {
-  width: 100%;
-  height: .2em;
-  background-color: #fff;
+	width: 100%;
+	height: .2em;
+	background-color: #b4b4b4;
 }
 
 .sidebar-tog span:before,
 .sidebar-tog span:after {
-  position: absolute;
-  margin-top: -.6em;
-  content: ' ';
+	position: absolute;
+	margin-top: -.6em;
+	content: ' ';
 }
 
 .sidebar-tog span:after {
-  margin-top: .6em;
+	margin-top: .6em;
 }
 
 
@@ -336,3 +337,4 @@ input[name="canvasSelection"] {
 .code-tabbed {
 	padding-left: 2em;
 }
+
