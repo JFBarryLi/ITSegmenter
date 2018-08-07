@@ -21,7 +21,6 @@
     <script src="src\path.min.js"></script>
     <script src="src\jquery.scrollto.min.js"></script>
 	<script src="src\ITSegmenter.js"></script>
-	<script src="src\yourimage.js"></script>
 </head>
 
 <body>
@@ -53,7 +52,7 @@
 			
 			<div class="main-content">
 				This demo allow you to upload your own image and experiment with the parameters. <br> <br>
-				There are 4 parameters that you could change to affect the output: <br> <br>
+				There are 5 parameters that you could change to affect the output: <br> <br>
 				<div class="main-content-tabbed"> 1. Thresh is the threshhold for FAST (Features from Accelerated Segment Test) corner detection </div> <br>
 				<div class="main-content-tabbed"> 2. Episilon is the maximum distance that 2 points can form a cluster </div> <br>
 				<div class="main-content-tabbed"> 3. Min Points is the minimum amount of points required to form a cluster </div> <br>
@@ -66,6 +65,11 @@
 				<p id="imgDim" style="text-align:center"><p> <br> <br>
 				
 				<form>
+					<div class="slider-container">
+						<input type="range" min="0.1" max="2.1" step="0.1" value="1.0" class="range-slider" id="scaleRangeSlider" style="display:none;"></input>
+						<p id="sliderOutput"></p> <br> <br>
+					</div>
+				
 					<div class="row">
 						<div class="col">
 							<div class="form-group">
@@ -122,6 +126,7 @@
 
 <footer>
 	<script src="src\main.js"></script>
+	<script src="src\yourimage.js"></script>
 </footer>
 
 </html>
