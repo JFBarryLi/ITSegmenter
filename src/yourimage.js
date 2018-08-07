@@ -26,15 +26,42 @@ function drawCanvas(src, canvasId) {
 		canvas.width = width
 		canvas.height = height
 		
+		if (width < 500 || height < 500) {
+			$('canvas').css('width', '50%');
+			
+		} else if ($(window).width() > 1300 && width >= 500) {
+			$('canvas').css('width', '40%');
+		} else {
+			$('canvas').css('width', '80%');
+		}
+		
 		if ($(window).width() < 1.5*width) {
 			$('#' + canvasId).css('width', '75%');
 		}
 		
 		ctx.drawImage(image, 0, 0, width, height);
-		$('#imgDim').text(width+"x"+height);		
+		$('#imgDim').text(width+"x"+height);	
+
+		$("#scaleRangeSlider").css("display", "block");
+		
+		var slider = document.getElementById("scaleRangeSlider");
+		var output = document.getElementById("sliderOutput");
+		output.innerHTML = slider.value;
+
+		var canvaso = document.createElement("canvas");
+		var ctxo = canvaso.getContext("2d");
+		canvaso.width = width;
+		canvaso.height = height;
+		ctxo.drawImage(canvas, 0, 0);
+		
+		slider.oninput = function() {
+			output.innerHTML = this.value;
+			scaleCanvas(this.value, canvas, canvaso);
+			$('#imgDim').text(canvas.width+"x"+canvas.height);	
+		}
+		
 	}
 }
-
 
 
 function submit() {
@@ -52,7 +79,9 @@ function submit() {
 	if (dia == "") {dia = 10;}
 	if (amt == "") {amt = 1;}
 		
-	textSegment(dataurl, thresh, eps, minPts, dia, amt, 1, autoCrop, 0, "demo-canvas");
+	var canvas = document.getElementById("demo-canvas");
+	canvasDataUrl = canvas.toDataURL();
+	textSegment(canvasDataUrl, thresh, eps, minPts, dia, amt, 1, autoCrop, 0, "demo-canvas");
 	
 	
 }
