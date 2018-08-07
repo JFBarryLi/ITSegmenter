@@ -291,6 +291,31 @@ function cropRects(rects,img) {
 		
 }
 
+function scaleCanvas(scale, canvasOutput, canvasOriginal) {
+/*
+ * Parameters:
+ * -----------
+ * scale:			float
+ *					Scalar parameter for canvas width and height
+ *
+ * canvasOutput:	element
+ *					Canvas element to scale
+ *
+ * canvasOriginal:	element
+ *					Original canvas element to be referenced
+ *
+ */	
+
+	var w = canvasOriginal.width;
+	var h = canvasOriginal.height;
+	
+	canvasOutput.width = canvasOriginal.width * scale;
+	canvasOutput.height = canvasOriginal.height * scale;
+
+	var ctx = canvasOutput.getContext("2d");
+	ctx.drawImage(canvasOriginal, 0, 0, w, h, 0, 0, scale*w, scale*h);
+	
+}
 
 function include(url) {
 /*
