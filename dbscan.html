@@ -3,9 +3,13 @@
 
 <head>
     <title>ITSegmenter</title>
-    <meta name="theme-color" content="#ffffff">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="theme-color" content="#f25e5e"/>
+	<meta name="keywords" content="JavaScript,OCR,DBSCAN,Clustering,Image Processing,Text Recognition,Classification">
+	<meta name="author" content="Barry Li">
+	<meta name="description" content="Extract text regions in an image">
+	<link rel="manifest" href="manifest.webmanifest">
 
 	<!-- Css -->
 	<link rel="stylesheet" type="text/css" href="css\bootstrap.css">
@@ -52,15 +56,6 @@
 			
 			<div class="main-content">
 				This demo illustrates the DBSCAN function of ITSegmenter.js. It identifies and group clusters of points based on the parameters provided. <br> <br>
-				There are 4 parameters that you could change to affect the output: <br> <br>
-				<div class="main-content-tabbed"> 1. Thresh is the threshhold for FAST (Features from Accelerated Segment Test) corner detection </div> <br>
-				<div class="main-content-tabbed"> 2. Episilon is the maximum distance that 2 points can form a cluster </div> <br>
-				<div class="main-content-tabbed"> 3. Min Points is the minimum amount of points required to form a cluster </div> <br>
-				<div class="main-content-tabbed"> 4. Diameter is a parameter for Unsharp Masking (USM), it determines the area around each pixel that will be analyzed </div> <br>
-				<div class="main-content-tabbed"> 5. Amount is a parameter for Unsharp Masking (USM), it is a scalar for the unsharp mask, it determine the intensity of the edges </div> <br>
-			</div>
-			
-			<div class="main-content">
 				<canvas id="demo-canvas"></canvas> <br> <br>
 				<canvas id="dbscan-canvas" style="border:1px solid #000000;"></canvas> <br> <br>
 				
@@ -68,17 +63,17 @@
 					<div class="form-group">
 						<label for="thresh"><strong>Thresh:</strong></label>
 						<input type="text" class="form-control" id="thresh" placeholder="60">
-						<small class="form-text text-muted">FAST Threshhold</small>
+						<small class="form-text text-muted">Threshhold for FAST (Features from Accelerated Segment Test) corner detection</small>
 					</div>
 					<div class="form-group">
 						<label for="eps"><strong>Episilon:</strong></label>
 						<input type="text" class="form-control" id="eps" placeholder="15">
-						<small class="form-text text-muted">Episilon distance between points</small>
+						<small class="form-text text-muted">Episilon is the maximum distance that 2 points can form a cluster</small>
 					</div>
 					<div class="form-group">
 						<label for="minPts"><strong>Min Points:</strong></label>
 						<input type="text" class="form-control" id="minPts" placeholder="5">
-						<small class="form-text text-muted">Minimum # of points to form a cluster</small>
+						<small class="form-text text-muted">Minimum # of points required to form a cluster</small>
 					</div>					
 					<div class="form-group">
 						<label for="dia"><strong>Diameter(USM):</strong></label>
@@ -88,7 +83,7 @@
 					<div class="form-group">
 						<label for="amt"><strong>Amount(USM):</strong></label>
 						<input type="text" class="form-control" id="amt" placeholder="1">
-						<small class="form-text text-muted">Scalar for unsharp masking</small>
+						<small class="form-text text-muted">Scalar for unsharp masking, affects the strength of the USM filter</small>
 					</div>	
 					<span class="button" id="submitButton" onclick="submit();">Submit</span>
 				</form>

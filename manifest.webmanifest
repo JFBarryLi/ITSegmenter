@@ -1,0 +1,10 @@
+{
+	"name": "Image Text Segmenter",
+	"short_name": "ITSegmenter",
+	"background_color": "fff",
+	"description": "Extract text regions in an image.",
+	"display": "standalone",
+	"lang": "en-US",
+	"start_url": "index.html",
+	"theme_color": "#f25e5e"
+}
