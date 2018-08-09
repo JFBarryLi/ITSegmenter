@@ -1,7 +1,8 @@
 .full-middle-col {
 	text-align: center;
 	margin: 16px;
-	background-color: #fbfbfb;
+	background-color: #f1f1f1;
+	overflow: hidden;
 }
 
 .two-col {
@@ -21,8 +22,9 @@
 	text-align: center;
 	background-color: #fbfbfb;
 	flex: 50%;
-	margin-right: 0.5em;
+	margin-right: 1em;
 	cursor: pointer;
+	overflow: hidden;
 }
 
 .right-col {
@@ -30,13 +32,31 @@
 	background-color: #fbfbfb;
 	float: right;
 	flex: 50%;
-	margin-left: 0.5em;
 	cursor: pointer;
+	overflow: hidden;
+	
 }
 
 .left-col:hover,
 .right-col:hover {
-	background-color: #ccc
+	background-color: #ffff
+}
+
+#topLeftCol:hover .col-text .egg,
+#topRightCol:hover .col-text .egg,
+#botLeftCol:hover .col-text .egg,
+#botRightCol:hover .col-text .egg {
+    height: 200%;
+    width: 200%;
+    left: -50%;
+    top: -50%;
+}
+
+#topLeftCol:hover .col-text .col-text-heading,
+#topRightCol:hover .col-text .col-text-heading,
+#botLeftCol:hover .col-text .col-text-heading,
+#botRightCol:hover .col-text .col-text-heading {
+	font-weight: 600;
 }
 
 .center-col {
@@ -69,6 +89,7 @@
 	margin-bottom: 1em;
 	padding-top: 1em;
 	padding-bottom: 1em;
+	position: relative;
 }
 
 .col-text-heading {
@@ -100,6 +121,7 @@
 	}
 	.left-col {
 		margin-right: 0;
+		margin-bottom: 1em;
 	}	
 }
 
@@ -116,4 +138,47 @@
 
 .carousel-control-prev-icon {
 	background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23f25e5e' viewBox='0 0 8 8'%3E%3Cpath d='M4 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E");
+}
+
+.egg {
+	height: 400px;
+	width: 200px;
+	border-radius: 50%;
+	z-index: 10;
+	opacity: 0.5;	
+	left: calc(50% - 100px);
+	position: absolute;
+	-webkit-transition: 1s;
+	transition: 1s;
+}
+
+#eggLeftTop {
+	bottom: -35%;
+	background-color: #f25e5e;
+}
+
+#eggRightTop {
+	bottom: -35%;
+	background-color: #5f5f5f;
+}
+
+#eggRightBot {
+	Top: -35%;
+	background-color: #f25e5e;
+}
+
+#eggLeftBot {
+	Top: -35%;
+	background-color: #5f5f5f;
+}
+
+@media (max-width: 50em) {
+	#eggRightTop {
+		Top: -35%;
+		bottom: auto;
+	}
+	#eggLeftBot {
+		bottom: -35%;
+		Top: auto;
+	}
 }
