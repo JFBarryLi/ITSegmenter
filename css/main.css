@@ -32,6 +32,10 @@ img {
 		width: 80%;
 		height: auto;
 	}
+
+  pre {
+	  width: 100%;
+  }
 }
 
 canvas {
@@ -54,7 +58,11 @@ canvas {
 
 #layout.active {
 	position: relative;
-	padding-left: 200px;
+	/* padding-left: 200px; */
+}
+
+#layout.active #main-container {
+	opacity: 0.2;
 }
 
 #layout.active #sbar{
@@ -100,6 +108,7 @@ canvas {
   #layout.active .sidebar-tog {
     left: 200px;
   }
+
   
 }
 
@@ -160,7 +169,7 @@ canvas {
 	margin-left: -200px;
 	overflow-y: auto;
 	-webkit-overflow-scrolling: touch;
-	
+	z-index: 1000;
 }
 
 .sidebar a {
@@ -246,6 +255,14 @@ canvas {
 }
 .main-content-tabbed{
 	padding-left: 2em;
+}
+
+@media (max-width: 50em) {
+	.main-content-tabbed {
+		padding-left: 0;
+	}
+  
+
 }
 
 .button {
