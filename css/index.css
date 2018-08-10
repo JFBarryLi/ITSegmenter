@@ -149,36 +149,39 @@
 	left: calc(50% - 100px);
 	position: absolute;
 	-webkit-transition: 1s;
+	-moz-transition: 1s;
+	-ms-transition: 1s;
+	-o-transition: 1s;
 	transition: 1s;
 }
 
 #eggLeftTop {
-	bottom: -35%;
+	bottom: -45%;
 	background-color: #f25e5e;
 }
 
 #eggRightTop {
-	bottom: -35%;
+	bottom: -45%;
 	background-color: #5f5f5f;
 }
 
 #eggRightBot {
-	Top: -35%;
+	Top: -45%;
 	background-color: #f25e5e;
 }
 
 #eggLeftBot {
-	Top: -35%;
+	Top: -45%;
 	background-color: #5f5f5f;
 }
 
 @media (max-width: 50em) {
 	#eggRightTop {
-		Top: -35%;
+		Top: -45%;
 		bottom: auto;
 	}
 	#eggLeftBot {
-		bottom: -35%;
+		bottom: -45%;
 		Top: auto;
 	}
 }

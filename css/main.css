@@ -1,5 +1,5 @@
 html {
-    font-size: 14px;
+    font-size: 16px;
 	height: 100%;
 }
 
@@ -175,7 +175,7 @@ canvas {
 .sidebar a {
     padding: 6px 8px 10px 40px;
     text-decoration: none;
-    font-size: 15px;
+    font-size: 16px;
     color: rgb(222, 222, 222);
     display: block;
 }
@@ -262,7 +262,6 @@ canvas {
 		padding-left: 0;
 	}
   
-
 }
 
 .button {
@@ -286,16 +285,19 @@ canvas {
 	background-image: linear-gradient(to bottom, #ec8975, #ee2f2f);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#ec8975, endColorstr=#ee2f2f);
 }	
 
+#submitButton {
+	margin: 0 auto;
+	display: table;
+
+}
+
+
 .text_box {
 	display: block;
 	margin-right: auto;
 	margin-left: auto;
 }
 
-#submitButton {
-	margin: 0 auto;
-	display: table;
-}
 
 .column {
 	margin-left: auto;
