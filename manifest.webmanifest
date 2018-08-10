@@ -6,5 +6,10 @@
 	"display": "standalone",
 	"lang": "en-US",
 	"start_url": "index.html",
-	"theme_color": "#f25e5e"
+	"theme_color": "#f25e5e",
+	"icons": [{
+		"src": "img/logo.svg",
+		"sizes": "335x444",
+		"type": "image/svg"
+	}]
 }
