@@ -21,7 +21,6 @@ https://jfbarryli.github.io/ITSegmenter/
 
 
 ### TODO ###
-* Batch processing
-* Reduce redundancies
-* Create documentations
-* Improve RamgeQuery speed
+* Optimize Blur filter
+* Redu k-d Tree
+* Finish Docs
