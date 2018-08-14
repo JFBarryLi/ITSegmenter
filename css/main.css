@@ -397,3 +397,25 @@ input[name="canvasSelection"] {
 #sliderOutput {
 	text-align: center;
 }
+
+#logoContainer {
+	position: relative;
+	width: 25%;
+
+}
+
+#logoTop {
+	position: absolute;
+	left: 37.5%;
+	width: 25%;
+	top: 10%;
+	transition: 4s;
+}
+
+#logoBot {
+	width: 100%;
+}
+
+#logoBot:hover + #logoTop, #logoTop:hover {
+	transform: rotate(720deg);
+}
