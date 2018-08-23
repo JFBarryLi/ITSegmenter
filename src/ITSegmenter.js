@@ -25,7 +25,7 @@ var outputRects = {};
  * 						Fast Threshhold; Default:100, higher = less corners
  *
  * eps: 				int
- *      				Maximum distance between two points to be considered neighbours; Default:15
+ *      				Maximum distance between two p.oints to be considered neighbours; Default:15
  *
  * minPts: 				int
  *		   				Minimum number of points required to form a cluster; Default:5
@@ -82,7 +82,6 @@ var outputRects = {};
 	var canvasf = document.createElement("CANVAS");	
 	
 	if (convertToImage == 0 && canvasId === undefined) {
-		//canvaso.setAttribute("style", "display:block; margin-left: auto; margin-right: auto;");
 		document.body.appendChild(canvaso);
 	}
 	
@@ -130,7 +129,6 @@ var outputRects = {};
 			var fImg = document.createElement("img")
 			//Set the src of the img element to canvaso
 			fImg.setAttribute('src', canvaso.toDataURL("image/png"));
-			//fImg.setAttribute("style", "display:block; margin-left: auto; margin-right: auto;");
 			document.body.appendChild(fImg);
 		}
 		
@@ -288,7 +286,6 @@ function cropRects(rects,img) {
 		
 		//Set image src to tempCanvas DataURL
 		cImg.setAttribute('src', tempCanvas.toDataURL("image/png"));
-		//cImg.setAttribute("style", "display:block; margin-left: auto; margin-right: auto;");
 		document.body.appendChild(cImg);
 	}
 
@@ -363,8 +360,8 @@ function sharpen(ctx, w, h, dia, amt) {
 	var srcBuff = ctx.getImageData(0, 0, w, h).data;
 	
 	//Gaussian Blur on the image
-	var blurred = TImage.blur(srcBuff, w, h, dia);
-	
+	//var blurred = TImage.blur(srcBuff, w, h, dia);
+	var blurred = gaussBlur(srcBuff, w, h, dia);
  	//Create an unsharpMask by subtracting the Gaussian Blurred image from the original
 	var unsharpMask = new Uint8ClampedArray(w*h*4);
 		for (var i = 0; i < unsharpMask.length; i++) {
@@ -379,6 +376,138 @@ function sharpen(ctx, w, h, dia, amt) {
 	ctx.putImageData(outputData, 0, 0);
 	
 }
+
+function gaussBlur(srcBuff, w, h, dia) {
+    var bxs = boxesForGauss(dia/4, 3);
+    var boxBlurred1 = boxBlur(srcBuff, w, h, bxs[0]);
+	var boxBlurred2 = boxBlur(boxBlurred1, w, h, bxs[1]);
+	var boxBlurred3 = boxBlur(boxBlurred2, w, h, bxs[2]);
+	return boxBlurred3;
+}
+
+function boxesForGauss(sigma, n) {
+    var wIdeal = Math.sqrt((12*sigma*sigma/n)+1);
+    var wl = Math.floor(wIdeal);  
+	if(wl%2==0) {
+		wl--;
+	}
+    var wu = wl+2;
+				
+    var mIdeal = (12*sigma*sigma - n*wl*wl - 4*n*wl - 3*n)/(-4*wl - 4);
+    var m = Math.round(mIdeal);
+				
+    var sizes = [];  
+	for (var i=0; i<n; i++) {
+		sizes.push(i<m?wl:wu);
+	}
+    return sizes;
+	
+}
+
+function boxBlur(srcBuff, w, h, kernelWidth) {
+	var vertical = boxBlurV(srcBuff, w, h, kernelWidth);
+	var blurred = boxBlurH(vertical, w, h, kernelWidth);
+	return blurred;
+}
+
+function boxBlurV(srcBuff, w, h, kernelWidth) {
+    var halfkernelWidth = Math.floor(kernelWidth / 2);
+    var output = new Float32Array(w * h * 4);
+
+	var sy, sx, offset, r, g, b, a, scy, scx, poffset, wt;
+	
+	// var accumR = [], accumG = [], accumB = [], accumA = [];
+	
+	for (var x = 0; x < w; x++) {
+		
+		for (var y = 0; y < h; y++) {
+			sy = y;
+			sx = x;
+			offset = (y * w + x) * 4;
+			r = 0;
+			g = 0;
+			b = 0;
+			a = 0;
+			
+			// if (y == 0) {
+				// for (var i = 0; i < halfkernelWidth; i++) {
+					// scy = Math.min(h - 1, Math.max(0, sy + i - halfkernelWidth));
+					// poffset = (scy * w + sx) * 4;
+					// accumR[y] += srcBuff[poffset];
+					// accumG[y] += srcBuff[poffset+1];
+					// accumB[y] += srcBuff[poffset+2];
+					// accumA[y] += srcBuff[poffset+3];
+				// }
+			// } else {
+				// accumR[y] = accum[y-1] - srcBuff[offset - (halfkernelWidth - 1) * 4] + srcBuff[offset + (halfkernelWidth + 1) * 4];
+				// accumG[y] = accum[y-1] - srcBuff[offset + 1 - (halfkernelWidth - 1) * 4] + srcBuff[offset + 1 + (halfkernelWidth + 1) * 4];
+				// accumB[y] = accum[y-1] - srcBuff[offset + 2 - (halfkernelWidth - 1) * 4] + srcBuff[offset + 2 + (halfkernelWidth + 1) * 4];
+				// accumA[y] = accum[y-1] - srcBuff[offset + 3 - (halfkernelWidth - 1) * 4] + srcBuff[offset + 3 + (halfkernelWidth + 1) * 4];
+			// }
+		
+			
+			for (var cy = 0; cy < kernelWidth; cy++) {
+				scy = Math.min(h - 1, Math.max(0, sy + cy - halfkernelWidth));
+				scx = sx;
+				poffset = (scy * w + scx) * 4;
+				r += srcBuff[poffset];
+				g += srcBuff[poffset + 1];
+				b += srcBuff[poffset + 2];
+				a += srcBuff[poffset + 3];
+			}
+			
+			wt = 1 / kernelWidth
+			// output[offset] = wt * accumR[y]
+			// output[offset + 1] = wt * accumG[y]
+			// output[offset + 2] = wt * accumB[y]
+			// output[offset + 2] = wt * accumA[y]
+			
+			output[offset] = r * wt;
+			output[offset + 1] = g * wt;
+			output[offset + 2] = b * wt;
+			output[offset + 3] = a * wt;
+		}
+	}
+    return output;
+}
+
+
+function boxBlurH(vertical, w, h, kernelWidth) {
+    var kernelWidth = kernelWidth;
+    var halfkernelWidth = Math.floor(kernelWidth / 2);
+    var output = new Float32Array(w * h * 4);
+	
+	var sy, sx, offset, r, g, b, a, scy, scx, poffset, wt;
+
+    for (var y = 0; y < h; y++) {
+		for (var x = 0; x < w; x++) {
+			sy = y;
+			sx = x;
+			offset = (y * w + x) * 4;
+			r = 0;
+			g = 0;
+			b = 0;
+			a = 0;
+			for (var cx = 0; cx < kernelWidth; cx++) {
+				scy = sy;
+				scx = Math.min(w - 1, Math.max(0, sx + cx - halfkernelWidth));
+				poffset = (scy * w + scx) * 4;
+				r += vertical[poffset];
+				g += vertical[poffset + 1];
+				b += vertical[poffset + 2];
+				a += vertical[poffset + 3];
+			}
+			wt = 1 / kernelWidth;
+			output[offset] = r * wt;
+			output[offset + 1] = g * wt;
+			output[offset + 2] = b * wt;
+			output[offset + 3] = a * wt;
+		}
+	}
+    return output;	
+}
+
+
 
 
 /* --------------------------------------------------------------------------------------------------------------- */
@@ -437,7 +566,7 @@ function DBSCAN(arr, eps, minPts) {
 		cluster_id[arr[i]] = C;
 		
 		//Seed set
-		//Seed set should be the Neighbours set - current point, but it doesn't make any difference, since it will just get ignored
+		//Seed set should be the Neighbours set / current point, but it doesn't make any difference and it's slower than not excluding the current point
 		var S = N;
 		
 		for (var j = 0; j < S.length; j++) {
@@ -487,5 +616,96 @@ function distFunc(Q, P) {
 	D = Math.sqrt(Math.pow((P[0]-Q[0]),2)+Math.pow((P[1]-Q[1]),2)); 	
 	return D;
 }
+
+function kdTreeIndex(points) {
+	var nodes = [];	
+	kdTree(points, 0);
+	return nodes;
+}
+
+
+function kdTree(points, depth) {
+	var axis = depth % 2;
+	var len = points.length;
+	// select median by axis from points;
+	var k = Math.floor((points.length - 1) / 2);
+	var bound = points.length - 1;
+	var median = quickSelect(points, 0, bound, k, axis);
+	
+	var tempNode = new node;
+	tempNode.position = median;
+	
+	if (len != 1) {
+		//kdTree points smaller or equal median
+		if (k > 0) {
+			tempNode.leftChild = kdTree(points.slice(0,k), depth + 1);
+			//kdTree points larger median
+			tempNode.rightChild = kdTree(points.slice(k+1, bound), depth + 1);
+		}
+	}
+	tempNode.depth = depth;
+	
+	// nodes.push(tempNode);
+	nodes[depth] = tempNode;
+}
+
+function node(position, leftChild, rightChild, depth) {
+	this.poisition = position;
+	this.leftChild = leftChild;
+	this.rightChild = rightChild;
+	this.depth = depth; 
+}
+
+function quickSelect(points, left, right, k, axis) {
+	
+	//If the array contain only one point return that point
+	if (left == right) {
+		return points[left];
+	}
+	
+	//Select a random pivotIndex between left and right
+	pivotIndex = Math.floor(Math.random() * (right - left + 1) + left);
+
+	pivotIndex = partition(points, left, right, pivotIndex, axis);
+	
+	//If pivot is in the finaly sorted position return that point else recurse
+	if (k == pivotIndex) {
+		return points[k];
+	} else if (k < pivotIndex) {
+		return quickSelect(points, left, pivotIndex - 1, k, axis);
+	} else {
+		return quickSelect(points, pivotIndex + 1, right, k, axis);
+	}
+	
+}
+
+function partition(points, left, right, pivotIndex, axis) {
+	pivotVal = points[pivotIndex][axis];
+	
+	//Move pivot to end
+	swap(points, pivotIndex, right);	
+	
+	var storeIndex = left;
+	
+	for (var i = left; i <= right - 1; i++) {
+		//If the point is smaller than the pivotVal then swap it with storeIndex and increment storeIndex
+		if (points[i][axis] < pivotVal) {
+			swap(points, storeIndex, i);
+			storeIndex++;
+		}
+	}
+	
+	//Move pivot to final position
+	swap(points, right, storeIndex);
+	
+	return storeIndex;
+}
+
+function swap(points , A, B) {
+	var swapTemp = points[A];
+	points[A] = points[B];
+	points[B] = swapTemp;
+}
+
 
 /* --------------------------------------------------------------------------------------------------------------- */
