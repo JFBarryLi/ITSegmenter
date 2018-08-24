@@ -15,8 +15,14 @@ include("src\\kdbush.js");
 var outputRects = {};
  
  function textSegment(imgPath, fThreshhold, eps, minPts, dia, amt, drawRects, splitRects, convertToImage, canvasId) {
-/* 
- * Parameters:
+/*
+ * INFO:
+ * -----
+ * Image Text Segmentation by detecting corners using FAST and Unsharp Masking
+ * Clustering corners together using DBSCAN with a kd-Tree data structure
+ * Drawing bounding boxes on the resulting cluster
+ *
+ * PARAM:
  * -----------
  * imgPath: 			string
  * 						File path to the image
@@ -49,12 +55,14 @@ var outputRects = {};
  *						Option to segment a specific canvas
  *
  *
- * Returns:
+ * RETURNS:
  * --------
  * outputRects:			obj
  *						Dicitonary of clusters and their corresponding bounding box. outputRects {} = {key = 1 : value = [[xMin1, xMax1, yMin1, yMax1],...],...}
  * 
  */
+ 
+	//Default values
 	if (fThreshhold === undefined) { fThreshhold = 100};
 	if (eps === undefined) { eps = 15};
 	if (minPts === undefined) { minPts = 5};
@@ -143,7 +151,12 @@ var outputRects = {};
 
 function findCorners(ctx, width, height, fThreshhold) {
 /*
- * Parameters:
+ * INFO:
+ * -----
+ * Features from Accelerated Segment Test (FAST) Corner detection
+ * https://github.com/eduardolundgren/tracking.js/blob/master/src/features/Fast.js
+ *
+ * PARAM:
  * -----------
  * ctx: 				obj 
  *						Canvas context object
@@ -156,11 +169,11 @@ function findCorners(ctx, width, height, fThreshhold) {
  *
  * fThreshhold: 		int
  *						FAST threshhold 
- * Returns:
+ * RETURNS:
  * --------
  * outArr:				array
  *		   				[[x1,y1],[x2,y2],...]
-*/	
+ */	
 	var outArr = [];
 	Fast.THRESHOLD = fThreshhold;
 	
@@ -181,7 +194,11 @@ function findCorners(ctx, width, height, fThreshhold) {
 
 function textRect(ctx, P) {
 /*
- * Parameters:
+ * INFO:
+ * -----
+ * Draw bounding boxes for each cluster
+ *
+ * PARAM:
  * -----------
  * ctx: 				obj 
  *						Canvas context object
@@ -189,13 +206,13 @@ function textRect(ctx, P) {
  * P: 					array
  *        				Output of DBSCAN; P = {key = 1 : value = [[x1,y1],[x2,y2],...], ...}
  *
- * Returns:
+ * RETURNS:
  * --------
  * rects:				obj
  *						Dicitonary of clusters and their corresponding bounding box. rects {} = {key = 1 : value = [[xMin1, xMax1, yMin1, yMax1],...],...}
  *
  *
-*/	
+ */	
 	var rects = {};	
 	var centroids = [];
 	
@@ -232,7 +249,11 @@ function textRect(ctx, P) {
 
 function drawPoly(ctx, UL, LL, LR, UR) {
 /*
- * Parameters:
+ * INFO:
+ * -----
+ * Draw polygons
+ *
+ * PARAM:
  * -----------
  * ctx: 			obj 
  *					Canvas context object
@@ -261,7 +282,11 @@ function drawPoly(ctx, UL, LL, LR, UR) {
 
 function cropRects(rects,img) {
 /*
- * Parameters:
+ * INFO:
+ * -----
+ * Crop bounding boxes out of an image
+ *
+ * PARAM:
  * -----------
  * rects:			obj
  *					Dicitonary of clusters and their corresponding bounding box. rects {} = {key = 1 : value = [[xMin1, xMax1, yMin1, yMax1],...],...}
@@ -294,7 +319,12 @@ function cropRects(rects,img) {
 
 function scaleCanvas(scale, canvasOutput, canvasOriginal) {
 /*
- * Parameters:
+ * INFO:
+ * -----
+ * Scale canvas
+ * Use for down sampling a canvas prior to processing
+ *
+ * PARAM:
  * -----------
  * scale:			float
  *					Scalar parameter for canvas width and height
@@ -314,7 +344,7 @@ function scaleCanvas(scale, canvasOutput, canvasOriginal) {
 	canvasOutput.height = canvasOriginal.height * scale;
 
 	var ctx = canvasOutput.getContext("2d");
-	ctx.drawImage(canvasOriginal, 0, 0, w, h, 0, 0, scale*w, scale*h);
+	ctx.drawImage(canvasOriginal, 0, 0, w, h, 0, 0, scale * w, scale * h);
 	
 }
 
@@ -336,7 +366,13 @@ function include(url) {
 
 function sharpen(ctx, w, h, dia, amt) {
 /*
- * Parameters:
+ * INFO:
+ * -----
+ * Convolution image filter to sharpen digital image using Unsharp Masking
+ * Gaussian blur is approximated with 3 passes of a box blur
+ * Box blur is separated into horizontal and vertical blur
+ *
+ * PARAM:
  * -----------
  * ctx: 			obj 
  *					Canvas context object
@@ -353,7 +389,7 @@ function sharpen(ctx, w, h, dia, amt) {
  * amt: 			float
  *					Scalar of Unsharp Mask
  *
-*/	
+ */	
 	
 	var outputData = ctx.createImageData(w, h);
 	
@@ -378,7 +414,37 @@ function sharpen(ctx, w, h, dia, amt) {
 }
 
 function gaussBlur(srcBuff, w, h, dia) {
+/*
+ * INFO:
+ * -----
+ * Gaussian blur approximation by passing Box Blur 3 times
+ *
+ * PARAM:
+ * -----------
+ * srcBuff: 			Uint8ClampedArray
+ *						Source image data buffer
+ *
+ * w: 					int
+ *        				Width of canvas
+ *
+ * h: 					int
+ *        				Height of canvas
+ *
+ * dia: 				float
+ *        				Diameter of blur
+ *
+ * RETURNS:
+ * --------
+ * boxBlurred3:			Float32Array
+ *						Boxblurred 3 times image data [R, G, B, A, R2, G2, B2, A2, ...]
+ *
+ *
+ */		
+
+	//Calculate ideal kernel sizes
     var bxs = boxesForGauss(dia/4, 3);
+	
+	//Box Blur 3 times to approximate Gaussian blur
     var boxBlurred1 = boxBlur(srcBuff, w, h, bxs[0]);
 	var boxBlurred2 = boxBlur(boxBlurred1, w, h, bxs[1]);
 	var boxBlurred3 = boxBlur(boxBlurred2, w, h, bxs[2]);
@@ -386,40 +452,125 @@ function gaussBlur(srcBuff, w, h, dia) {
 }
 
 function boxesForGauss(sigma, n) {
-    var wIdeal = Math.sqrt((12*sigma*sigma/n)+1);
+/*
+ * INFO:
+ * -----
+ * Calculates optimal box blur size for each passes to approximate Gaussian Blur
+ * http://www.peterkovesi.com/papers/FastGaussianSmoothing.pdf
+ *
+ * PARAM:
+ * -----------
+ * sigma: 				float
+ *						Standard deviation for Gaussian Blur
+ *
+ * n: 					int
+ *        				Number of passes
+ *
+ * RETURNS:
+ * --------
+ * sizes:				Array
+ *						Array of box blur sizes for each pass
+ *
+ *
+ */	
+	
+	//Ideal width of kernel
+    var wIdeal = Math.sqrt((12 * sigma * sigma / n) + 1);
+	
+	//First odd integer less than wIdeal
     var wl = Math.floor(wIdeal);  
-	if(wl%2==0) {
+	
+	if(wl % 2 == 0) {
 		wl--;
 	}
-    var wu = wl+2;
-				
-    var mIdeal = (12*sigma*sigma - n*wl*wl - 4*n*wl - 3*n)/(-4*wl - 4);
+	
+	//First odd integer greater than wIdeal
+    var wu = wl + 2;
+	
+	//Ideal number of passes
+    var mIdeal = (12 * sigma * sigma - n * wl * wl - 4 * n * wl - 3 * n) / (-4 * wl - 4);
     var m = Math.round(mIdeal);
-				
+		
+	//Ideal width of kernel for each pass
     var sizes = [];  
 	for (var i=0; i<n; i++) {
-		sizes.push(i<m?wl:wu);
+		sizes.push(i < m ? wl:wu);
 	}
     return sizes;
 	
 }
 
 function boxBlur(srcBuff, w, h, kernelWidth) {
+/*
+ * INFO:
+ * -----
+ * Box Blur by separable convolution
+ * Vertical convolve then horizontal convolve
+ *
+ * PARAM:
+ * -----------
+ * srcBuff: 			Uint8ClampedArray
+ *						Source image data buffer
+ *
+ * w: 					int
+ *        				Width of canvas
+ *
+ * h: 					int
+ *        				Height of canvas
+ *
+ * kernelWidth: 		int
+ *        				Width of the convolving kernel
+ *
+ * RETURNS:
+ * --------
+ * blurred:				Float32Array
+ *						Blurred image data [R, G, B, A, R2, G2, B2, A2, ...]
+ *
+ *
+ */			
+
 	var vertical = boxBlurV(srcBuff, w, h, kernelWidth);
 	var blurred = boxBlurH(vertical, w, h, kernelWidth);
 	return blurred;
 }
 
 function boxBlurV(srcBuff, w, h, kernelWidth) {
+/*
+ * INFO:
+ * -----
+ * Vertical convolution
+ *
+ * PARAM:
+ * -----------
+ * srcBuff: 			Uint8ClampedArray
+ *						Source image data buffer
+ *
+ * w: 					int
+ *        				Width of canvas
+ *
+ * h: 					int
+ *        				Height of canvas
+ *
+ * kernelWidth: 		int
+ *        				Width of the convolving kernel
+ *
+ * RETURNS:
+ * --------
+ * output:				Float32Array
+ *						Vertically convolved image data [R, G, B, A, R2, G2, B2, A2, ...]
+ *
+ *
+ */	
+ 
     var halfkernelWidth = Math.floor(kernelWidth / 2);
     var output = new Float32Array(w * h * 4);
 
 	var sy, sx, offset, r, g, b, a, scy, scx, poffset, wt;
 	
-	// var accumR = [], accumG = [], accumB = [], accumA = [];
-	
+	//Loop through each column
 	for (var x = 0; x < w; x++) {
 		
+		//Loop through each cell in the column
 		for (var y = 0; y < h; y++) {
 			sy = y;
 			sx = x;
@@ -429,23 +580,7 @@ function boxBlurV(srcBuff, w, h, kernelWidth) {
 			b = 0;
 			a = 0;
 			
-			// if (y == 0) {
-				// for (var i = 0; i < halfkernelWidth; i++) {
-					// scy = Math.min(h - 1, Math.max(0, sy + i - halfkernelWidth));
-					// poffset = (scy * w + sx) * 4;
-					// accumR[y] += srcBuff[poffset];
-					// accumG[y] += srcBuff[poffset+1];
-					// accumB[y] += srcBuff[poffset+2];
-					// accumA[y] += srcBuff[poffset+3];
-				// }
-			// } else {
-				// accumR[y] = accum[y-1] - srcBuff[offset - (halfkernelWidth - 1) * 4] + srcBuff[offset + (halfkernelWidth + 1) * 4];
-				// accumG[y] = accum[y-1] - srcBuff[offset + 1 - (halfkernelWidth - 1) * 4] + srcBuff[offset + 1 + (halfkernelWidth + 1) * 4];
-				// accumB[y] = accum[y-1] - srcBuff[offset + 2 - (halfkernelWidth - 1) * 4] + srcBuff[offset + 2 + (halfkernelWidth + 1) * 4];
-				// accumA[y] = accum[y-1] - srcBuff[offset + 3 - (halfkernelWidth - 1) * 4] + srcBuff[offset + 3 + (halfkernelWidth + 1) * 4];
-			// }
-		
-			
+			//Sum up the values on the column based on the kernel size for each channel
 			for (var cy = 0; cy < kernelWidth; cy++) {
 				scy = Math.min(h - 1, Math.max(0, sy + cy - halfkernelWidth));
 				scx = sx;
@@ -456,12 +591,8 @@ function boxBlurV(srcBuff, w, h, kernelWidth) {
 				a += srcBuff[poffset + 3];
 			}
 			
+			//Setting output image data to average value for each channel
 			wt = 1 / kernelWidth
-			// output[offset] = wt * accumR[y]
-			// output[offset + 1] = wt * accumG[y]
-			// output[offset + 2] = wt * accumB[y]
-			// output[offset + 2] = wt * accumA[y]
-			
 			output[offset] = r * wt;
 			output[offset + 1] = g * wt;
 			output[offset + 2] = b * wt;
@@ -473,13 +604,43 @@ function boxBlurV(srcBuff, w, h, kernelWidth) {
 
 
 function boxBlurH(vertical, w, h, kernelWidth) {
+/*
+ * INFO:
+ * -----
+ * Horizontal convolution
+ *
+ * PARAM:
+ * -----------
+ * srcBuff: 			Uint8ClampedArray
+ *						Source image data buffer
+ *
+ * w: 					int
+ *        				Width of canvas
+ *
+ * h: 					int
+ *        				Height of canvas
+ *
+ * kernelWidth: 		int
+ *        				Width of the convolving kernel
+ *
+ * RETURNS:
+ * --------
+ * output:				Float32Array
+ *						Horizontally convolved image data [R, G, B, A, R2, G2, B2, A2, ...]
+ *
+ *
+ */		
+
     var kernelWidth = kernelWidth;
     var halfkernelWidth = Math.floor(kernelWidth / 2);
     var output = new Float32Array(w * h * 4);
 	
 	var sy, sx, offset, r, g, b, a, scy, scx, poffset, wt;
 
+	//Loop through each row
     for (var y = 0; y < h; y++) {
+		
+		//Loop through each cell in the row
 		for (var x = 0; x < w; x++) {
 			sy = y;
 			sx = x;
@@ -488,6 +649,8 @@ function boxBlurH(vertical, w, h, kernelWidth) {
 			g = 0;
 			b = 0;
 			a = 0;
+			
+			//Sum up the values on the row based on the kernel size for each channel
 			for (var cx = 0; cx < kernelWidth; cx++) {
 				scy = sy;
 				scx = Math.min(w - 1, Math.max(0, sx + cx - halfkernelWidth));
@@ -497,6 +660,8 @@ function boxBlurH(vertical, w, h, kernelWidth) {
 				b += vertical[poffset + 2];
 				a += vertical[poffset + 3];
 			}
+			
+			//Setting output image data to average value for each channel
 			wt = 1 / kernelWidth;
 			output[offset] = r * wt;
 			output[offset + 1] = g * wt;
@@ -508,20 +673,15 @@ function boxBlurH(vertical, w, h, kernelWidth) {
 }
 
 
-
-
 /* --------------------------------------------------------------------------------------------------------------- */
-
-
-
-/**
- * Javascript Implementation of DBSCAN using K-Dimensional trees for Range Query
- * 
- */
  
-function DBSCAN(arr, eps, minPts) {
-        
+function DBSCAN(arr, eps, minPts) {      
 /*
+ * INFO:
+ * -----
+ * Javascript Implementation of DBSCAN
+ * Group points into cluster based on density by constructing a kdTree, then performing rangeQuery to find neighbours
+ *
  * Parameters:
  * -----------
  * arr: 			Array: [[x1, y1], [x2,y2], ...]
@@ -537,7 +697,7 @@ function DBSCAN(arr, eps, minPts) {
  * --------
  * clusters: 		obj
  *		   			clusters = {key = clusterID : value = [[x1,y1],[x2,y2],...], ...}
-*/
+ */
 
 	var index = kdbush(arr);	
 	var cluster_id = {};
@@ -587,7 +747,6 @@ function DBSCAN(arr, eps, minPts) {
 			if (N.length >= minPts) {
 				//Add new neighbours to seed set
 				S.push.apply(S,N); //Theorectically incorrect, but practically the same result as a union and much faster
-				//S = [...new Set([...S, ...N])]; //Only works for ES6
 			}
 		}		
 	}
@@ -606,58 +765,144 @@ function DBSCAN(arr, eps, minPts) {
 
 }
 function RangeQuery(arr, Pt, eps, index) {
-	//RangeQuery in a k-d tree 
+/*
+ * INFO:
+ * -----
+ * Perform RangeQuery in a k-d Tree data structure
+ * Similar to KNN search
+ * Returns k-nearest neighbours within a radius of a point
+ *
+ * Parameters:
+ * -----------
+ * arr: 			Array: [[x1, y1], [x2,y2], ...]
+ *					The input array to DBSCAN, where x and y correspond to the coordinates of a point.
+ *
+ * Pt:	 			Array: [x, y]
+ *					Point array containing co-ordinates
+ *
+ * eps: 			int
+ *      			Maximum distance between two points to be considered neighbours
+ *
+ * index: 			obj
+ *		   			Indexed k-d Tree
+ *
+ * Returns:
+ * --------
+ * Neighbours: 		Array: [[x1, y1], [x2,y2], ...]
+ *		   			Array containing neighbouring points
+ */
+ 
 	var Neighbours = index.within(Pt[0], Pt[1], eps).map(function(id) { return arr[id]; });
 	return Neighbours;
 }
 
 function distFunc(Q, P) {
-	//Euclidean distance
+/*
+ * INFO:
+ * -----
+ * Calculates the Euclidean Distance between 2 points
+ *
+ * Parameters:
+ * -----------
+ * Q:	 			Array: [x, y]
+ *					Point array containing co-ordinates
+ *
+ * P:	 			Array: [x, y]
+ *					Point array containing co-ordinates
+ *
+ * Returns:
+ * --------
+ * D: 				float
+ *		   			Distance float
+ */
 	D = Math.sqrt(Math.pow((P[0]-Q[0]),2)+Math.pow((P[1]-Q[1]),2)); 	
 	return D;
 }
 
-function kdTreeIndex(points) {
+function kdTree(points) {
 	var nodes = [];	
-	kdTree(points, 0);
-	return nodes;
-}
-
-
-function kdTree(points, depth) {
-	var axis = depth % 2;
-	var len = points.length;
-	// select median by axis from points;
-	var k = Math.floor((points.length - 1) / 2);
-	var bound = points.length - 1;
-	var median = quickSelect(points, 0, bound, k, axis);
+	var tempPoints = points;
+	kdTreeIndex(tempPoints, 0);
+	this.nodes = nodes;
+	//return nodes;
 	
-	var tempNode = new node;
-	tempNode.position = median;
-	
-	if (len != 1) {
-		//kdTree points smaller or equal median
-		if (k > 0) {
-			tempNode.leftChild = kdTree(points.slice(0,k), depth + 1);
-			//kdTree points larger median
-			tempNode.rightChild = kdTree(points.slice(k+1, bound), depth + 1);
+	function kdTreeIndex(points, depth) {
+		var axis = depth % 2;
+		var len = points.length;
+		
+		//kth order statistics
+		var k = Math.floor((points.length - 1) / 2);
+		var bound = points.length - 1;
+		
+		//select median by axis from points;
+		if (k >= 0) {
+			var median = quickSelect(points, 0, bound, k, axis);
+		} else {
+			median = points[0];
 		}
+		
+		var tempNode = new node;
+		
+		//Set node position to median
+		tempNode.position = median;
+		
+		//Populate children nodes if the array contain more than 1 element and kth order is greater than 0
+		if (len > 1 && k >= 0) {
+				//kdTree points smaller or equal median
+				tempNode.leftChild = kdTreeIndex(points.slice(0,k), depth + 1);
+				//kdTree points larger median
+				tempNode.rightChild = kdTreeIndex(points.slice(k+1, bound + 1), depth + 1);
+		}
+		
+		tempNode.depth = depth;
+		
+		nodes.push(tempNode);
+		return tempNode;
 	}
-	tempNode.depth = depth;
 	
-	// nodes.push(tempNode);
-	nodes[depth] = tempNode;
-}
-
-function node(position, leftChild, rightChild, depth) {
-	this.poisition = position;
-	this.leftChild = leftChild;
-	this.rightChild = rightChild;
-	this.depth = depth; 
+	function node(position, leftChild, rightChild, depth) {
+		this.position = position;
+		this.leftChild = leftChild;
+		this.rightChild = rightChild;
+		this.depth = depth; 
+	}
+	
+	//TODO####
+	this.rangeQuery = function(x, y, r) {
+		console.log(this.nodes);
+	};
+		
 }
 
 function quickSelect(points, left, right, k, axis) {
-	
+/*
+ * INFO:
+ * -----
+ * Selects the k-th smallest element of an array within left-right recursively
+ *
+ * Parameters:
+ * -----------
+ * points: 				Array: [[x1, y1], [x2,y2], ...]
+ *						The input array, where x and y correspond to the coordinates of a point.
+ *
+ * left:	 			int
+ *						Leftmost index
+ *
+ * right:				int
+ *						Rightmost index
+ *
+ * k:					int
+ *						kth order statistics
+ *
+ * axis:				bol
+ *						0 = x-axis, 1 = y-axis
+ *
+ * Returns:
+ * --------
+ * points[k]: 			int
+ *						New Pivot index
+ */
+
 	//If the array contain only one point return that point
 	if (left == right) {
 		return points[left];
@@ -680,6 +925,34 @@ function quickSelect(points, left, right, k, axis) {
 }
 
 function partition(points, left, right, pivotIndex, axis) {
+/*
+ * INFO:
+ * -----
+ * Partition array of points about a pivot
+ *
+ * Parameters:
+ * -----------
+ * points: 				Array: [[x1, y1], [x2,y2], ...]
+ *						The input array, where x and y correspond to the coordinates of a point.
+ *
+ * left:	 			int
+ *						Leftmost index
+ *
+ * right:				int
+ *						Rightmost index
+ *
+ * pivotIndex:			int
+ *						Pivot index
+ *
+ * axis:				bol
+ *						0 = x-axis, 1 = y-axis
+ *
+ * Returns:
+ * --------
+ * storeIndex: 			int
+ *						New Pivot index
+ */
+	
 	pivotVal = points[pivotIndex][axis];
 	
 	//Move pivot to end
@@ -702,6 +975,24 @@ function partition(points, left, right, pivotIndex, axis) {
 }
 
 function swap(points , A, B) {
+/*
+ * INFO:
+ * -----
+ * Swap the index between points[A] and points[B]
+ *
+ * Parameters:
+ * -----------
+ * points: 			Array: [[x1, y1], [x2,y2], ...]
+ *					The input array, where x and y correspond to the coordinates of a point.
+ *
+ * A: 				int
+ *      			Index of point A
+ *
+ * B: 				int
+ *      			Index of point B
+ *
+ */
+
 	var swapTemp = points[A];
 	points[A] = points[B];
 	points[B] = swapTemp;
