@@ -824,6 +824,7 @@ function kdTree(points) {
 	var tempPoints = points;
 	kdTreeIndex(tempPoints, 0);
 	this.nodes = nodes;
+	this.rootNode = nodes[nodes.length - 1];
 	//return nodes;
 	
 	function kdTreeIndex(points, depth) {
@@ -838,7 +839,7 @@ function kdTree(points) {
 		if (k >= 0) {
 			var median = quickSelect(points, 0, bound, k, axis);
 		} else {
-			median = points[0];
+			return;
 		}
 		
 		var tempNode = new node;
@@ -849,9 +850,9 @@ function kdTree(points) {
 		//Populate children nodes if the array contain more than 1 element and kth order is greater than 0
 		if (len > 1 && k >= 0) {
 				//kdTree points smaller or equal median
-				tempNode.leftChild = kdTreeIndex(points.slice(0,k), depth + 1);
+				tempNode.leftChild = kdTreeIndex(points.slice(0, k), depth + 1);
 				//kdTree points larger median
-				tempNode.rightChild = kdTreeIndex(points.slice(k+1, bound + 1), depth + 1);
+				tempNode.rightChild = kdTreeIndex(points.slice(k + 1, bound + 1), depth + 1);
 		}
 		
 		tempNode.depth = depth;
@@ -860,18 +861,94 @@ function kdTree(points) {
 		return tempNode;
 	}
 	
-	function node(position, leftChild, rightChild, depth) {
+	function node(position, leftChild, rightChild, depth, region) {
 		this.position = position;
 		this.leftChild = leftChild;
 		this.rightChild = rightChild;
 		this.depth = depth; 
+		this.region = region;
 	}
 	
 	//TODO####
-	this.rangeQuery = function(x, y, r) {
-		console.log(this.nodes);
+	this.rangeSearch = function(x, y, r) {
+		var Neighbours = [];
+		
+		rangeSearch(x, y, r, this.rootNode, Neighbours);
+		return Neighbours;
 	};
 		
+}
+
+function rangeSearch(x, y, r, node, Neighbours) {
+	
+  	var rSquare = r * r;
+	
+	// If the node is a leaf and its squareDist to x,y is less than rSquare, add it to the Neighbours array
+	if (node.leftChild == undefined && node.rightChild == undefined) {
+		if (squareDist(node.position, [x,y]) <= rSquare) {
+			Neighbours.push(node.position);
+		}
+		return;
+		
+	// If a node's range is completely within the r-hypersphere then it and all its decendent are added to Neighbours
+	} else if ("node's region is completely inside r") {
+		// add node and all it's decendent to Neighbourts
+		var descendants = [];
+		getDescendant(node, descendants);
+		Neighbours.push(node.position);
+		Neighbours.push.apply(Neighbours, descendants);
+		return;
+		
+	// If the node's range intersect the r-hypersphere, recursively search through its children	
+	} else if ("node's region intersects r-hypersphere") {
+		rangeSearch(x, y, r, node.leftChild);
+		rangeSearch(x, y, r, node.rightChild);
+		
+		return;
+	} 
+	
+}
+
+function getDescendant(node, descendants) {
+	
+	if (node.leftChild != undefined) {
+		descendants.push(node.leftChild.position);
+		getDescendant(node.leftChild, descendants);
+	}
+	
+	if (node.rightChild != undefined) {
+		descendants.push(node.rightChild.position);
+		getDescendant(node.rightChild, descendants);
+	}
+	
+}
+
+function squareDist(P, Q) {
+/*
+ * INFO:
+ * -----
+ * Calculates the square distance between two points to compare distance without using square roots
+ *
+ * Parameters:
+ * -----------
+ * P: 					Array: [x, y]
+ *						2D Point in an array
+ *
+ * Q:	 				Array: [x, y]
+ *						2D Point in an array
+ *
+ * Returns:
+ * --------
+ * sD: 					float
+ *						Square distance
+ */
+	
+	var dx = P[0] - Q[0];
+	var dy = P[1] - Q[1];
+	
+	sD = dx * dx + dy * dy;
+	
+	return sD;
 }
 
 function quickSelect(points, left, right, k, axis) {
