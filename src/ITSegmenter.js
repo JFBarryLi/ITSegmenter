@@ -682,7 +682,7 @@ function DBSCAN(arr, eps, minPts) {
  * Javascript Implementation of DBSCAN
  * Group points into cluster based on density by constructing a kdTree, then performing rangeQuery to find neighbours
  *
- * Parameters:
+ * PARAM:
  * -----------
  * arr: 			Array: [[x1, y1], [x2,y2], ...]
  *					The input array to DBSCAN, where x and y correspond to the coordinates of a point.
@@ -693,13 +693,14 @@ function DBSCAN(arr, eps, minPts) {
  * minPts: 			int
  *		   			Minimum number of points required to form a cluster
  *
- * Returns:
+ * RETURNS:
  * --------
  * clusters: 		obj
  *		   			clusters = {key = clusterID : value = [[x1,y1],[x2,y2],...], ...}
  */
 
 	var index = kdbush(arr);	
+	// var indesx = new kdTree(arr);
 	var cluster_id = {};
 	
 	//Cluster counter
@@ -772,7 +773,7 @@ function RangeQuery(arr, Pt, eps, index) {
  * Similar to KNN search
  * Returns k-nearest neighbours within a radius of a point
  *
- * Parameters:
+ * PARAM:
  * -----------
  * arr: 			Array: [[x1, y1], [x2,y2], ...]
  *					The input array to DBSCAN, where x and y correspond to the coordinates of a point.
@@ -786,13 +787,14 @@ function RangeQuery(arr, Pt, eps, index) {
  * index: 			obj
  *		   			Indexed k-d Tree
  *
- * Returns:
+ * RETURN:
  * --------
  * Neighbours: 		Array: [[x1, y1], [x2,y2], ...]
  *		   			Array containing neighbouring points
  */
  
 	var Neighbours = index.within(Pt[0], Pt[1], eps).map(function(id) { return arr[id]; });
+	// var Neighbours = index.rangeSearch(Pt[0], Pt[1], eps);
 	return Neighbours;
 }
 
@@ -815,6 +817,7 @@ function distFunc(Q, P) {
  * D: 				float
  *		   			Distance float
  */
+ 
 	D = Math.sqrt(Math.pow((P[0]-Q[0]),2)+Math.pow((P[1]-Q[1]),2)); 	
 	return D;
 }
@@ -828,6 +831,8 @@ function kdTree(points) {
 	//return nodes;
 	
 	function kdTreeIndex(points, depth) {
+		
+		//axis(0) --> x-axis, axis(1) --> y-axis
 		var axis = depth % 2;
 		var len = points.length;
 		
@@ -872,7 +877,6 @@ function kdTree(points) {
 	//TODO####
 	this.rangeSearch = function(x, y, r) {
 		var Neighbours = [];
-		
 		rangeSearch(x, y, r, this.rootNode, Neighbours);
 		return Neighbours;
 	};
@@ -881,44 +885,115 @@ function kdTree(points) {
 
 function rangeSearch(x, y, r, node, Neighbours) {
 	
-  	var rSquare = r * r;
+	var rSquare = r * r;
 	
-	// If the node is a leaf and its squareDist to x,y is less than rSquare, add it to the Neighbours array
+	//If the node is a leaf and its squareDist to x,y is less than rSquare, add it to the Neighbours array
 	if (node.leftChild == undefined && node.rightChild == undefined) {
 		if (squareDist(node.position, [x,y]) <= rSquare) {
 			Neighbours.push(node.position);
 		}
 		return;
 		
-	// If a node's range is completely within the r-hypersphere then it and all its decendent are added to Neighbours
-	} else if ("node's region is completely inside r") {
+	//If a node's range is completely within the r-hypersphere then it and all its decendent are added to Neighbours
+/* 	} else if ("node's region is completely inside r") {
 		// add node and all it's decendent to Neighbourts
 		var descendants = [];
-		getDescendant(node, descendants);
+		getDescendants(node, descendants);
 		Neighbours.push(node.position);
 		Neighbours.push.apply(Neighbours, descendants);
 		return;
+		 */
+	//If the node's range intersect the r-hypersphere, recursively search through its children	
+	} else if (intersects(x, y, node, r)) {
+		if (squareDist(node.position, [x,y]) <= rSquare) {
+			Neighbours.push(node.position);
+		}
 		
-	// If the node's range intersect the r-hypersphere, recursively search through its children	
-	} else if ("node's region intersects r-hypersphere") {
-		rangeSearch(x, y, r, node.leftChild);
-		rangeSearch(x, y, r, node.rightChild);
+		if (node.leftChild != undefined) {
+			rangeSearch(x, y, r, node.leftChild, Neighbours);
+		}
 		
+		if (node.rightChild != undefined) {
+			rangeSearch(x, y, r, node.rightChild, Neighbours);
+		}
 		return;
-	} 
+	} else {
+		if (node.leftChild != undefined) {
+			rangeSearch(x, y, r, node.leftChild, Neighbours);
+		}
+		
+		if (node.rightChild != undefined) {
+			rangeSearch(x, y, r, node.rightChild, Neighbours);
+		}
+	}
 	
 }
 
-function getDescendant(node, descendants) {
+function getDescendants(node, descendants) {
+/*
+ * INFO:
+ * -----
+ * Recursively push the position of a node's descendants into the descendants array
+ *
+ * PARAM:
+ * -----------
+ * node:	 			obj
+ *						node object 
+ *
+ * descendants:	 		Array: [[x1, y1], [x2,y2], ...]
+ *						Point array containing descendant positions
+ *
+ */	
+	
 	
 	if (node.leftChild != undefined) {
 		descendants.push(node.leftChild.position);
-		getDescendant(node.leftChild, descendants);
+		getDescendants(node.leftChild, descendants);
 	}
 	
 	if (node.rightChild != undefined) {
 		descendants.push(node.rightChild.position);
-		getDescendant(node.rightChild, descendants);
+		getDescendants(node.rightChild, descendants);
+	}
+	
+}
+
+function intersects(x, y, node, r) {
+/*
+ * INFO:
+ * -----
+ * Check if a node intersects with a query point with radius r
+ *
+ * PARAM:
+ * -----------
+ *
+ * x:	 				int
+ *						query point x coordinates
+ *
+ * y:					int
+ *						query point y coordinates
+ *
+ * node:	 			obj
+ *						node object 
+ *
+ * r:					int
+ *						radius of query circle
+ *
+ * RETURNS:
+ * --------
+ * truth: 				bol
+ *						true/false
+ */
+	
+	var rSquare = r * r;
+	var axis = node.depth % 2;
+	
+	if (axis == 0 && squareDist([x, y], [node.position[0], y]) <= rSquare) {
+		return true;	
+	} else if (axis == 1 && squareDist([x, y], [x, node.position[1]]) <= rSquare) {
+		return true;
+	} else {
+		return false;
 	}
 	
 }
@@ -929,7 +1004,7 @@ function squareDist(P, Q) {
  * -----
  * Calculates the square distance between two points to compare distance without using square roots
  *
- * Parameters:
+ * PARAM:
  * -----------
  * P: 					Array: [x, y]
  *						2D Point in an array
@@ -937,7 +1012,7 @@ function squareDist(P, Q) {
  * Q:	 				Array: [x, y]
  *						2D Point in an array
  *
- * Returns:
+ * RETURNS:
  * --------
  * sD: 					float
  *						Square distance
@@ -957,7 +1032,7 @@ function quickSelect(points, left, right, k, axis) {
  * -----
  * Selects the k-th smallest element of an array within left-right recursively
  *
- * Parameters:
+ * PARAM:
  * -----------
  * points: 				Array: [[x1, y1], [x2,y2], ...]
  *						The input array, where x and y correspond to the coordinates of a point.
@@ -974,7 +1049,7 @@ function quickSelect(points, left, right, k, axis) {
  * axis:				bol
  *						0 = x-axis, 1 = y-axis
  *
- * Returns:
+ * RETURNS:
  * --------
  * points[k]: 			int
  *						New Pivot index
@@ -1007,7 +1082,7 @@ function partition(points, left, right, pivotIndex, axis) {
  * -----
  * Partition array of points about a pivot
  *
- * Parameters:
+ * PARAM:
  * -----------
  * points: 				Array: [[x1, y1], [x2,y2], ...]
  *						The input array, where x and y correspond to the coordinates of a point.
@@ -1024,7 +1099,7 @@ function partition(points, left, right, pivotIndex, axis) {
  * axis:				bol
  *						0 = x-axis, 1 = y-axis
  *
- * Returns:
+ * RETURNS:
  * --------
  * storeIndex: 			int
  *						New Pivot index
@@ -1057,7 +1132,7 @@ function swap(points , A, B) {
  * -----
  * Swap the index between points[A] and points[B]
  *
- * Parameters:
+ * PARAM:
  * -----------
  * points: 			Array: [[x1, y1], [x2,y2], ...]
  *					The input array, where x and y correspond to the coordinates of a point.
