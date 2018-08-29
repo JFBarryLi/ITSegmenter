@@ -21,6 +21,4 @@ https://jfbarryli.github.io/ITSegmenter/
 
 
 ### TODO ###
-* Optimize Blur filter
-* Redu k-d Tree
 * Finish Docs
