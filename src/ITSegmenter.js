@@ -699,8 +699,8 @@ function DBSCAN(arr, eps, minPts) {
  *		   			clusters = {key = clusterID : value = [[x1,y1],[x2,y2],...], ...}
  */
 
-	var index = kdbush(arr);	
-	// var indesx = new kdTree(arr);
+	// var index = kdbush(arr);	
+	var index = new kdTree(arr);
 	var cluster_id = {};
 	
 	//Cluster counter
@@ -793,8 +793,8 @@ function RangeQuery(arr, Pt, eps, index) {
  *		   			Array containing neighbouring points
  */
  
-	var Neighbours = index.within(Pt[0], Pt[1], eps).map(function(id) { return arr[id]; });
-	// var Neighbours = index.rangeSearch(Pt[0], Pt[1], eps);
+	// var Neighbours = index.within(Pt[0], Pt[1], eps).map(function(id) { return arr[id]; });
+	var Neighbours = index.rangeSearch(Pt[0], Pt[1], eps);
 	return Neighbours;
 }
 
@@ -893,7 +893,8 @@ function rangeSearch(x, y, r, node, Neighbours) {
 			Neighbours.push(node.position);
 		}
 		return;
-		
+	
+	//TODO####
 	//If a node's range is completely within the r-hypersphere then it and all its decendent are added to Neighbours
 /* 	} else if ("node's region is completely inside r") {
 		// add node and all it's decendent to Neighbourts
@@ -903,6 +904,7 @@ function rangeSearch(x, y, r, node, Neighbours) {
 		Neighbours.push.apply(Neighbours, descendants);
 		return;
 		 */
+		 
 	//If the node's range intersect the r-hypersphere, recursively search through its children	
 	} else if (intersects(x, y, node, r)) {
 		if (squareDist(node.position, [x,y]) <= rSquare) {
@@ -918,11 +920,9 @@ function rangeSearch(x, y, r, node, Neighbours) {
 		}
 		return;
 	} else {
-		if (node.leftChild != undefined) {
+		if (node.leftChild != undefined && isLeft(x, y, node) == true) {
 			rangeSearch(x, y, r, node.leftChild, Neighbours);
-		}
-		
-		if (node.rightChild != undefined) {
+		} else {
 			rangeSearch(x, y, r, node.rightChild, Neighbours);
 		}
 	}
@@ -994,6 +994,25 @@ function intersects(x, y, node, r) {
 		return true;
 	} else {
 		return false;
+	}
+	
+}
+
+function isLeft (x, y, node) {
+	var axis = node.depth % 2;
+	
+	if (axis == 0) {
+		if (x <= node.position[0]) {
+			return true;
+		} else {
+			return false;
+		}
+	} else {
+		if (y <= node.position[1]) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 }
