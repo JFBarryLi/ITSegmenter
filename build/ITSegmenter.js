@@ -7,12 +7,19 @@
  * https://github.com/JFBarryLi/ITSegmenter
  *
  */
+
  
 var outputRects = {};
  
  function textSegment(imgPath, fThreshhold, eps, minPts, dia, amt, drawRects, splitRects, convertToImage, canvasId) {
-/* 
- * Parameters:
+/*
+ * INFO:
+ * -----
+ * Image Text Segmentation by detecting corners using FAST and Unsharp Masking
+ * Clustering corners together using DBSCAN with a kd-Tree data structure
+ * Drawing bounding boxes on the resulting cluster
+ *
+ * PARAM:
  * -----------
  * imgPath: 			string
  * 						File path to the image
@@ -21,7 +28,7 @@ var outputRects = {};
  * 						Fast Threshhold; Default:100, higher = less corners
  *
  * eps: 				int
- *      				Maximum distance between two points to be considered neighbours; Default:15
+ *      				Maximum distance between two p.oints to be considered neighbours; Default:15
  *
  * minPts: 				int
  *		   				Minimum number of points required to form a cluster; Default:5
@@ -45,12 +52,14 @@ var outputRects = {};
  *						Option to segment a specific canvas
  *
  *
- * Returns:
+ * RETURNS:
  * --------
  * outputRects:			obj
  *						Dicitonary of clusters and their corresponding bounding box. outputRects {} = {key = 1 : value = [[xMin1, xMax1, yMin1, yMax1],...],...}
  * 
  */
+ 
+	//Default values
 	if (fThreshhold === undefined) { fThreshhold = 100};
 	if (eps === undefined) { eps = 15};
 	if (minPts === undefined) { minPts = 5};
@@ -78,7 +87,6 @@ var outputRects = {};
 	var canvasf = document.createElement("CANVAS");	
 	
 	if (convertToImage == 0 && canvasId === undefined) {
-		//canvaso.setAttribute("style", "display:block; margin-left: auto; margin-right: auto;");
 		document.body.appendChild(canvaso);
 	}
 	
@@ -126,7 +134,6 @@ var outputRects = {};
 			var fImg = document.createElement("img")
 			//Set the src of the img element to canvaso
 			fImg.setAttribute('src', canvaso.toDataURL("image/png"));
-			//fImg.setAttribute("style", "display:block; margin-left: auto; margin-right: auto;");
 			document.body.appendChild(fImg);
 		}
 		
@@ -141,7 +148,12 @@ var outputRects = {};
 
 function findCorners(ctx, width, height, fThreshhold) {
 /*
- * Parameters:
+ * INFO:
+ * -----
+ * Features from Accelerated Segment Test (FAST) Corner detection
+ * https://github.com/eduardolundgren/tracking.js/blob/master/src/features/Fast.js
+ *
+ * PARAM:
  * -----------
  * ctx: 				obj 
  *						Canvas context object
@@ -154,11 +166,11 @@ function findCorners(ctx, width, height, fThreshhold) {
  *
  * fThreshhold: 		int
  *						FAST threshhold 
- * Returns:
+ * RETURNS:
  * --------
  * outArr:				array
  *		   				[[x1,y1],[x2,y2],...]
-*/	
+ */	
 	var outArr = [];
 	Fast.THRESHOLD = fThreshhold;
 	
@@ -179,7 +191,11 @@ function findCorners(ctx, width, height, fThreshhold) {
 
 function textRect(ctx, P) {
 /*
- * Parameters:
+ * INFO:
+ * -----
+ * Draw bounding boxes for each cluster
+ *
+ * PARAM:
  * -----------
  * ctx: 				obj 
  *						Canvas context object
@@ -187,13 +203,13 @@ function textRect(ctx, P) {
  * P: 					array
  *        				Output of DBSCAN; P = {key = 1 : value = [[x1,y1],[x2,y2],...], ...}
  *
- * Returns:
+ * RETURNS:
  * --------
  * rects:				obj
  *						Dicitonary of clusters and their corresponding bounding box. rects {} = {key = 1 : value = [[xMin1, xMax1, yMin1, yMax1],...],...}
  *
  *
-*/	
+ */	
 	var rects = {};	
 	var centroids = [];
 	
@@ -230,7 +246,11 @@ function textRect(ctx, P) {
 
 function drawPoly(ctx, UL, LL, LR, UR) {
 /*
- * Parameters:
+ * INFO:
+ * -----
+ * Draw polygons
+ *
+ * PARAM:
  * -----------
  * ctx: 			obj 
  *					Canvas context object
@@ -259,7 +279,11 @@ function drawPoly(ctx, UL, LL, LR, UR) {
 
 function cropRects(rects,img) {
 /*
- * Parameters:
+ * INFO:
+ * -----
+ * Crop bounding boxes out of an image
+ *
+ * PARAM:
  * -----------
  * rects:			obj
  *					Dicitonary of clusters and their corresponding bounding box. rects {} = {key = 1 : value = [[xMin1, xMax1, yMin1, yMax1],...],...}
@@ -284,7 +308,6 @@ function cropRects(rects,img) {
 		
 		//Set image src to tempCanvas DataURL
 		cImg.setAttribute('src', tempCanvas.toDataURL("image/png"));
-		//cImg.setAttribute("style", "display:block; margin-left: auto; margin-right: auto;");
 		document.body.appendChild(cImg);
 	}
 
@@ -293,7 +316,12 @@ function cropRects(rects,img) {
 
 function scaleCanvas(scale, canvasOutput, canvasOriginal) {
 /*
- * Parameters:
+ * INFO:
+ * -----
+ * Scale canvas
+ * Use for down sampling a canvas prior to processing
+ *
+ * PARAM:
  * -----------
  * scale:			float
  *					Scalar parameter for canvas width and height
@@ -313,7 +341,7 @@ function scaleCanvas(scale, canvasOutput, canvasOriginal) {
 	canvasOutput.height = canvasOriginal.height * scale;
 
 	var ctx = canvasOutput.getContext("2d");
-	ctx.drawImage(canvasOriginal, 0, 0, w, h, 0, 0, scale*w, scale*h);
+	ctx.drawImage(canvasOriginal, 0, 0, w, h, 0, 0, scale * w, scale * h);
 	
 }
 
@@ -326,165 +354,14 @@ function include(url) {
  *
  */			
 	
-    var head = document.getElementsByTagName('head')[0];
+	var head = document.getElementsByTagName('head')[0];
     var script = document.createElement('script');
     script.type = 'text/javascript';
     script.src = url;
     head.appendChild(script);
 }
 
-function sharpen(ctx, w, h, dia, amt) {
-/*
- * Parameters:
- * -----------
- * ctx: 			obj 
- *					Canvas context object
- *
- * w: 				int
- *					Width of the image
- *
- * h: 				int
- *					Height of the image
- *
- * dia: 			float
- *					diameter Gaussian blur diameter, must be greater than 1.
- *
- * amt: 			float
- *					Scalar of Unsharp Mask
- *
-*/	
-	
-	var outputData = ctx.createImageData(w, h);
-	
-	var srcBuff = ctx.getImageData(0, 0, w, h).data;
-	
-	//Gaussian Blur on the image
-	var blurred = TImage.blur(srcBuff, w, h, dia);
-	
- 	//Create an unsharpMask by subtracting the Gaussian Blurred image from the original
-	var unsharpMask = new Uint8ClampedArray(w*h*4);
-		for (var i = 0; i < unsharpMask.length; i++) {
-			unsharpMask[i] = srcBuff[i] - blurred[i];
-		}
-	
-	//Add the unsharpMask to the original image, thus emphasizing the edges
-	for (i = 0; i < outputData.data.length; i++) {
-		outputData.data[i] = srcBuff[i] + amt * unsharpMask[i];
-    }
-	
-	ctx.putImageData(outputData, 0, 0);
-	
-}
-
-
-/* --------------------------------------------------------------------------------------------------------------- */
-
-
-
-/**
- * Javascript Implementation of DBSCAN using K-Dimensional trees for Range Query
- * 
- */
- 
-function DBSCAN(arr, eps, minPts) {
-        
-/*
- * Parameters:
- * -----------
- * arr: 			Array: [[x1, y1], [x2,y2], ...]
- *					The input array to DBSCAN, where x and y correspond to the coordinates of a point.
- *
- * eps: 			int
- *      			Maximum distance between two points to be considered neighbours
- *
- * minPts: 			int
- *		   			Minimum number of points required to form a cluster
- *
- * Returns:
- * --------
- * clusters: 		obj
- *		   			clusters = {key = clusterID : value = [[x1,y1],[x2,y2],...], ...}
-*/
-
-	var index = kdbush(arr);	
-	var cluster_id = {};
-	
-	//Cluster counter
-	var C = 0 
-	for (var i = 0; i < arr.length; i++) {
-		
-		//Check if already processed
-		if (cluster_id[arr[i]] != undefined) { continue; } 
-		//Find neighbours
-		N = RangeQuery(arr, arr[i], eps, index); 
-		
-		if (N.length < minPts) {
-			//Noise points
-			cluster_id[arr[i]] = 'noise';
-			continue;
-		}
-		
-		//Next cluster
-		C = C + 1; 
-		
-		//Expand Cluster --------------------------------------------------------------
-		
-		//Label initial point
-		cluster_id[arr[i]] = C;
-		
-		//Seed set
-		//Seed set should be the Neighbours set - current point, but it doesn't make any difference, since it will just get ignored
-		var S = N;
-		
-		for (var j = 0; j < S.length; j++) {
-			//Change noise to border point
-			if (cluster_id[S[j]] == 'noise') { 
-				cluster_id[S[j]] = C; 					
-			} 							
-			//Check if already processed
-			if (cluster_id[S[j]] != undefined) { continue; } 
-			
-			//Label neighbour
-			cluster_id[S[j]] = C
-			
-			//Find neighbours
-			N = RangeQuery(arr, S[j], eps, index);
-			
-			//Density check
-			if (N.length >= minPts) {
-				//Add new neighbours to seed set
-				S.push.apply(S,N); //Theorectically incorrect, but practically the same result as a union and much faster
-				//S = [...new Set([...S, ...N])]; //Only works for ES6
-			}
-		}		
-	}
-	 
-	var clusters = {};
-	//This for loop converts cluster_id {key = [x,y]: value = cluster_id,...} to clusters{cluster_id : value = [[x1,y1],[x2,y2],...],...}
-	for (var key in cluster_id) {	
-		if (!(cluster_id[key] in clusters)) {							
-			//Create a new key in the dicitonary
-			clusters[cluster_id[key]] = [];	
-		}
-		//Append coordinates to a given key
-		clusters[cluster_id[key]].push(key.split(","));
-	}
-	return clusters;
-
-}
-function RangeQuery(arr, Pt, eps, index) {
-	//RangeQuery in a k-d tree 
-	var Neighbours = index.within(Pt[0], Pt[1], eps).map(function(id) { return arr[id]; });
-	return Neighbours;
-}
-
-function distFunc(Q, P) {
-	//Euclidean distance
-	D = Math.sqrt(Math.pow((P[0]-Q[0]),2)+Math.pow((P[1]-Q[1]),2)); 	
-	return D;
-}
-
-/* --------------------------------------------------------------------------------------------------------------- */
+/*---------------------------------------------------------------------------------------------------*/
 
 /**
  * tracking - A modern approach for Computer Vision on the web.
@@ -746,7 +623,6 @@ function distFunc(Q, P) {
   };
 }());
 
-
 (function() {
   /**
    * TImage utility.
@@ -754,132 +630,6 @@ function distFunc(Q, P) {
    * @constructor
    */
   TImage = {};
-
-  /**
-   * Computes gaussian blur. Adapted from
-   * https://github.com/kig/canvasfilters.
-   * @param {pixels} pixels The pixels in a linear [r,g,b,a,...] array.
-   * @param {number} width The image width.
-   * @param {number} height The image height.
-   * @param {number} diameter Gaussian blur diameter, must be greater than 1.
-   * @return {array} The edge pixels in a linear [r,g,b,a,...] array.
-   */
-  TImage.blur = function(pixels, width, height, diameter) {
-    diameter = Math.abs(diameter);
-    if (diameter <= 1) {
-      throw new Error('Diameter should be greater than 1.');
-    }
-    var radius = diameter / 2;
-    var len = Math.ceil(diameter) + (1 - (Math.ceil(diameter) % 2));
-    var weights = new Float32Array(len);
-    var rho = (radius + 0.5) / 3;
-    var rhoSq = rho * rho;
-    var gaussianFactor = 1 / Math.sqrt(2 * Math.PI * rhoSq);
-    var rhoFactor = -1 / (2 * rho * rho);
-    var wsum = 0;
-    var middle = Math.floor(len / 2);
-    for (var i = 0; i < len; i++) {
-      var x = i - middle;
-      var gx = gaussianFactor * Math.exp(x * x * rhoFactor);
-      weights[i] = gx;
-      wsum += gx;
-    }
-    for (var j = 0; j < weights.length; j++) {
-      weights[j] /= wsum;
-    }
-    return this.separableConvolve(pixels, width, height, weights, weights, false);
-  };
-
-  /**
-   * Computes the integral image for summed, squared, rotated and sobel pixels.
-   * @param {array} pixels The pixels in a linear [r,g,b,a,...] array to loop
-   *     through.
-   * @param {number} width The image width.
-   * @param {number} height The image height.
-   * @param {array} opt_integralTImage Empty array of size `width * height` to
-   *     be filled with the integral image values. If not specified compute sum
-   *     values will be skipped.
-   * @param {array} opt_integralTImageSquare Empty array of size `width *
-   *     height` to be filled with the integral image squared values. If not
-   *     specified compute squared values will be skipped.
-   * @param {array} opt_tiltedIntegralTImage Empty array of size `width *
-   *     height` to be filled with the rotated integral image values. If not
-   *     specified compute sum values will be skipped.
-   * @param {array} opt_integralTImageSobel Empty array of size `width *
-   *     height` to be filled with the integral image of sobel values. If not
-   *     specified compute sobel filtering will be skipped.
-   * @static
-   */
-  TImage.computeIntegralTImage = function(pixels, width, height, opt_integralTImage, opt_integralTImageSquare, opt_tiltedIntegralTImage, opt_integralTImageSobel) {
-    if (arguments.length < 4) {
-      throw new Error('You should specify at least one output array in the order: sum, square, tilted, sobel.');
-    }
-    var pixelsSobel;
-    if (opt_integralTImageSobel) {
-      pixelsSobel = TImage.sobel(pixels, width, height);
-    }
-    for (var i = 0; i < height; i++) {
-      for (var j = 0; j < width; j++) {
-        var w = i * width * 4 + j * 4;
-        var pixel = ~~(pixels[w] * 0.299 + pixels[w + 1] * 0.587 + pixels[w + 2] * 0.114);
-        if (opt_integralTImage) {
-          this.computePixelValueSAT_(opt_integralTImage, width, i, j, pixel);
-        }
-        if (opt_integralTImageSquare) {
-          this.computePixelValueSAT_(opt_integralTImageSquare, width, i, j, pixel * pixel);
-        }
-        if (opt_tiltedIntegralTImage) {
-          var w1 = w - width * 4;
-          var pixelAbove = ~~(pixels[w1] * 0.299 + pixels[w1 + 1] * 0.587 + pixels[w1 + 2] * 0.114);
-          this.computePixelValueRSAT_(opt_tiltedIntegralTImage, width, i, j, pixel, pixelAbove || 0);
-        }
-        if (opt_integralTImageSobel) {
-          this.computePixelValueSAT_(opt_integralTImageSobel, width, i, j, pixelsSobel[w]);
-        }
-      }
-    }
-  };
-
-  /**
-   * Helper method to compute the rotated summed area table (RSAT) by the
-   * formula:
-   *
-   * RSAT(x, y) = RSAT(x-1, y-1) + RSAT(x+1, y-1) - RSAT(x, y-2) + I(x, y) + I(x, y-1)
-   *
-   * @param {number} width The image width.
-   * @param {array} RSAT Empty array of size `width * height` to be filled with
-   *     the integral image values. If not specified compute sum values will be
-   *     skipped.
-   * @param {number} i Vertical position of the pixel to be evaluated.
-   * @param {number} j Horizontal position of the pixel to be evaluated.
-   * @param {number} pixel Pixel value to be added to the integral image.
-   * @static
-   * @private
-   */
-  TImage.computePixelValueRSAT_ = function(RSAT, width, i, j, pixel, pixelAbove) {
-    var w = i * width + j;
-    RSAT[w] = (RSAT[w - width - 1] || 0) + (RSAT[w - width + 1] || 0) - (RSAT[w - width - width] || 0) + pixel + pixelAbove;
-  };
-
-  /**
-   * Helper method to compute the summed area table (SAT) by the formula:
-   *
-   * SAT(x, y) = SAT(x, y-1) + SAT(x-1, y) + I(x, y) - SAT(x-1, y-1)
-   *
-   * @param {number} width The image width.
-   * @param {array} SAT Empty array of size `width * height` to be filled with
-   *     the integral image values. If not specified compute sum values will be
-   *     skipped.
-   * @param {number} i Vertical position of the pixel to be evaluated.
-   * @param {number} j Horizontal position of the pixel to be evaluated.
-   * @param {number} pixel Pixel value to be added to the integral image.
-   * @static
-   * @private
-   */
-  TImage.computePixelValueSAT_ = function(SAT, width, i, j, pixel) {
-    var w = i * width + j;
-    SAT[w] = (SAT[w - width] || 0) + (SAT[w - 1] || 0) + pixel - (SAT[w - width - 1] || 0);
-  };
 
   /**
    * Converts a color from a colorspace based on an RGB color model to a
@@ -917,334 +667,949 @@ function distFunc(Q, P) {
     return gray;
   };
 
-  /**
-   * Fast horizontal separable convolution. A point spread function (PSF) is
-   * said to be separable if it can be broken into two one-dimensional
-   * signals: a vertical and a horizontal projection. The convolution is
-   * performed by sliding the kernel over the image, generally starting at the
-   * top left corner, so as to move the kernel through all the positions where
-   * the kernel fits entirely within the boundaries of the image. Adapted from
-   * https://github.com/kig/canvasfilters.
-   * @param {pixels} pixels The pixels in a linear [r,g,b,a,...] array.
-   * @param {number} width The image width.
-   * @param {number} height The image height.
-   * @param {array} weightsVector The weighting vector, e.g [-1,0,1].
-   * @param {number} opaque
-   * @return {array} The convoluted pixels in a linear [r,g,b,a,...] array.
-   */
-  TImage.horizontalConvolve = function(pixels, width, height, weightsVector, opaque) {
-    var side = weightsVector.length;
-    var halfSide = Math.floor(side / 2);
-    var output = new Float32Array(width * height * 4);
-    var alphaFac = opaque ? 1 : 0;
-	
-	var sy, sx, offset, r, g, b, a, scy, scx, poffset, wt;
-
-    for (var y = 0; y < height; y++) {
-      for (var x = 0; x < width; x++) {
-        sy = y;
-        sx = x;
-        offset = (y * width + x) * 4;
-        r = 0;
-        g = 0;
-        b = 0;
-        a = 0;
-        for (var cx = 0; cx < side; cx++) {
-          scy = sy;
-          scx = Math.min(width - 1, Math.max(0, sx + cx - halfSide));
-          poffset = (scy * width + scx) * 4;
-          wt = weightsVector[cx];
-          r += pixels[poffset] * wt;
-          g += pixels[poffset + 1] * wt;
-          b += pixels[poffset + 2] * wt;
-          a += pixels[poffset + 3] * wt;
-        }
-        output[offset] = r;
-        output[offset + 1] = g;
-        output[offset + 2] = b;
-        output[offset + 3] = a + alphaFac * (255 - a);
-      }
-    }
-    return output;
-  };
-
-  /**
-   * Fast vertical separable convolution. A point spread function (PSF) is
-   * said to be separable if it can be broken into two one-dimensional
-   * signals: a vertical and a horizontal projection. The convolution is
-   * performed by sliding the kernel over the image, generally starting at the
-   * top left corner, so as to move the kernel through all the positions where
-   * the kernel fits entirely within the boundaries of the image. Adapted from
-   * https://github.com/kig/canvasfilters.
-   * @param {pixels} pixels The pixels in a linear [r,g,b,a,...] array.
-   * @param {number} width The image width.
-   * @param {number} height The image height.
-   * @param {array} weightsVector The weighting vector, e.g [-1,0,1].
-   * @param {number} opaque
-   * @return {array} The convoluted pixels in a linear [r,g,b,a,...] array.
-   */
-  TImage.verticalConvolve = function(pixels, width, height, weightsVector, opaque) {
-    var side = weightsVector.length;
-    var halfSide = Math.floor(side / 2);
-    var output = new Float32Array(width * height * 4);
-    var alphaFac = opaque ? 1 : 0;
-
-	var sy, sx, offset, r, g, b, a, scy, scx, poffset, wt;
-	
-    for (var y = 0; y < height; y++) {
-      for (var x = 0; x < width; x++) {
-        sy = y;
-        sx = x;
-        offset = (y * width + x) * 4;
-        r = 0;
-        g = 0;
-        b = 0;
-        a = 0;
-        for (var cy = 0; cy < side; cy++) {
-          scy = Math.min(height - 1, Math.max(0, sy + cy - halfSide));
-          scx = sx;
-          poffset = (scy * width + scx) * 4;
-          wt = weightsVector[cy];
-          r += pixels[poffset] * wt;
-          g += pixels[poffset + 1] * wt;
-          b += pixels[poffset + 2] * wt;
-          a += pixels[poffset + 3] * wt;
-        }
-        output[offset] = r;
-        output[offset + 1] = g;
-        output[offset + 2] = b;
-        output[offset + 3] = a + alphaFac * (255 - a);
-      }
-    }
-    return output;
-  };
-
-  /**
-   * Fast separable convolution. A point spread function (PSF) is said to be
-   * separable if it can be broken into two one-dimensional signals: a
-   * vertical and a horizontal projection. The convolution is performed by
-   * sliding the kernel over the image, generally starting at the top left
-   * corner, so as to move the kernel through all the positions where the
-   * kernel fits entirely within the boundaries of the image. Adapted from
-   * https://github.com/kig/canvasfilters.
-   * @param {pixels} pixels The pixels in a linear [r,g,b,a,...] array.
-   * @param {number} width The image width.
-   * @param {number} height The image height.
-   * @param {array} horizWeights The horizontal weighting vector, e.g [-1,0,1].
-   * @param {array} vertWeights The vertical vector, e.g [-1,0,1].
-   * @param {number} opaque
-   * @return {array} The convoluted pixels in a linear [r,g,b,a,...] array.
-   */
-  TImage.separableConvolve = function(pixels, width, height, horizWeights, vertWeights, opaque) {
-    var vertical = this.verticalConvolve(pixels, width, height, vertWeights, opaque);
-    return this.horizontalConvolve(vertical, width, height, horizWeights, opaque);
-  };
-
-  /**
-   * Compute image edges using Sobel operator. Computes the vertical and
-   * horizontal gradients of the image and combines the computed images to
-   * find edges in the image. The way we implement the Sobel filter here is by
-   * first grayscaling the image, then taking the horizontal and vertical
-   * gradients and finally combining the gradient images to make up the final
-   * image. Adapted from https://github.com/kig/canvasfilters.
-   * @param {pixels} pixels The pixels in a linear [r,g,b,a,...] array.
-   * @param {number} width The image width.
-   * @param {number} height The image height.
-   * @return {array} The edge pixels in a linear [r,g,b,a,...] array.
-   */
-  TImage.sobel = function(pixels, width, height) {
-    pixels = this.grayscale(pixels, width, height, true);
-    var output = new Float32Array(width * height * 4);
-    var sobelSignVector = new Float32Array([-1, 0, 1]);
-    var sobelScaleVector = new Float32Array([1, 2, 1]);
-    var vertical = this.separableConvolve(pixels, width, height, sobelSignVector, sobelScaleVector);
-    var horizontal = this.separableConvolve(pixels, width, height, sobelScaleVector, sobelSignVector);
-
-    for (var i = 0; i < output.length; i += 4) {
-      var v = vertical[i];
-      var h = horizontal[i];
-      var p = Math.sqrt(h * h + v * v);
-      output[i] = p;
-      output[i + 1] = p;
-      output[i + 2] = p;
-      output[i + 3] = 255;
-    }
-
-    return output;
-  };
-
-  /**
-   * Equalizes the histogram of a grayscale image, normalizing the
-   * brightness and increasing the contrast of the image.
-   * @param {pixels} pixels The grayscale pixels in a linear array.
-   * @param {number} width The image width.
-   * @param {number} height The image height.
-   * @return {array} The equalized grayscale pixels in a linear array.
-   */
-  TImage.equalizeHist = function(pixels, width, height){
-    var equalized = new Uint8ClampedArray(pixels.length);
-
-    var histogram = new Array(256);
-    for(var i=0; i < 256; i++) histogram[i] = 0;
-
-    for(var i=0; i < pixels.length; i++){
-      equalized[i] = pixels[i];
-      histogram[pixels[i]]++;
-    }
-
-    var prev = histogram[0];
-    for(var i=0; i < 256; i++){
-      histogram[i] += prev;
-      prev = histogram[i];
-    }
-
-    var norm = 255 / pixels.length;
-    for(var i=0; i < pixels.length; i++)
-      equalized[i] = (histogram[pixels[i]] * norm + 0.5) | 0;
-
-    return equalized;
-  }
-
 }());
 
+/*-------------------------------------------------------------------------------------------------*/
 
-/* --------------------------------------------------------------------------------------------------------------- */
+/**
+ * Author: Barry Li
+ * Javascript Unsharp Masking
+ *
+ * Image + negative of Gaussian blurred image
+ * Gaussian blur is approximated by 3 box blur
+ *
+ * https://github.com/JFBarryLi/ITSegmenter
+ *
+ */
+
+function sharpen(ctx, w, h, dia, amt) {
+/*
+ * INFO:
+ * -----
+ * Convolution image filter to sharpen digital image using Unsharp Masking
+ * Gaussian blur is approximated with 3 passes of a box blur
+ * Box blur is separated into horizontal and vertical blur
+ *
+ * PARAM:
+ * -----------
+ * ctx: 			obj 
+ *					Canvas context object
+ *
+ * w: 				int
+ *					Width of the image
+ *
+ * h: 				int
+ *					Height of the image
+ *
+ * dia: 			float
+ *					diameter Gaussian blur diameter, must be greater than 1.
+ *
+ * amt: 			float
+ *					Scalar of Unsharp Mask
+ *
+ */	
+	
+	var outputData = ctx.createImageData(w, h);
+	
+	var srcBuff = ctx.getImageData(0, 0, w, h).data;
+	
+	//Gaussian Blur on the image
+	var blurred = gaussBlur(srcBuff, w, h, dia);
+ 	//Create an unsharpMask by subtracting the Gaussian Blurred image from the original
+	var unsharpMask = new Uint8ClampedArray(w*h*4);
+		for (var i = 0; i < unsharpMask.length; i++) {
+			unsharpMask[i] = srcBuff[i] - blurred[i];
+		}
+	
+	//Add the unsharpMask to the original image, thus emphasizing the edges
+	for (i = 0; i < outputData.data.length; i++) {
+		outputData.data[i] = srcBuff[i] + amt * unsharpMask[i];
+    }
+	
+	ctx.putImageData(outputData, 0, 0);
+	
+}
+
+function gaussBlur(srcBuff, w, h, dia) {
+/*
+ * INFO:
+ * -----
+ * Gaussian blur approximation by passing Box Blur 3 times
+ *
+ * PARAM:
+ * -----------
+ * srcBuff: 			Uint8ClampedArray
+ *						Source image data buffer
+ *
+ * w: 					int
+ *        				Width of canvas
+ *
+ * h: 					int
+ *        				Height of canvas
+ *
+ * dia: 				float
+ *        				Diameter of blur
+ *
+ * RETURNS:
+ * --------
+ * boxBlurred3:			Float32Array
+ *						Boxblurred 3 times image data [R, G, B, A, R2, G2, B2, A2, ...]
+ *
+ *
+ */		
+
+	//Calculate ideal kernel sizes
+    var bxs = boxesForGauss(dia/4, 3);
+	
+	//Box Blur 3 times to approximate Gaussian blur
+    var boxBlurred1 = boxBlur(srcBuff, w, h, bxs[0]);
+	var boxBlurred2 = boxBlur(boxBlurred1, w, h, bxs[1]);
+	var boxBlurred3 = boxBlur(boxBlurred2, w, h, bxs[2]);
+	return boxBlurred3;
+}
+
+function boxesForGauss(sigma, n) {
+/*
+ * INFO:
+ * -----
+ * Calculates optimal box blur size for each passes to approximate Gaussian Blur
+ * http://www.peterkovesi.com/papers/FastGaussianSmoothing.pdf
+ *
+ * PARAM:
+ * -----------
+ * sigma: 				float
+ *						Standard deviation for Gaussian Blur
+ *
+ * n: 					int
+ *        				Number of passes
+ *
+ * RETURNS:
+ * --------
+ * sizes:				Array
+ *						Array of box blur sizes for each pass
+ *
+ *
+ */	
+	
+	//Ideal width of kernel
+    var wIdeal = Math.sqrt((12 * sigma * sigma / n) + 1);
+	
+	//First odd integer less than wIdeal
+    var wl = Math.floor(wIdeal);  
+	
+	if(wl % 2 == 0) {
+		wl--;
+	}
+	
+	//First odd integer greater than wIdeal
+    var wu = wl + 2;
+	
+	//Ideal number of passes
+    var mIdeal = (12 * sigma * sigma - n * wl * wl - 4 * n * wl - 3 * n) / (-4 * wl - 4);
+    var m = Math.round(mIdeal);
+		
+	//Ideal width of kernel for each pass
+    var sizes = [];  
+	for (var i=0; i<n; i++) {
+		sizes.push(i < m ? wl:wu);
+	}
+    return sizes;
+	
+}
+
+function boxBlur(srcBuff, w, h, kernelWidth) {
+/*
+ * INFO:
+ * -----
+ * Box Blur by separable convolution
+ * Vertical convolve then horizontal convolve
+ *
+ * PARAM:
+ * -----------
+ * srcBuff: 			Uint8ClampedArray
+ *						Source image data buffer
+ *
+ * w: 					int
+ *        				Width of canvas
+ *
+ * h: 					int
+ *        				Height of canvas
+ *
+ * kernelWidth: 		int
+ *        				Width of the convolving kernel
+ *
+ * RETURNS:
+ * --------
+ * blurred:				Float32Array
+ *						Blurred image data [R, G, B, A, R2, G2, B2, A2, ...]
+ *
+ *
+ */			
+
+	var vertical = boxBlurV(srcBuff, w, h, kernelWidth);
+	var blurred = boxBlurH(vertical, w, h, kernelWidth);
+	return blurred;
+}
+
+function boxBlurV(srcBuff, w, h, kernelWidth) {
+/*
+ * INFO:
+ * -----
+ * Vertical convolution
+ *
+ * PARAM:
+ * -----------
+ * srcBuff: 			Uint8ClampedArray
+ *						Source image data buffer
+ *
+ * w: 					int
+ *        				Width of canvas
+ *
+ * h: 					int
+ *        				Height of canvas
+ *
+ * kernelWidth: 		int
+ *        				Width of the convolving kernel
+ *
+ * RETURNS:
+ * --------
+ * output:				Float32Array
+ *						Vertically convolved image data [R, G, B, A, R2, G2, B2, A2, ...]
+ *
+ *
+ */	
+ 
+    var halfkernelWidth = Math.floor(kernelWidth / 2);
+    var output = new Float32Array(w * h * 4);
+
+	var sy, sx, offset, r, g, b, a, scy, scx, poffset, wt;
+	
+	//Loop through each column
+	for (var x = 0; x < w; x++) {
+		
+		//Loop through each cell in the column
+		for (var y = 0; y < h; y++) {
+			sy = y;
+			sx = x;
+			offset = (y * w + x) * 4;
+			r = 0;
+			g = 0;
+			b = 0;
+			a = 0;
+			
+			//Sum up the values on the column based on the kernel size for each channel
+			for (var cy = 0; cy < kernelWidth; cy++) {
+				scy = Math.min(h - 1, Math.max(0, sy + cy - halfkernelWidth));
+				scx = sx;
+				poffset = (scy * w + scx) * 4;
+				r += srcBuff[poffset];
+				g += srcBuff[poffset + 1];
+				b += srcBuff[poffset + 2];
+				a += srcBuff[poffset + 3];
+			}
+			
+			//Setting output image data to average value for each channel
+			wt = 1 / kernelWidth
+			output[offset] = r * wt;
+			output[offset + 1] = g * wt;
+			output[offset + 2] = b * wt;
+			output[offset + 3] = a * wt;
+		}
+	}
+    return output;
+}
 
 
-//https://github.com/mourner/kdbush
-//Author: Mourner
-!function(t, o) {
-    "object" == typeof exports && "undefined" != typeof module ? module.exports = o() : "function" == typeof define && define.amd ? define(o) : t.kdbush = o()
-}(this, function() {
-    "use strict";
-    function e(t, o, n, r, i, s) {
-        if (!(i - r <= n)) {
-            var h = Math.floor((r + i) / 2);
-            !function t(o, n, r, i, s, h) {
-                for (; i < s; ) {
-                    if (600 < s - i) {
-                        var e = s - i + 1
-                          , u = r - i + 1
-                          , f = Math.log(e)
-                          , p = .5 * Math.exp(2 * f / 3)
-                          , a = .5 * Math.sqrt(f * p * (e - p) / e) * (u - e / 2 < 0 ? -1 : 1)
-                          , d = Math.max(i, Math.floor(r - u * p / e + a))
-                          , c = Math.min(s, Math.floor(r + (e - u) * p / e + a));
-                        t(o, n, r, d, c, h)
-                    }
-                    var l = n[2 * r + h]
-                      , v = i
-                      , g = s;
-                    for (M(o, n, i, r),
-                    n[2 * s + h] > l && M(o, n, i, s); v < g; ) {
-                        for (M(o, n, v, g),
-                        v++,
-                        g--; n[2 * v + h] < l; )
-                            v++;
-                        for (; n[2 * g + h] > l; )
-                            g--
-                    }
-                    n[2 * i + h] === l ? M(o, n, i, g) : M(o, n, ++g, s),
-                    g <= r && (i = g + 1),
-                    r <= g && (s = g - 1)
-                }
-            }(t, o, h, r, i, s % 2),
-            e(t, o, n, r, h - 1, s + 1),
-            e(t, o, n, h + 1, i, s + 1)
-        }
-    }
-    function M(t, o, n, r) {
-        i(t, n, r),
-        i(o, 2 * n, 2 * r),
-        i(o, 2 * n + 1, 2 * r + 1)
-    }
-    function i(t, o, n) {
-        var r = t[o];
-        t[o] = t[n],
-        t[n] = r
-    }
-    function m(t, o, n, r) {
-        var i = t - n
-          , s = o - r;
-        return i * i + s * s
-    }
-    function s(t, o, n, r, i) {
-        o = o || h,
-        n = n || u,
-        i = i || Array,
-        this.nodeSize = r || 64,
-        this.points = t,
-        this.ids = new i(t.length),
-        this.coords = new i(2 * t.length);
-        for (var s = 0; s < t.length; s++)
-            this.ids[s] = s,
-            this.coords[2 * s] = o(t[s]),
-            this.coords[2 * s + 1] = n(t[s]);
-        e(this.ids, this.coords, this.nodeSize, 0, this.ids.length - 1, 0)
-    }
-    function h(t) {
-        return t[0]
-    }
-    function u(t) {
-        return t[1]
-    }
-    return s.prototype = {
-        range: function(t, o, n, r) {
-            return function(t, o, n, r, i, s, h) {
-                for (var e, u, f = [0, t.length - 1, 0], p = []; f.length; ) {
-                    var a = f.pop()
-                      , d = f.pop()
-                      , c = f.pop();
-                    if (d - c <= h)
-                        for (var l = c; l <= d; l++)
-                            e = o[2 * l],
-                            u = o[2 * l + 1],
-                            n <= e && e <= i && r <= u && u <= s && p.push(t[l]);
-                    else {
-                        var v = Math.floor((c + d) / 2);
-                        e = o[2 * v],
-                        u = o[2 * v + 1],
-                        n <= e && e <= i && r <= u && u <= s && p.push(t[v]);
-                        var g = (a + 1) % 2;
-                        (0 === a ? n <= e : r <= u) && (f.push(c),
-                        f.push(v - 1),
-                        f.push(g)),
-                        (0 === a ? e <= i : u <= s) && (f.push(v + 1),
-                        f.push(d),
-                        f.push(g))
-                    }
-                }
-                return p
-            }(this.ids, this.coords, t, o, n, r, this.nodeSize)
-        },
-        within: function(t, o, n) {
-            return function(t, o, n, r, i, s) {
-                for (var h = [0, t.length - 1, 0], e = [], u = i * i; h.length; ) {
-                    var f = h.pop()
-                      , p = h.pop()
-                      , a = h.pop();
-                    if (p - a <= s)
-                        for (var d = a; d <= p; d++)
-                            m(o[2 * d], o[2 * d + 1], n, r) <= u && e.push(t[d]);
-                    else {
-                        var c = Math.floor((a + p) / 2)
-                          , l = o[2 * c]
-                          , v = o[2 * c + 1];
-                        m(l, v, n, r) <= u && e.push(t[c]);
-                        var g = (f + 1) % 2;
-                        (0 === f ? n - i <= l : r - i <= v) && (h.push(a),
-                        h.push(c - 1),
-                        h.push(g)),
-                        (0 === f ? l <= n + i : v <= r + i) && (h.push(c + 1),
-                        h.push(p),
-                        h.push(g))
-                    }
-                }
-                return e
-            }(this.ids, this.coords, t, o, n, this.nodeSize)
-        }
-    },
-    function(t, o, n, r, i) {
-        return new s(t,o,n,r,i)
-    }
-});
+function boxBlurH(vertical, w, h, kernelWidth) {
+/*
+ * INFO:
+ * -----
+ * Horizontal convolution
+ *
+ * PARAM:
+ * -----------
+ * srcBuff: 			Uint8ClampedArray
+ *						Source image data buffer
+ *
+ * w: 					int
+ *        				Width of canvas
+ *
+ * h: 					int
+ *        				Height of canvas
+ *
+ * kernelWidth: 		int
+ *        				Width of the convolving kernel
+ *
+ * RETURNS:
+ * --------
+ * output:				Float32Array
+ *						Horizontally convolved image data [R, G, B, A, R2, G2, B2, A2, ...]
+ *
+ *
+ */		
+
+    var kernelWidth = kernelWidth;
+    var halfkernelWidth = Math.floor(kernelWidth / 2);
+    var output = new Float32Array(w * h * 4);
+	
+	var sy, sx, offset, r, g, b, a, scy, scx, poffset, wt;
+
+	//Loop through each row
+    for (var y = 0; y < h; y++) {
+		
+		//Loop through each cell in the row
+		for (var x = 0; x < w; x++) {
+			sy = y;
+			sx = x;
+			offset = (y * w + x) * 4;
+			r = 0;
+			g = 0;
+			b = 0;
+			a = 0;
+			
+			//Sum up the values on the row based on the kernel size for each channel
+			for (var cx = 0; cx < kernelWidth; cx++) {
+				scy = sy;
+				scx = Math.min(w - 1, Math.max(0, sx + cx - halfkernelWidth));
+				poffset = (scy * w + scx) * 4;
+				r += vertical[poffset];
+				g += vertical[poffset + 1];
+				b += vertical[poffset + 2];
+				a += vertical[poffset + 3];
+			}
+			
+			//Setting output image data to average value for each channel
+			wt = 1 / kernelWidth;
+			output[offset] = r * wt;
+			output[offset + 1] = g * wt;
+			output[offset + 2] = b * wt;
+			output[offset + 3] = a * wt;
+		}
+	}
+    return output;	
+}
+
+/*------------------------------------------------------------------------------------------------------*/
+
+/**
+ * Author: Barry Li
+ * Javascript DBSCAN
+ * Density-Based Spatial Clustering of Applications with Noise
+ *
+ * Groups array of points into clusters based on density
+ *
+ * https://github.com/JFBarryLi/ITSegmenter
+ *
+ */
+
+
+function DBSCAN(arr, eps, minPts) {      
+/*
+ * INFO:
+ * -----
+ * Javascript Implementation of DBSCAN
+ * Group points into cluster based on density by constructing a kdTree, then performing rangeQuery to find neighbours
+ *
+ * PARAM:
+ * -----------
+ * arr: 			Array: [[x1, y1], [x2,y2], ...]
+ *					The input array to DBSCAN, where x and y correspond to the coordinates of a point.
+ *
+ * eps: 			int
+ *      			Maximum distance between two points to be considered neighbours
+ *
+ * minPts: 			int
+ *		   			Minimum number of points required to form a cluster
+ *
+ * RETURNS:
+ * --------
+ * clusters: 		obj
+ *		   			clusters = {key = clusterID : value = [[x1,y1],[x2,y2],...], ...}
+ */
+
+	// var index = kdbush(arr);	
+	var index = new kdTree(arr);
+	var cluster_id = {};
+	
+	//Cluster counter
+	var C = 0 
+	for (var i = 0; i < arr.length; i++) {
+		
+		//Check if already processed
+		if (cluster_id[arr[i]] != undefined) { continue; } 
+		//Find neighbours
+		N = RangeQuery(arr, arr[i], eps, index); 
+		
+		if (N.length < minPts) {
+			//Noise points
+			cluster_id[arr[i]] = 'noise';
+			continue;
+		}
+		
+		//Next cluster
+		C = C + 1; 
+		
+		//Expand Cluster --------------------------------------------------------------
+		
+		//Label initial point
+		cluster_id[arr[i]] = C;
+		
+		//Seed set
+		//Seed set should be the Neighbours set / current point, but it doesn't make any difference and it's slower than not excluding the current point
+		var S = N;
+		
+		for (var j = 0; j < S.length; j++) {
+			//Change noise to border point
+			if (cluster_id[S[j]] == 'noise') { 
+				cluster_id[S[j]] = C; 					
+			} 							
+			//Check if already processed
+			if (cluster_id[S[j]] != undefined) { continue; } 
+			
+			//Label neighbour
+			cluster_id[S[j]] = C
+			
+			//Find neighbours
+			N = RangeQuery(arr, S[j], eps, index);
+			
+			//Density check
+			if (N.length >= minPts) {
+				//Add new neighbours to seed set
+				S.push.apply(S,N); //Theorectically incorrect, but practically the same result as a union and much faster
+			}
+		}		
+	}
+	 
+	var clusters = {};
+	//This for loop converts cluster_id {key = [x,y]: value = cluster_id,...} to clusters{cluster_id : value = [[x1,y1],[x2,y2],...],...}
+	for (var key in cluster_id) {	
+		if (!(cluster_id[key] in clusters)) {							
+			//Create a new key in the dicitonary
+			clusters[cluster_id[key]] = [];	
+		}
+		//Append coordinates to a given key
+		clusters[cluster_id[key]].push(key.split(","));
+	}
+	return clusters;
+
+}
+function RangeQuery(arr, Pt, eps, index) {
+/*
+ * INFO:
+ * -----
+ * Perform RangeQuery in a k-d Tree data structure
+ * Similar to KNN search
+ * Returns k-nearest neighbours within a radius of a point
+ *
+ * PARAM:
+ * -----------
+ * arr: 			Array: [[x1, y1], [x2,y2], ...]
+ *					The input array to DBSCAN, where x and y correspond to the coordinates of a point.
+ *
+ * Pt:	 			Array: [x, y]
+ *					Point array containing co-ordinates
+ *
+ * eps: 			int
+ *      			Maximum distance between two points to be considered neighbours
+ *
+ * index: 			obj
+ *		   			Indexed k-d Tree
+ *
+ * RETURN:
+ * --------
+ * Neighbours: 		Array: [[x1, y1], [x2,y2], ...]
+ *		   			Array containing neighbouring points
+ */
+ 
+	// var Neighbours = index.within(Pt[0], Pt[1], eps).map(function(id) { return arr[id]; });
+	var Neighbours = index.rangeSearch(Pt[0], Pt[1], eps);
+	return Neighbours;
+}
+
+function distFunc(Q, P) {
+/*
+ * INFO:
+ * -----
+ * Calculates the Euclidean Distance between 2 points
+ *
+ * Parameters:
+ * -----------
+ * Q:	 			Array: [x, y]
+ *					Point array containing co-ordinates
+ *
+ * P:	 			Array: [x, y]
+ *					Point array containing co-ordinates
+ *
+ * Returns:
+ * --------
+ * D: 				float
+ *		   			Distance float
+ */
+ 
+	D = Math.sqrt(Math.pow((P[0]-Q[0]),2)+Math.pow((P[1]-Q[1]),2)); 	
+	return D;
+}
+
+/*------------------------------------------------------------------------------------------------------------*/
+
+/**
+ * Author: Barry Li
+ * Javascript k-d Tree implementation
+ * 
+ * Constructs k-d Tree recursively using quickSelect for finding median
+ * Perform range search by recursing through the nodes
+ *
+ * https://github.com/JFBarryLi/ITSegmenter
+ *
+ */
+
+function kdTree(points) {
+/*
+ * INFO:
+ * -----
+ * kdTree class 
+ * initiate a new instance to construct the index
+ * call kdTree.rangeSearch(x, y, r) to query the tree
+ * tree nodes can be accessed by kdTree.nodes
+ *
+ * PARAM:
+ * -----------
+ * points: 				array: [[x1, y1], [x2,y2], ...]
+ *						The input array, where x and y correspond to the coordinates of a point
+ *
+ */
+	
+	var nodes = [];	
+	var tempPoints = points;
+	kdTreeIndex(tempPoints, 0);
+	this.nodes = nodes;
+	this.rootNode = nodes[nodes.length - 1];
+	
+	function kdTreeIndex(points, depth) {
+	/*
+	 * INFO:
+	 * -----
+	 * k-d Tree constructor
+	 * Recursively construct the tree by using quickSelect to find median
+	 * then partition the dataset into left and right node
+	 *
+	 * PARAM:
+	 * -----------
+	 * points: 				array: [[x1, y1], [x2,y2], ...]
+	 *						The input array, where x and y correspond to the coordinates of a point
+	 *
+	 * depth				int
+	 *						Tree depth, determines the dimension for partitioning
+	 *
+	 */
+		
+		
+		//axis(0) --> x-axis, axis(1) --> y-axis
+		var axis = depth % 2;
+		var len = points.length;
+		
+		//kth order statistics
+		var k = Math.floor((points.length - 1) / 2);
+		var bound = points.length - 1;
+		
+		//select median by axis from points;
+		if (k >= 0) {
+			var median = quickSelect(points, 0, bound, k, axis);
+		} else {
+			return;
+		}
+		
+		var tempNode = new node;
+		
+		//Set node position to median
+		tempNode.position = median;
+		
+		//Populate children nodes if the array contain more than 1 element and kth order is greater than 0
+		if (len > 1 && k >= 0) {
+				//kdTree points smaller or equal median
+				tempNode.leftChild = kdTreeIndex(points.slice(0, k), depth + 1);
+				//kdTree points larger median
+				tempNode.rightChild = kdTreeIndex(points.slice(k + 1, bound + 1), depth + 1);
+		}
+		
+		tempNode.depth = depth;
+		
+		nodes.push(tempNode);
+		return tempNode;
+	}
+	
+	function node(position, leftChild, rightChild, depth) {
+	/*
+	 * INFO:
+	 * -----
+	 * The node class have 4 keys:
+	 * position stores the coordinate of the node
+	 * leftChild stores another node object
+	 * rightChild stores another node objet
+	 * depth is the current depth of the node
+	 *
+	 */
+	
+		this.position = position;
+		this.leftChild = leftChild;
+		this.rightChild = rightChild;
+		this.depth = depth; 
+	}
+	
+
+	this.rangeSearch = function(x, y, r) {
+		var Neighbours = [];
+		rangeSearch(x, y, r, this.rootNode, Neighbours);
+		return Neighbours;
+	};
+		
+}
+
+function quickSelect(points, left, right, k, axis) {
+/*
+ * INFO:
+ * -----
+ * Selects the k-th smallest element of an array within left-right recursively
+ *
+ * PARAM:
+ * -----------
+ * points: 				array: [[x1, y1], [x2,y2], ...]
+ *						The input array, where x and y correspond to the coordinates of a point
+ *
+ * left:	 			int
+ *						Leftmost index
+ *
+ * right:				int
+ *						Rightmost index
+ *
+ * k:					int
+ *						kth order statistics
+ *
+ * axis:				bol
+ *						0 = x-axis, 1 = y-axis
+ *
+ * RETURNS:
+ * --------
+ * points[k]: 			int
+ *						New Pivot index
+ */
+
+	//If the array contain only one point return that point
+	if (left == right) {
+		return points[left];
+	}
+	
+	//Select a random pivotIndex between left and right
+	pivotIndex = Math.floor(Math.random() * (right - left + 1) + left);
+
+	pivotIndex = partition(points, left, right, pivotIndex, axis);
+	
+	//If pivot is in the finaly sorted position return that point else recurse
+	if (k == pivotIndex) {
+		return points[k];
+	} else if (k < pivotIndex) {
+		return quickSelect(points, left, pivotIndex - 1, k, axis);
+	} else {
+		return quickSelect(points, pivotIndex + 1, right, k, axis);
+	}
+	
+}
+
+function partition(points, left, right, pivotIndex, axis) {
+/*
+ * INFO:
+ * -----
+ * Partition array of points about a pivot
+ *
+ * PARAM:
+ * -----------
+ * points: 				array: [[x1, y1], [x2,y2], ...]
+ *						The input array, where x and y correspond to the coordinates of a point
+ *
+ * left:	 			int
+ *						Leftmost index
+ *
+ * right:				int
+ *						Rightmost index
+ *
+ * pivotIndex:			int
+ *						Pivot index
+ *
+ * axis:				bol
+ *						0 = x-axis, 1 = y-axis
+ *
+ * RETURNS:
+ * --------
+ * storeIndex: 			int
+ *						New Pivot index
+ */
+	
+	pivotVal = points[pivotIndex][axis];
+	
+	//Move pivot to end
+	swap(points, pivotIndex, right);	
+	
+	var storeIndex = left;
+	
+	for (var i = left; i <= right - 1; i++) {
+		//If the point is smaller than the pivotVal then swap it with storeIndex and increment storeIndex
+		if (points[i][axis] < pivotVal) {
+			swap(points, storeIndex, i);
+			storeIndex++;
+		}
+	}
+	
+	//Move pivot to final position
+	swap(points, right, storeIndex);
+	
+	return storeIndex;
+}
+
+function swap(points , A, B) {
+/*
+ * INFO:
+ * -----
+ * Swap the index between points[A] and points[B]
+ *
+ * PARAM:
+ * -----------
+ * points: 			array: [[x1, y1], [x2,y2], ...]
+ *					The input array, where x and y correspond to the coordinates of a point
+ *
+ * A: 				int
+ *      			Index of point A
+ *
+ * B: 				int
+ *      			Index of point B
+ *
+ */
+
+	var swapTemp = points[A];
+	points[A] = points[B];
+	points[B] = swapTemp;
+}
+
+function rangeSearch(x, y, r, node, Neighbours) {
+/*
+ * INFO:
+ * -----
+ * Perform a circular range query with radius r, 
+ * about the query point [x, y] and 
+ * returns all points within the query range in the Neighbours array
+ *
+ * PARAM:
+ * -----------
+ *
+ * x:	 				int
+ *						query point x coordinates
+ *
+ * y:					int
+ *						query point y coordinates
+ *
+ * r:					int
+ *						radius of query circle
+ *
+ * node:	 			obj
+ *						node object 
+ *
+ * Neighbours			array: []
+ *						input array where the neighbouring points will be placed in
+ *
+ *
+ * RETURNS:
+ * --------
+ * Neighbours: 			array: [[x1, y1], [x2,y2], ...]
+ *		   				array containing neighbouring points
+ */
+
+	
+	var rSquare = r * r;
+	
+	//If the node is a leaf and its squareDist to x,y is less than rSquare, add it to the Neighbours array
+	if (node.leftChild == undefined && node.rightChild == undefined) {
+		if (squareDist(node.position, [x,y]) <= rSquare) {
+			Neighbours.push(node.position);
+		}
+		return;
+	
+	//TODO####
+	//Need to figure out how to define a node's region
+	//If a node's range is completely within the r-hypersphere then it and all its decendent are added to Neighbours
+/* 	} else if ("node's region is completely inside r") {
+		// add node and all it's decendent to Neighbourts
+		var descendants = [];
+		getDescendants(node, descendants);
+		Neighbours.push(node.position);
+		Neighbours.push.apply(Neighbours, descendants);
+		return;
+		 */
+		 
+	//If the node's range intersect the r-hypersphere, recursively search through its children	
+	} else if (intersects(x, y, node, r)) {
+		if (squareDist(node.position, [x,y]) <= rSquare) {
+			Neighbours.push(node.position);
+		}
+		
+		if (node.leftChild != undefined) {
+			rangeSearch(x, y, r, node.leftChild, Neighbours);
+		}
+		
+		if (node.rightChild != undefined) {
+			rangeSearch(x, y, r, node.rightChild, Neighbours);
+		}
+		return;
+	
+	//Traverse down the left node if it exist and the query point is on the left hyperplane
+	} else {
+		if (node.leftChild != undefined && isLeft(x, y, node) == true) {
+			rangeSearch(x, y, r, node.leftChild, Neighbours);
+		} else {
+			rangeSearch(x, y, r, node.rightChild, Neighbours);
+		}
+		return;
+	}
+	
+}
+
+function getDescendants(node, descendants) {
+/*
+ * INFO:
+ * -----
+ * Recursively push the position of a node's descendants into the descendants array
+ *
+ * PARAM:
+ * -----------
+ * node:	 			obj
+ *						node object 
+ *
+ * descendants:	 		array: [[x1, y1], [x2,y2], ...]
+ *						Point array containing descendant positions
+ *
+ */	
+	
+	
+	if (node.leftChild != undefined) {
+		descendants.push(node.leftChild.position);
+		getDescendants(node.leftChild, descendants);
+	}
+	
+	if (node.rightChild != undefined) {
+		descendants.push(node.rightChild.position);
+		getDescendants(node.rightChild, descendants);
+	}
+	
+}
+
+function intersects(x, y, node, r) {
+/*
+ * INFO:
+ * -----
+ * Check if a node intersects with a query point with radius r
+ *
+ * PARAM:
+ * -----------
+ *
+ * x:	 				int
+ *						query point x coordinates
+ *
+ * y:					int
+ *						query point y coordinates
+ *
+ * node:	 			obj
+ *						node object 
+ *
+ * r:					int
+ *						radius of query circle
+ *
+ * RETURNS:
+ * --------
+ * truth: 				bol
+ *						true/false
+ */
+	
+	var rSquare = r * r;
+	var axis = node.depth % 2;
+	
+	//compares perpendicular square distance between the node's position and the query point
+	if (axis == 0 && squareDist([x, y], [node.position[0], y]) <= rSquare) {
+		return true;	
+	} else if (axis == 1 && squareDist([x, y], [x, node.position[1]]) <= rSquare) {
+		return true;
+	} else {
+		return false;
+	}
+	
+}
+
+function squareDist(P, Q) {
+/*
+ * INFO:
+ * -----
+ * Calculates the square distance between two points to compare distance without using square roots
+ *
+ * PARAM:
+ * -----------
+ * P: 					array: [x, y]
+ *						2D Point in an array
+ *
+ * Q:	 				array: [x, y]
+ *						2D Point in an array
+ *
+ * RETURNS:
+ * --------
+ * sD: 					float
+ *						Square distance
+ */
+	
+	var dx = P[0] - Q[0];
+	var dy = P[1] - Q[1];
+	
+	sD = dx * dx + dy * dy;
+	
+	return sD;
+}
+
+function isLeft (x, y, node) {
+/*
+ * INFO:
+ * -----
+ * Check if a query point lies on the left hyperplane or right hyperplane
+ *
+ * PARAM:
+ * -----------
+ *
+ * x:	 				int
+ *						query point x coordinates
+ *
+ * y:					int
+ *						query point y coordinates
+ *
+ * node:	 			obj
+ *						node object 
+ *
+ *
+ * RETURNS:
+ * --------
+ * truth: 				bol
+ *						true/false
+ */
+ 
+	var axis = node.depth % 2;
+	
+	if (axis == 0) {
+		if (x <= node.position[0]) {
+			return true;
+		} else {
+			return false;
+		}
+	} else {
+		if (y <= node.position[1]) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+}
+
+
