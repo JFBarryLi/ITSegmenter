@@ -185,7 +185,6 @@ canvas {
 	background-color: #f25e5e;
 }
 
-
 #sidebar-title {
 	padding: 15px 8px 10px 16px;
 	border-top: none;
@@ -195,20 +194,20 @@ canvas {
 	display: block;
     margin-bottom: 0px;
 	text-decoration: none;
-
+	height: 70px;
 }
 
-#sidebar-title :hover {
-	background-color: rgb(0,0,0);
-	cursor: mouse;
-	color: rgb(255,255,255);
-	
+#sidebar-title img {
+	width: 30px;
+	height: 40px;
+	float: left;
+	margin-right: 5px;
+	margin-left: -10px;
 }
 
-#sidebar-title a:hover {
-	background-color: rgb(0,0,0);
-	cursor: mouse;
-	text-decoration: none;
+#sidebar-title div {
+	float: left;
+	width: 75%;
 }
 
 .sidebar-headings {
@@ -218,8 +217,33 @@ canvas {
     font-size: 18px;
     color: rgb(160, 160, 160);
     display: block;
+	margin-bottom: 0px;
 }
 
+#sbarGhMark {
+	position: absolute;
+	bottom: 1em;
+	left: 0;
+	right: 0;
+	text-align: center;
+	font-weight: 700;
+	font-family: monospace;
+	padding: 0;
+	cursor: pointer;
+	color: black;
+	background-color: inherit;
+}
+
+#sbarGhMark img {
+	height: 32px;
+	width: 32px;
+}
+
+@media (max-height: 650px) {
+	#sbarGhMark {
+		display: none;
+	}
+}
 
 #main-container {
 	height: 100%;
@@ -440,12 +464,13 @@ input[name="canvasSelection"] {
 	background-color: white;
 	color: #898989;
 	border: 2px solid #f25e5e;
+	text-decoration: none;
 }
 
 .srcBut:hover {
 	background-color: #f25e5e;
 	color: white;
-
+	text-decoration: none;
 }
 
 .demoBut {
@@ -454,6 +479,7 @@ input[name="canvasSelection"] {
 	color: white;
 	padding: 5px 5px;
 	width: 80px;
+	text-decoration: none;
 }
 
 .demoBut span {
@@ -478,6 +504,8 @@ input[name="canvasSelection"] {
 
 .demoBut:hover span {
 	padding-right: 15px;
+	text-decoration: none;
+	color: white;
 }
 
 .demoBut:hover span:after {
