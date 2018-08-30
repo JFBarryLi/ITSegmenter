@@ -9,6 +9,7 @@
 	<meta name="keywords" content="JavaScript,OCR,DBSCAN,Clustering,Image Processing,Text Recognition,Classification">
 	<meta name="author" content="Barry Li">
 	<meta name="description" content="Extract text regions in an image">
+	<link rel="shortcut icon" type="image/x-icon" href="img/logo.png" />
 	<link rel="manifest" href="manifest.webmanifest">
 
 	<!-- Css -->
@@ -35,8 +36,11 @@
 			<a href="index.html" id="sidebar-title">ITSegmenter</a>
 			<p class="sidebar-headings">DOCUMENTATIONS</p>
 			<a href="docs.html#/intro">Introduction</a>
-			<a href="docs.html#/its">ITSegmenter.js</a>
-			<a href="docs.html#/batch">Batch Processing</a>
+			<a href="docs.html#/usm">Unsharp Masking</a>
+			<a href="docs.html#/fast">FAST</a>
+			<a href="docs.html#/kdTree">K-D Tree</a>
+			<a href="docs.html#/dbscan">DBSCAN</a>
+			<a href="docs.html#/segImg">Segmented Image</a>
 			<p class="sidebar-headings">EXAMPLES</p>
 			<a href="demo.html">Demo</a>
 			<a href="dbscan.html">DBSCAN</a>
@@ -63,7 +67,7 @@
 				The performance of popular Optical Character Recognition (OCR) engines such as Tesseract can be greatly improved by pre-processing of the image. When texts exist in an image alongside with other objects, OCR engines often return random characters and carriage returns. To combat this problem ITSegmenter.js detect and isolate text regions in an image. <br> <br>
 			</div>
 			
-			<img src="img\processflow.png" alt="Process Flow"></img>
+			<img src="img\processflow.png" alt="Process Flow">
 			
 			<div class="main-content">
 				The first step to processing an image is to decode it into pixel data, thankfully that is a built-in feature of the image element. To access the pixel data, the image is drawn on a canvas element, it can then be accessed by the getImageData method. From there a convolution matrix filter is applied to the image data to sharpen it. This improves the results of the next step, feature detection. After sharpening the image, Features from Accelerated Segment Test (FAST) is used to find the corners in the image. Then the corners coordinates stored in an array are used to construct a k-dimensional tree. From there, the Density-based Spatial Clustering of Applications with Noise (DBSCAN) algorithm is applied to corners, which groups them together. Once the clusters are formed, bounding boxes can be drawn based on the maximum and minimum x/y values of each cluster.  <br> <br>
@@ -136,14 +140,39 @@
 			</div>
 			
 			
-			
-			<div class="main-headings" id="its">
-				<h2>ITSegmenter.js</h3>
+			<div class="main-headings" id="usm">
+				<h2>Unsharp Masking</h2>
 				<div class="content"> </div>
 			</div>
 			
 			<div class="main-content">
-				<h4 class="sub-headings">Convolution Matrix Filter</h4>
+				<h4 class="sub-headings">Placeholder</h4>
+				<pre>
+					&lt;p&gt;Place holder...&lt;/p&gt;&lt;p&gt;Place holder...&lt;/p&gt;
+				</pre>
+				Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder <br> <br>
+			</div>
+			
+			<div class="main-headings" id="fast">
+				<h2>FAST</h2>
+				<div class="content"> </div>
+			</div>
+			
+			<div class="main-content">
+				<h4 class="sub-headings">Placeholder</h4>
+				<pre>
+					&lt;p&gt;Place holder...&lt;/p&gt;&lt;p&gt;Place holder...&lt;/p&gt;
+				</pre>
+				Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder <br> <br>
+			</div>
+			
+			<div class="main-headings" id="kdTree">
+				<h2>K-D Tree</h2>
+				<div class="content"> </div>
+			</div>
+			
+			<div class="main-content">
+				<h4 class="sub-headings">Construction</h4>
 				<pre>
 					&lt;p&gt;Place holder...&lt;/p&gt;&lt;p&gt;Place holder...&lt;/p&gt;
 				</pre>
@@ -151,55 +180,39 @@
 			</div>
 			
 			<div class="main-content">
-				<h4 class="sub-headings">FAST Corner Detection</h4>
+				<h4 class="sub-headings">Range Query</h4>
 				<pre>
 					&lt;p&gt;Place holder...&lt;/p&gt;&lt;p&gt;Place holder...&lt;/p&gt;
 				</pre>
 				Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder <br> <br>
 			</div>
 			
-			<div class="main-content">
-				<h4 class="sub-headings">K-D Tree</h4>
-				<pre>
-					&lt;p&gt;Place holder...&lt;/p&gt;&lt;p&gt;Place holder...&lt;/p&gt;
-				</pre>
-				Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder <br> <br>
+			<div class="main-headings" id="dbscan">
+				<h2>DBSCAN</h2>
+				<div class="content"> </div>
 			</div>
 			
 			<div class="main-content">
-				<h4 class="sub-headings">DBSCAN</h4>
+				<h4 class="sub-headings">Placeholder</h4>
 				<pre>
 					&lt;p&gt;Place holder...&lt;/p&gt;&lt;p&gt;Place holder...&lt;/p&gt;
 				</pre>
 				Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder <br> <br>
 			</div>
 
+			<div class="main-headings" id="segImg">
+				<h2>Segmented Image</h2>
+				<div class="content"> </div>
+			</div>
+			
 			<div class="main-content">
-				<h4 class="sub-headings">Segmented Image</h4>
+				<h4 class="sub-headings">Placeholder</h4>
 				<pre>
 					&lt;p&gt;Place holder...&lt;/p&gt;&lt;p&gt;Place holder...&lt;/p&gt;
 				</pre>
 				Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder <br> <br>
 			</div>			
 				
-			
-			<div class="main-headings" id="batch">
-				<h2>Batch Processing</h4>
-			</div>
-			
-			<div class="main-content">
-				<h4 class="sub-headings">Place Holder</h4>
-				<pre>
-					&lt;p&gt;Place holder...&lt;/p&gt;&lt;p&gt;Place holder...&lt;/p&gt;
-				</pre>
-				Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder <br> <br>
-				
-				<h4 class="sub-headings">Place Holder</h4>
-				<pre>
-					&lt;p&gt;Place holder...&lt;/p&gt;&lt;p&gt;Place holder...&lt;/p&gt;
-				</pre>
-				Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder <br> <br>
-			</div>
 			
 		</div>
 	</div>
