@@ -419,3 +419,68 @@ input[name="canvasSelection"] {
 #logoBot:hover + #logoTop, #logoTop:hover {
 	transform: rotate(720deg);
 }
+
+.docBut {
+	padding: 5px 10px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	cursor: pointer;
+	border-radius: 4px;
+    -webkit-transition: 0.5s;
+    -moz-transition: 0.5s;
+    -ms-transition: 0.5s;
+    -o-transition: 0.5s;
+    transition: 0.5s;	
+	
+}
+
+.srcBut {
+	background-color: white;
+	color: #898989;
+	border: 2px solid #f25e5e;
+}
+
+.srcBut:hover {
+	background-color: #f25e5e;
+	color: white;
+
+}
+
+.demoBut {
+	background-color: #f25e5e;
+	border: 2px solid #f25e5e;
+	color: white;
+	padding: 5px 5px;
+	width: 80px;
+}
+
+.demoBut span {
+	cursor: pointer;
+	display: inline-block;
+	position: relative;
+	transition: 0.5s;
+}
+
+.demoBut span:after {
+	content: '\00bb';
+	position: absolute;
+	opacity: 0;
+	top: 0;
+	right: -15px;
+	transition: 0.5s;
+	-webkit-transition: 0.5s;
+	-moz-transition: 0.5s;
+	-ms-transition: 0.5s;
+	-o-transition: 0.5s;
+}
+
+.demoBut:hover span {
+	padding-right: 15px;
+}
+
+.demoBut:hover span:after {
+	opacity: 1;
+	right: 0;
+}
