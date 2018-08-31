@@ -60,6 +60,18 @@ function tempCanvas(src) {
 	var canvasf = document.createElement("canvas")
 	var ctxf = canvasf.getContext("2d");
 	
+	var thresh = $("#thresh").val();
+	var eps = $("#eps").val();
+	var minPts = $("#minPts").val();
+	var dia = $("#dia").val();
+	var amt = $("#amt").val();
+	
+	if (thresh == "") {thresh = 60;}
+	if (eps == "") {eps = 15;}
+	if (minPts == "") {minPts = 5;}
+	if (dia == "") {dia = 10;}
+	if (amt == "") {amt = 1;}
+	
 	image.onload = function() {
 		width = image.width;
 		height = image.height;
@@ -83,27 +95,13 @@ function tempCanvas(src) {
 				ctxd.fillRect(P[key][i][0], P[key][i][1], 3, 3);
 			}
 		}
-		
 	}
-	
 	
 }
 
 function submit() {
 	ctxd.clearRect(0, 0, width, height);
 	
-	var thresh = $("#thresh").val();
-	var eps = $("#eps").val();
-	var minPts = $("#minPts").val();
-	var dia = $("#dia").val();
-	var amt = $("#amt").val();
-	
-	
-	if (thresh == "") {thresh = 60;}
-	if (eps == "") {eps = 15;}
-	if (minPts == "") {minPts = 5;}
-	if (dia == "") {dia = 10;}
-	if (amt == "") {amt = 1;}
 	
 	if ($('#radioDemo1').prop('checked')) {
 		src = "img/demo.jpg";
