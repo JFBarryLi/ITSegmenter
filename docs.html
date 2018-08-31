@@ -77,7 +77,7 @@
 			<img src="img\processflow.png" alt="Process Flow">
 			
 			<div class="main-content">
-				To access the pixel data, the image is drawn on a canvas element, the image data can then be accessed by the getImageData method. From there a Unsharp Masking is applied to the image data to sharpen it. This improves the results of the next step, feature detection. After sharpening the image, Features from Accelerated Segment Test (FAST) is used to find the corners in the image. Then the corners coordinates stored in an array are used to construct a k-d tree. From there, the Density-based Spatial Clustering of Applications with Noise (DBSCAN) algorithm is applied to corners, which groups them into clusters. Once the clusters are formed, bounding boxes can be drawn based on the maximum and minimum x/y values of each cluster.  <br> <br>
+				To access the pixel data, the image is drawn on a canvas element, the image data can then be accessed by the getImageData method. From there an Unsharp Masking is applied to the image data to sharpen it. This improves the results of the next step, feature detection. After sharpening the image, Features from Accelerated Segment Test (FAST) is used to find the corners in the image. Then the corners coordinates stored in an array are used to construct a k-d tree. From there, the Density-based Spatial Clustering of Applications with Noise (DBSCAN) algorithm is applied to corners, which groups them into clusters. Once the clusters are formed, bounding boxes can be drawn based on the maximum and minimum x/y values of each cluster.  <br> <br>
 			</div>
 			
 			<div class="main-content">
@@ -152,12 +152,29 @@
 			</div>
 			
 			<div class="main-content">
-				<h4 class="sub-headings">Placeholder</h4>
-				<pre>
-					&lt;p&gt;Place holder...&lt;/p&gt;&lt;p&gt;Place holder...&lt;/p&gt;
-				</pre>
-				Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder <br> <br>
+				ITSegmenter.js aims to detect and isolate text regions in an image. <br>
+				textSegment is the main function to call, it has 1 required parameter and 9 optional parameters. <br>
+				The simplest usage would be to just specify the image path and use the default value for the optional parameters. <br> <br>
 
+				<pre>
+					textSegment(imgPath);
+				</pre> <br>
+				
+				Using default optional parameters the original image remains unaffected, and the coordinates of the bounding rectangle for text area will be stored in outputRects asynchronously. <br> <br>
+
+				<pre>
+					textSegment(imgPath, fThreshhold, eps, minPts, dia, amt, drawRects, splitRects, convertToImage, canvasId);
+				</pre> <br>
+				
+				<strong>fThreshhold:</strong> Fast Threshhold; Default:100, higher = less corners <br>
+				<strong>eps:</strong> Maximum distance between two points to be considered neighbours; Default:15 <br>
+				<strong>minPts:</strong> Minimum number of points required to form a cluster; Default:5 <br>
+				<strong>amt:</strong> Scalar of Unsharp Mask <br>
+				<strong>drawRects:</strong> Option to draw bounding boxes on the image; Default:0 <br>
+				<strong>splitRects:</strong> Option to split the text segments into individual images; Default:0 <br>
+				<strong>convertToImage:</strong> Option to convert canvas to image <br>
+				<strong>canvasId:</strong> Option to segment the image on a specific canvas <br> <br> <br>
+				
 				<a class="srcBut docBut" href="https://github.com/JFBarryLi/ITSegmenter/blob/master/src/ITSegmenter.js">Source</a>
 				<a class="demoBut docBut" href="demo.html"><span>demo</span></a>
 			</div>	
@@ -169,11 +186,39 @@
 			</div>
 			
 			<div class="main-content">
-				<h4 class="sub-headings">Placeholder</h4>
+				Unsharp Masking is an image sharpening technique, which takes in an image and blurs it, invert the blurred image and add it back to the original image. <br>
+				Blurring an image reduces the high frequency components, thus the inverted blurred image contain only the high frequency component. <br>
+				Adding that back to the original image amplifies the high frequency components of the image. <br>
+				This is desirable because text on an image are generally high frequency. <br>
+				To apply Unsharp Masking to an image, call the sharpen function with the parameters being: canvas context of the image, width of the canvas, height of the canvas, diameter of the blur, and scalar for the Unsharp Masking effect. <br> <br>
+
 				<pre>
-					&lt;p&gt;Place holder...&lt;/p&gt;&lt;p&gt;Place holder...&lt;/p&gt;
-				</pre>
-				Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder <br> <br>
+					sharpen(ctx, w, h, dia, amt);
+				</pre> <br>
+				
+				<h4 class="sub-headings">Gaussian Blur</h4>
+				The key process here is the Gaussian blur, which is a convolution operation with the Gaussian kernel. <br>
+				It is very computationally expensive to convolve with a Gaussian kernel. <br>
+				Thus an approximate Gaussian blur by passing image through 3 box blur is used. <br>
+				It requires 3 parameters: the source buffer, width, height, and diameter of blur. <br> <br>
+
+				<pre>
+					var blurred = gaussBlur(srcBuff, w, h, dia);
+				</pre> <br>
+				
+				First the ideal kernel size of each box blur is calculated, then the image buffer is passed through 3 box blur. <br>
+				The sigma parameter correspond to the diameter of blur and n is the number of passes. <br> <br>
+			
+				<pre>
+					boxesForGauss(sigma, n);
+				</pre> <br>
+				
+				Box blur is a simple averaging of surrounding k-cells for each pixel, where k is the kernel size. <br>
+				Furthermore box blur is separable; convolving the image horizontally then vertically yields the same result as convolving with the entire kernel. <br> <br>	
+				
+				<pre>
+					boxBlur(srcBuff, w, h, kernelWidth);
+				</pre> <br> <br> <br>
 			
 				<a class="srcBut docBut" href="https://github.com/JFBarryLi/ITSegmenter/blob/master/src/unsharpMasking.js">Source</a>
 			</div>
@@ -184,11 +229,14 @@
 			</div>
 			
 			<div class="main-content">
-				<h4 class="sub-headings">Placeholder</h4>
+				FAST (Features from Accelerated Segment Test) is a corner detection method. <br>
+				It examines the 16 surrounding pixels of a pixel to determine whether or not that pixel is a corner. <br>
+				If a set of N contiguous pixels in the 16 pixels are all brighter than the pixel plus a threshold or darker than the pixel minus a threshold then the pixel is classified as a corner. <br>
+				ITSegmenter.js uses the implementation of FAST from <a href="https://github.com/eduardolundgren/tracking.js/blob/master/src/features/Fast.js">tracking.js</a>. <br> <br>
+
 				<pre>
-					&lt;p&gt;Place holder...&lt;/p&gt;&lt;p&gt;Place holder...&lt;/p&gt;
-				</pre>
-				Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder <br> <br>
+					var corners = Fast.findCorners(pixels, width, height);
+				</pre> <br> <br> <br>
 			
 				<a class="srcBut docBut" href="https://github.com/JFBarryLi/ITSegmenter/blob/master/src/findCorners.js">Source</a>
 			</div>
@@ -199,20 +247,50 @@
 			</div>
 			
 			<div class="main-content">
+				K-D tree is a binary space partitioning tree, where points are partitioned 2 parts at each node based on alternating dimensions. <br>
+				It is a very efficient data structure for nearest neighbour and range search problems. <br>
+				This is desirable because the time complexity of DBSCAN is governed by the number of range search it invokes. <br> <br>
+
+			
 				<h4 class="sub-headings">Construction</h4>
+				In this implementation, the K-D tree is constructed by recursively populating each node’s children. <br>
+				The position of the node for partitioning is selected by using Quick Select. <br>
+				By selecting the median as the position of the node for partitioning, this method results in a balanced tree, which is essential for fast querying on the tree. <br>
+				To create a K-D tree, initialize a new instance of kdTree with a points array storing the coordinates. <br>
+				Where the points array is in this format: [[x1, y1,], [x2, y2], …]. <br> <br>
+
 				<pre>
-					&lt;p&gt;Place holder...&lt;/p&gt;&lt;p&gt;Place holder...&lt;/p&gt;
-				</pre>
-				Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder <br> <br>
+					var tree = new kdTree(points); <br>
+					tree.nodes; <br>
+					tree.rootNode; <br>
+				</pre> <br>
+				
+				Once the tree is created the structure can be accessed via tree.nodes or tree.rootNode. <br>
+				tree.nodes is an array that stores all the individual nodes of the tree and tree.rootNode stores the root node of the tree which contains all other nodes in its decendants. <br>
+				The node class contain 4 properties: position, leftChild, rightChild, and depth. <br>
+				Position is the coordinate of the node, leftChild and rightChild are children node of this node, and depth is how deep the node is on the tree. <br>
+				The descendants of a node can be accessed via the getDescendants method. <br>
+				It takes in 2 parameters, the node to be traversed and the descendants array to store the output.  <br> <br>
+
+				<pre>
+					var descendants = [];<br>
+					getDescendants(node, descendants); <br>
+				</pre> <br>
 			
-			</div>
-			
-			<div class="main-content">
 				<h4 class="sub-headings">Range Query</h4>
+				The range query implemented here is a circular range query, it is very similar to K-NN search and also orthogonal range query. <br>
+				Circular range query returns all points that are within radius r from point [x,y]. <br> <br>
+
+				
 				<pre>
-					&lt;p&gt;Place holder...&lt;/p&gt;&lt;p&gt;Place holder...&lt;/p&gt;
-				</pre>
-				Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder <br> <br>
+					var Neighbours = tree.rangeSearch(x, y, r);
+				</pre> <br>
+				
+				rangeSearch traverse down the tree recursively visiting nodes with region that either intersects the query circle or is fully contained in the query circle. <br>
+				If the node’s region intersects with the query circle, the square distance between node.position and the query point is compared to rSquare. <br>
+				If it is less than rSquare the point is within the query region. <br>
+				If a node’s region is completely contained in the query circle then the node and all its decendants are within the query region. <br> <br> <br>
+
 			
 				<a class="srcBut docBut" href="https://github.com/JFBarryLi/ITSegmenter/blob/master/src/kdTree.js">Source</a>
 			</div>
@@ -223,11 +301,23 @@
 			</div>
 			
 			<div class="main-content">
-				<h4 class="sub-headings">Placeholder</h4>
+				DBSCAN (Density-based Spatial Clustering of Applications with Noise) is a data clustering algorithm. <br>
+				DBSCAN is very versatile, it can find clusters of arbitrary shape and even internal clusters. <br>
+				It is used for clustering group of text together in order to draw bounding boxes around them or crop them out. <br>
+				It takes in an array of points and the parameter eps and minPts and output clusters of points. <br> <br>
+
 				<pre>
-					&lt;p&gt;Place holder...&lt;/p&gt;&lt;p&gt;Place holder...&lt;/p&gt;
-				</pre>
-				Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder Place holder <br> <br>
+					var clusters = DBSCAN(arr, eps, minPts);
+				</pre> <br>
+				Points form a cluster if they are close together. <br>
+				Every point is the input array is visited, and its neighbouring points is found using RangeQuery. <br>
+				Pt is the query point, eps is the maximum distance between two points to be considered neighbours and index is the K-D tree structure. <br> <br>
+				
+				<pre>
+					var Neighbours = RangeQuery(Pt, eps, index);
+				</pre> <br>
+
+				RangeQuery calls the rangeSearch method from the kdTree class and returns all neighbouring points within radius r of point Pt. <br> <br> <br>
 				
 				<a class="srcBut docBut" href="https://github.com/JFBarryLi/ITSegmenter/blob/master/src/DBSCAN.js">Source</a>
 				<a class="demoBut docBut" href="DBSCAN.html"><span>demo</span></a>
