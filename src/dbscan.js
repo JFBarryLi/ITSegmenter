@@ -1,5 +1,5 @@
 var width, height;
-var canvasf, canvasd;
+var canvasd;
 var ctxd;
 
 window.onload = function() {
@@ -57,21 +57,23 @@ function tempCanvas(src) {
 	var image = new Image();
 	image.src = src;
 	
-	var canvas = document.createElement("canvas")
-	var ctx = canvas.getContext("2d");
-	document.body.appendChild(canvas);
+	var canvasf = document.createElement("canvas")
+	var ctxf = canvasf.getContext("2d");
 	
 	image.onload = function() {
 		width = image.width;
 		height = image.height;
 		
-		canvas.width = width;
-		canvas.height = height;
+		canvasf.width = width;
+		canvasf.height = height;
 		
-		ctx.drawImage(image, 0, 0, width, height);	
+		canvasd.width = width;
+		canvasd.height = height;
+		
+		ctxf.drawImage(image, 0, 0, width, height);	
 
-		sharpen(ctx, width, height, dia, amt);
-		var corArr = findCorners(ctx, width, height, thresh);	
+		sharpen(ctxf, width, height, dia, amt);
+		var corArr = findCorners(ctxf, width, height, thresh);	
 		var P = DBSCAN(corArr, eps, minPts);
 
 		for (var key in P) {
