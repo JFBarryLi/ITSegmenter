@@ -66,8 +66,35 @@
 			</div>
 			
 			<div class="main-content">
-				This demo illustrates the DBSCAN function of ITSegmenter.js. It identifies and group clusters of points based on the parameters provided. <br> <br>
-				<canvas id="demo-canvas"></canvas> <br> <br>
+				This demo illustrates the DBSCAN function of ITSegmenter.js. It identifies and group clusters of points based on the parameters provided. <br> <br> <br>
+				<div class="row">
+					<div class="column">
+						<div class="rowItem">
+							<canvas class="canvasDisplay" id="demo-canvas1" onclick="canvasSelect('1');"></canvas>
+						</div>
+						<div id="demo1Param"></div> <br>
+						<div id="demo11Param"></div>
+						<input type="radio" name="canvasSelection" id="radioDemo1" value="1">
+					</div>
+					<div class="column">
+						<div class="rowItem">
+							<canvas class="canvasDisplay" id="demo-canvas2" onclick="canvasSelect('2');"></canvas>
+						</div>
+						<div id="demo2Param"></div> <br>
+						<div id="demo22Param"></div>
+						<input type="radio" name="canvasSelection" id="radioDemo2" value="2">
+					</div>
+					<div class="column">
+						<div class="rowItem">
+							<canvas class="canvasDisplay" id="demo-canvas3" onclick="canvasSelect('3');"></canvas>
+						</div>
+						<div id="demo3Param"></div> <br>
+						<div id="demo33Param"></div>
+						<input type="radio" name="canvasSelection" id="radioDemo3" value="3">
+					</div>
+				</div>
+				 <br> <br>
+				 
 				<canvas id="dbscan-canvas" style="border:1px solid #000000;"></canvas> <br> <br>
 				
 				<form>
