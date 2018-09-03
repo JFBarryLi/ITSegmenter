@@ -44,7 +44,7 @@ function canvasSelect(id) {
 	}
 }
 
-function submit() {
+function submitData() {
 	
 	var thresh = $("#thresh").val();
 	var eps = $("#eps").val();
@@ -77,5 +77,7 @@ function submit() {
 		$( "#demo33Param" ).text( "dia: "+dia+" | "+"amt: "+amt );
 	}
 	
+	$(window).scrollTo('#top',300);
 	textSegment(src, thresh, eps, minPts, dia, amt, 1, 0, 0, canvas);
+	
 }

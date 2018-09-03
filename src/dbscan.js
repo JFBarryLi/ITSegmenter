@@ -99,7 +99,7 @@ function tempCanvas(src) {
 	
 }
 
-function submit() {
+function submitData() {
 	ctxd.clearRect(0, 0, width, height);
 	
 	
@@ -113,5 +113,7 @@ function submit() {
 		src = "img/demo3.jpg";
 		tempCanvas(src);
 	}
+	
+	$(window).scrollTo('#dbscan-canvas',300);
 
 }

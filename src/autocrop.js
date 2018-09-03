@@ -16,7 +16,7 @@ window.onload = function() {
 	
 }
 
-function submit() {
+function submitData() {
 	
 	var thresh = $("#thresh").val();
 	var eps = $("#eps").val();

@@ -64,7 +64,7 @@ function drawCanvas(src, canvasId) {
 }
 
 
-function submit() {
+function submitData() {
 	
 	var thresh = $("#thresh").val();
 	var eps = $("#eps").val();
@@ -81,6 +81,7 @@ function submit() {
 		
 	var canvas = document.getElementById("demo-canvas");
 	canvasDataUrl = canvas.toDataURL();
+	$(window).scrollTo('#top',300);
 	textSegment(canvasDataUrl, thresh, eps, minPts, dia, amt, 1, autoCrop, 0, "demo-canvas");
 	
 	
