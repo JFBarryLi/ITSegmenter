@@ -1,4 +1,6 @@
 window.onload = function() {
+	var maxHeight = 0;
+	
 	function drawCanvas(src, canvasId) {
 		var image = new Image();
 		image.src = src;
@@ -10,15 +12,21 @@ window.onload = function() {
 			width = image.width;
 			height = image.height;
 			
+			if (height > maxHeight) {
+				maxHeight = height;
+			}
+			
 			canvas.width = width
 			canvas.height = height
-			ctx.drawImage(image, 0, 0, width, height);		
+			ctx.drawImage(image, 0, 0, width, height);
+			$(".carousel-inner").css("height", maxHeight);			
 		}
 	}
 	drawCanvas("img/demo1.jpg", "demo-canvas1");
 	drawCanvas("img/demo2.jpg", "demo-canvas2");
 	drawCanvas("img/demo3.jpg", "demo-canvas3");
 	drawCanvas("img/demo4.jpg", "demo-canvas4");
+	
 	
 }
 
