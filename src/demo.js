@@ -12,14 +12,12 @@ window.onload = function() {
 			width = image.width;
 			height = image.height;
 			
-			if (height > maxHeight) {
-				maxHeight = height;
-			}
-			
 			canvas.width = width
 			canvas.height = height
-			ctx.drawImage(image, 0, 0, width, height);
-			$(".carousel-inner").css("height", maxHeight);			
+			ctx.drawImage(image, 0, 0, width, height);		
+			
+			maxHeight = Math.max($("#demoCarousel1").height(), $("#demoCarousel2").height(), $("#demoCarousel3").height(), $("#demoCarousel4").height());
+			$(".carousel-inner").css("height", maxHeight);	
 		}
 	}
 	drawCanvas("img/demo1.jpg", "demo-canvas1");
@@ -27,6 +25,7 @@ window.onload = function() {
 	drawCanvas("img/demo3.jpg", "demo-canvas3");
 	drawCanvas("img/demo4.jpg", "demo-canvas4");
 	
+
 	
 }
 
