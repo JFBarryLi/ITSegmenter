@@ -6,7 +6,7 @@ window.onload = function() {
 	canvasd = document.getElementById("dbscan-canvas");
 	ctxd = canvasd.getContext("2d");
 	
-	drawCanvas("img/demo.jpg", "demo-canvas1");
+	drawCanvas("img/demo1.jpg", "demo-canvas1");
 	drawCanvas("img/demo2.jpg", "demo-canvas2");
 	drawCanvas("img/demo3.jpg", "demo-canvas3");
 	
@@ -104,7 +104,7 @@ function submitData() {
 	
 	
 	if ($('#radioDemo1').prop('checked')) {
-		src = "img/demo.jpg";
+		src = "img/demo1.jpg";
 		tempCanvas(src);
 	} else if ($('#radioDemo2').prop('checked')) {
 		src = "img/demo2.jpg";
