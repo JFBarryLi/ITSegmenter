@@ -12,36 +12,14 @@ window.onload = function() {
 			
 			canvas.width = width
 			canvas.height = height
-			ctx.drawImage(image, 0, 0, width, height);
-			$( "<p>"+width+"x"+height+"</p>" ).insertBefore( $("#"+canvasId).parent() );			
+			ctx.drawImage(image, 0, 0, width, height);		
 		}
 	}
-	drawCanvas("img/demo.jpg", "demo-canvas1");
+	drawCanvas("img/demo1.jpg", "demo-canvas1");
 	drawCanvas("img/demo2.jpg", "demo-canvas2");
 	drawCanvas("img/demo3.jpg", "demo-canvas3");
+	drawCanvas("img/demo4.jpg", "demo-canvas4");
 	
-	$('#radioDemo2').prop('checked', true);
-	document.getElementById('demo-canvas2').style.border = '#f25e5e 3px solid'
-	
-}
-
-
-
-function canvasSelect(id) {
-	$('#radioDemo' + id).prop('checked', true);
-	if (id == '1') {
-		$('#demo-canvas1').css('border', '#f25e5e 3px solid');
-		$('#demo-canvas2').css('border', '');
-		$('#demo-canvas3').css('border', '');
-	} else if (id == '2') {
-		$('#demo-canvas1').css('border', '');
-		$('#demo-canvas2').css('border', '#f25e5e 3px solid');
-		$('#demo-canvas3').css('border', '');
-	} else if (id == '3') {
-		$('#demo-canvas1').css('border', '');
-		$('#demo-canvas2').css('border', '');
-		$('#demo-canvas3').css('border', '#f25e5e 3px solid');
-	}
 }
 
 function submitData() {
@@ -60,21 +38,18 @@ function submitData() {
 	if (dia == "") {dia = 10;}
 	if (amt == "") {amt = 1;}
 	
-	if ($('#radioDemo1').prop('checked')) {
-		src = "img/demo.jpg";
+	if ($("#demo-canvas1").parent().prop("class") == "carousel-item active") {
+		src = "img/demo1.jpg";
 		canvas = "demo-canvas1";
-		$( "#demo1Param" ).text( "Thresh: "+thresh+" | "+"Eps: "+eps+" | "+"minPts: "+minPts+" | ");
-		$( "#demo11Param" ).text( "dia: "+dia+" | "+"amt: "+amt );
-	} else if ($('#radioDemo2').prop('checked')) {
+	} else if ($("#demo-canvas2").parent().prop("class") == "carousel-item active") {
 		src = "img/demo2.jpg";
 		canvas = "demo-canvas2";
-		$( "#demo2Param" ).text( "Thresh: "+thresh+" | "+"Eps: "+eps+" | "+"minPts: "+minPts+" | ");
-		$( "#demo22Param" ).text( "dia: "+dia+" | "+"amt: "+amt );
-	} else if ($('#radioDemo3').prop('checked')) {
+	} else if ($("#demo-canvas3").parent().prop("class") == "carousel-item active") {
 		src = "img/demo3.jpg";
 		canvas = "demo-canvas3";
-		$( "#demo3Param" ).text( "Thresh: "+thresh+" | "+"Eps: "+eps+" | "+"minPts: "+minPts+" | ");
-		$( "#demo33Param" ).text( "dia: "+dia+" | "+"amt: "+amt );
+	} else if ($("#demo-canvas4").parent().prop("class") == "carousel-item active") {
+		src = "img/demo4.jpg";
+		canvas = "demo-canvas4";
 	}
 	
 	$(window).scrollTo('#top',300);
