@@ -352,7 +352,11 @@ function scaleCanvas(scale, canvasOutput, canvasOriginal) {
 
 function include(url) {
 /*
- * Parameters:
+ * INFO:
+ * -----
+ * Load script files
+ *
+ * PARAM:
  * -----------
  * url:				string
  *					path and filename; path//js//example.js
