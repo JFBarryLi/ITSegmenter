@@ -11,6 +11,9 @@ window.onload = function() {
 		
 		canvas.width = width
 		canvas.height = height
+		
+		$("#demo-canvas").css("max-width", width);
+		
 		ctx.drawImage(image, 0, 0, width, height);	
 	}
 	

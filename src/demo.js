@@ -14,7 +14,9 @@ window.onload = function() {
 			
 			canvas.width = width
 			canvas.height = height
-			ctx.drawImage(image, 0, 0, width, height);		
+			ctx.drawImage(image, 0, 0, width, height);
+
+			$("#"+canvasId).css("max-width", width);
 			
 			maxHeight = Math.max($("#demoCarousel1").height(), $("#demoCarousel2").height(), $("#demoCarousel3").height(), $("#demoCarousel4").height());
 			$(".carousel-inner").css("height", maxHeight);	
