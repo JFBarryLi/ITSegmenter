@@ -27,9 +27,13 @@ window.onload = function() {
 	drawCanvas("img/demo3.jpg", "demo-canvas3");
 	drawCanvas("img/demo4.jpg", "demo-canvas4");
 	
-
 	
 }
+
+$(window).on('resize', function() {
+	var maxHeight = Math.max($("#demoCarousel1").height(), $("#demoCarousel2").height(), $("#demoCarousel3").height(), $("#demoCarousel4").height());
+	$(".carousel-inner").css("height", maxHeight);
+});
 
 function submitData() {
 	
