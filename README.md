@@ -22,3 +22,5 @@ https://jfbarryli.github.io/ITSegmenter/
 
 ### TODO ###
 * Finish Docs
+* KD-Tree Range Query define regions
+* Auto tune parameters
