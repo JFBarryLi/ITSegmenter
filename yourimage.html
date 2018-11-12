@@ -70,58 +70,64 @@
 				<canvas id="demo-canvas"></canvas>
 				<p id="imgDim" style="text-align:center"><p> <br> <br>
 				
-				<form>
-					<div class="slider-container">
-						<input type="range" min="0.1" max="2.1" step="0.1" value="1.0" class="range-slider" id="scaleRangeSlider" style="display:none;"></input>
-						<p id="sliderOutput"></p> <br> <br>
-					</div>
-				
-					<div class="row">
-						<div class="col">
-							<div class="form-group">
-								<div class="custom-file">
-									<input type="file" class="custom-file-input" id="customFile" accept=".png,.jpg,.jpeg,.jfif,.exif,.tiff,.gif,.bmp,.exif,.bpg,.svg,.dwg,.img,.heif,.hdr,.ppm,.pgm,.pbm,.pnm" id="imagefile" class="form-control-file" onchange="encodeImageFileAsURL(this)"></input>
-									<label class="custom-file-label" id="customFileLabel" for="customFile">Choose Image</label>
+					<form>
+						<div class="slider-container">
+							<input type="range" min="0.1" max="2.1" step="0.1" value="1.0" class="range-slider" id="scaleRangeSlider" style="display:none;"></input>
+							<p id="sliderOutput"></p> <br> <br>
+						</div>
+					
+						<a class="btn btn-primary" id="paramBut" data-toggle="collapse" href="#formCollapse" role="button" aria-expanded="false" aria-controls="formCollapse">
+							Parameters
+						</a>
+					
+						<div class="row">
+							<div class="col">
+								<div class="form-group">
+									<div class="custom-file">
+										<input type="file" class="custom-file-input" id="customFile" accept=".png,.jpg,.jpeg,.jfif,.exif,.tiff,.gif,.bmp,.exif,.bpg,.svg,.dwg,.img,.heif,.hdr,.ppm,.pgm,.pbm,.pnm" id="imagefile" class="form-control-file" onchange="encodeImageFileAsURL(this)"></input>
+										<label class="custom-file-label" id="customFileLabel" for="customFile">Choose Image</label>
+									</div>
+								</div>
+							</div>
+							<div class="col">
+								<div class="form-check">
+									<input class="form-check-input" type="checkbox" value="" id="cropCheck">
+									<label class="form-check-label" for="cropCheck">
+									Auto Crop
+									</label>
 								</div>
 							</div>
 						</div>
-						<div class="col">
-							<div class="form-check">
-								<input class="form-check-input" type="checkbox" value="" id="cropCheck">
-								<label class="form-check-label" for="cropCheck">
-								Auto Crop
-								</label>
-							</div>
-						</div>
-					</div>
 						
-					<div class="form-group">
-						<label for="thresh"><strong>Thresh:</strong></label>
-						<input type="text" class="form-control" id="thresh" placeholder="60">
-						<small class="form-text text-muted">Threshhold for FAST (Features from Accelerated Segment Test) corner detection</small>
-					</div>
-					<div class="form-group">
-						<label for="eps"><strong>Episilon:</strong></label>
-						<input type="text" class="form-control" id="eps" placeholder="15">
-						<small class="form-text text-muted">Episilon is the maximum distance that 2 points can form a cluster</small>
-					</div>
-					<div class="form-group">
-						<label for="minPts"><strong>Min Points:</strong></label>
-						<input type="text" class="form-control" id="minPts" placeholder="5">
-						<small class="form-text text-muted">Minimum # of points required to form a cluster</small>
-					</div>					
-					<div class="form-group">
-						<label for="dia"><strong>Diameter(USM):</strong></label>
-						<input type="text" class="form-control" id="dia" placeholder="10">
-						<small class="form-text text-muted">Diameter parameter for Gaussian blur, must be greater than 1</small>
-					</div>
-					<div class="form-group">
-						<label for="amt"><strong>Amount(USM):</strong></label>
-						<input type="text" class="form-control" id="amt" placeholder="1">
-						<small class="form-text text-muted">Scalar for unsharp masking, affects the strength of the USM filter</small>
-					</div>	
-					<span class="button" id="submitButton" onclick="submitData();">Submit</span>
-				</form>
+						<div class="collapse" id="formCollapse">
+							<div class="form-group">
+								<label for="thresh"><strong>Thresh:</strong></label>
+								<input type="text" class="form-control" id="thresh" placeholder="60">
+								<small class="form-text text-muted">Threshhold for FAST (Features from Accelerated Segment Test) corner detection</small>
+							</div>
+							<div class="form-group">
+								<label for="eps"><strong>Episilon:</strong></label>
+								<input type="text" class="form-control" id="eps" placeholder="15">
+								<small class="form-text text-muted">Episilon is the maximum distance that 2 points can form a cluster</small>
+							</div>
+							<div class="form-group">
+								<label for="minPts"><strong>Min Points:</strong></label>
+								<input type="text" class="form-control" id="minPts" placeholder="5">
+								<small class="form-text text-muted">Minimum # of points required to form a cluster</small>
+							</div>					
+							<div class="form-group">
+								<label for="dia"><strong>Diameter(USM):</strong></label>
+								<input type="text" class="form-control" id="dia" placeholder="10">
+								<small class="form-text text-muted">Diameter parameter for Gaussian blur, must be greater than 1</small>
+							</div>
+							<div class="form-group">
+								<label for="amt"><strong>Amount(USM):</strong></label>
+								<input type="text" class="form-control" id="amt" placeholder="1">
+								<small class="form-text text-muted">Scalar for unsharp masking, affects the strength of the USM filter</small>
+							</div>	
+						</div>
+						<span class="button" id="submitButton" onclick="submitData();">Submit</span>
+					</form>
 				
 			</div>
 			

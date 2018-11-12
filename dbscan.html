@@ -98,31 +98,37 @@
 				<canvas id="dbscan-canvas" style="border:1px solid #000000;"></canvas> <br> <br>
 				
 				<form>
-					<div class="form-group">
-						<label for="thresh"><strong>Thresh:</strong></label>
-						<input type="text" class="form-control" id="thresh" placeholder="60">
-						<small class="form-text text-muted">Threshhold for FAST (Features from Accelerated Segment Test) corner detection</small>
+					<a class="btn btn-primary" id="paramBut" data-toggle="collapse" href="#formCollapse" role="button" aria-expanded="false" aria-controls="formCollapse">
+						Parameters
+					</a>
+					
+					<div class="collapse" id="formCollapse">
+						<div class="form-group">
+							<label for="thresh"><strong>Thresh:</strong></label>
+							<input type="text" class="form-control" id="thresh" placeholder="60">
+							<small class="form-text text-muted">Threshhold for FAST (Features from Accelerated Segment Test) corner detection</small>
+						</div>
+						<div class="form-group">
+							<label for="eps"><strong>Episilon:</strong></label>
+							<input type="text" class="form-control" id="eps" placeholder="15">
+							<small class="form-text text-muted">Episilon is the maximum distance that 2 points can form a cluster</small>
+						</div>
+						<div class="form-group">
+							<label for="minPts"><strong>Min Points:</strong></label>
+							<input type="text" class="form-control" id="minPts" placeholder="5">
+							<small class="form-text text-muted">Minimum # of points required to form a cluster</small>
+						</div>					
+						<div class="form-group">
+							<label for="dia"><strong>Diameter(USM):</strong></label>
+							<input type="text" class="form-control" id="dia" placeholder="10">
+							<small class="form-text text-muted">Diameter parameter for Gaussian blur, must be greater than 1</small>
+						</div>
+						<div class="form-group">
+							<label for="amt"><strong>Amount(USM):</strong></label>
+							<input type="text" class="form-control" id="amt" placeholder="1">
+							<small class="form-text text-muted">Scalar for unsharp masking, affects the strength of the USM filter</small>
+						</div>	
 					</div>
-					<div class="form-group">
-						<label for="eps"><strong>Episilon:</strong></label>
-						<input type="text" class="form-control" id="eps" placeholder="15">
-						<small class="form-text text-muted">Episilon is the maximum distance that 2 points can form a cluster</small>
-					</div>
-					<div class="form-group">
-						<label for="minPts"><strong>Min Points:</strong></label>
-						<input type="text" class="form-control" id="minPts" placeholder="5">
-						<small class="form-text text-muted">Minimum # of points required to form a cluster</small>
-					</div>					
-					<div class="form-group">
-						<label for="dia"><strong>Diameter(USM):</strong></label>
-						<input type="text" class="form-control" id="dia" placeholder="10">
-						<small class="form-text text-muted">Diameter parameter for Gaussian blur, must be greater than 1</small>
-					</div>
-					<div class="form-group">
-						<label for="amt"><strong>Amount(USM):</strong></label>
-						<input type="text" class="form-control" id="amt" placeholder="1">
-						<small class="form-text text-muted">Scalar for unsharp masking, affects the strength of the USM filter</small>
-					</div>	
 					<span class="button" id="submitButton" onclick="submitData();">Submit</span>
 				</form>
 						

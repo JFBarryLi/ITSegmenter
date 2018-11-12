@@ -289,30 +289,32 @@ canvas {
 }
 
 .button {
+	padding: 5px 10px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
 	cursor: pointer;
-	border:1px solid #eb8571; -webkit-border-radius: 3px; -moz-border-radius: 3px;border-radius: 3px;font-size:12px;font-family:tahoma, verdana, arial, sans-serif; padding: 10px 10px 10px 10px; text-decoration:none; display:inline-block;text-shadow: -1px -1px 0 rgba(0,0,0,0.3);font-weight:bold; color: #FFFFFF;
-	background-color: #F2AFA2; background-image: -webkit-gradient(linear, left top, left bottom, from(#F2AFA2), to(#F25E5E));
-	background-image: -webkit-linear-gradient(top, #F2AFA2, #F25E5E);
-	background-image: -moz-linear-gradient(top, #F2AFA2, #F25E5E);
-	background-image: -ms-linear-gradient(top, #F2AFA2, #F25E5E);
-	background-image: -o-linear-gradient(top, #F2AFA2, #F25E5E);
-	background-image: linear-gradient(to bottom, #F2AFA2, #F25E5E);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#F2AFA2, endColorstr=#F25E5E);
+	border-radius: 4px;
+	background-color: white;
+	color: #898989;
+	border: 2px solid #f25e5e;
+	   -webkit-transition: 0.5s;
+    -moz-transition: 0.5s;
+    -ms-transition: 0.5s;
+    -o-transition: 0.5s;
+    transition: 0.5s;	
 }	
  
 .button:hover {
-	border:1px solid #e56249;
-	background-color: #ec8975; background-image: -webkit-gradient(linear, left top, left bottom, from(#ec8975), to(#ee2f2f));
-	background-image: -webkit-linear-gradient(top, #ec8975, #ee2f2f);
-	background-image: -moz-linear-gradient(top, #ec8975, #ee2f2f);
-	background-image: -ms-linear-gradient(top, #ec8975, #ee2f2f);
-	background-image: -o-linear-gradient(top, #ec8975, #ee2f2f);
-	background-image: linear-gradient(to bottom, #ec8975, #ee2f2f);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#ec8975, endColorstr=#ee2f2f);
-}	
+	background-color: #f25e5e;
+	color: white;
+	text-decoration: none;}	
+}
 
 #submitButton {
 	margin: 0 auto;
 	display: table;
-
 }
 
 
@@ -528,3 +530,24 @@ input[name="canvasSelection"] {
 	background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23f25e5e' viewBox='0 0 8 8'%3E%3Cpath d='M4 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E");
 }
 
+#paramBut {
+	margin-bottom: 1em;
+	background-color: #f25e5e;
+	border-color: #f25e5e;
+	border-radius: 4px;
+    border: 2px solid #f25e5e;
+    -webkit-transition: 0.5s;
+    -moz-transition: 0.5s;
+    -ms-transition: 0.5s;
+    -o-transition: 0.5s;
+    transition: 0.5s;
+	box-shadow: none;
+	display: block;
+}
+
+#paramBut:hover {
+	background-color: #fff;
+	border-color: #f25e5e;
+	color: #898989;
+
+}
