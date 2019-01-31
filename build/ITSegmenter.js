@@ -11,9 +11,7 @@
  
 var outputRects = {};
  
- var outputRects = {};
- 
-function textSegment(imgPath, fThreshhold, eps, minPts, dia, amt, drawRects, splitRects, convertToImage, canvasId) {
+ function textSegment(imgPath, fThreshhold, eps, minPts, dia, amt, drawRects, splitRects, convertToImage, canvasId) {
 /*
  * INFO:
  * -----
@@ -84,6 +82,10 @@ function textSegment(imgPath, fThreshhold, eps, minPts, dia, amt, drawRects, spl
 		var canvaso = document.getElementById(canvasId);	
 	}
 	
+	
+	//Create a canvas for the segmented image
+	var canvasf = document.createElement("CANVAS");	
+	
 	if (convertToImage == 0 && canvasId === undefined) {
 		document.body.appendChild(canvaso);
 	}
@@ -92,7 +94,9 @@ function textSegment(imgPath, fThreshhold, eps, minPts, dia, amt, drawRects, spl
 	var height;
 	
 	//Original image drawing context on the canvas
-	var contexto = canvaso.getContext("2d");																	
+	var contexto = canvaso.getContext("2d");	
+	//Segmented image drawing context on the canvas
+	var contextf = canvasf.getContext("2d");																	
 	
 	image.onerror = function() {
 		alert("Image Error");
@@ -104,40 +108,24 @@ function textSegment(imgPath, fThreshhold, eps, minPts, dia, amt, drawRects, spl
 		
 		canvaso.width = width
 		canvaso.height = height
-
-		//Scale factor to reduce to 400x400 pixels
-		if (height * width > 160000) {
-			var scale = Math.round(160000/height/width*100)/100
-		} else {
-			var scale = 1
-		}
-		var invScale = Math.round(1/scale*100)/100
+		
+		canvasf.width = width
+		canvasf.height = height
 		
 		//Draw the original image to canvaso
 		contexto.drawImage(image, 0, 0, width, height);	
-		
-		//Scaled canvas
-		canvasf = scaleCanvas(scale, canvaso)
-		//Scaled image drawing context on the canvas
-		var contextf = canvasf.getContext("2d");															
+		//Draw the original image to canvasf
+		contextf.drawImage(image, 0, 0, width, height);															
 		
 		//Applies the sharpen filter to canvasf
 		if (dia != 0) {
-			sharpen(contextf, Math.round(width*scale), Math.round(height*scale), dia, amt);
+			sharpen(contextf, width, height, dia, amt);
 		}
 		//Find corners using FAST and stores the coordinates in an array
-		var corArr = findCorners(contextf, Math.round(width*scale), Math.round(height*scale), fThreshhold);	
+		var corArr = findCorners(contextf, width, height, fThreshhold);	
 		
 		//Group the corners together using DBSCAN and return clusters = {key = 1 : value = [[x1,y1],[x2,y2],...], ...}
  		var P = DBSCAN(corArr, eps, minPts); 
-		
-		//Scale P backto original size
-		Object.keys(P).map(function(key, index) {
-			var scaledArray = P[key].map(function(ele) {
-				return [ele[0] * invScale, ele[1] * invScale];
-			});
-		  P[key] = scaledArray;
-		});
 		
 		//Constructs bounding box for each cluster of text	
 		outputRects = textRect(contexto, P);																		 
@@ -326,7 +314,7 @@ function cropRects(rects,img) {
 		
 }
 
-function scaleCanvas(scale, canvasOriginal) {
+function scaleCanvas(scale, canvasOutput, canvasOriginal) {
 /*
  * INFO:
  * -----
@@ -338,28 +326,39 @@ function scaleCanvas(scale, canvasOriginal) {
  * scale:			float
  *					Scalar parameter for canvas width and height
  *
+ * canvasOutput:	element
+ *					Canvas element to scale
+ *
  * canvasOriginal:	element
  *					Original canvas element to be referenced
- *
- * RETURNS:
- * --------
- * canvasScaled:	canvas
- *					Scaled canvas
  *
  */	
 
 	var w = canvasOriginal.width;
 	var h = canvasOriginal.height;
 	
-	var canvasScaled = document.createElement("CANVAS")
-	
-	canvasScaled.width = canvasOriginal.width * scale;
-	canvasScaled.height = canvasOriginal.height * scale;
+	canvasOutput.width = canvasOriginal.width * scale;
+	canvasOutput.height = canvasOriginal.height * scale;
 
-	var ctx = canvasScaled.getContext("2d");
+	var ctx = canvasOutput.getContext("2d");
 	ctx.drawImage(canvasOriginal, 0, 0, w, h, 0, 0, scale * w, scale * h);
 	
-	return canvasScaled;
+}
+
+function include(url) {
+/*
+ * Parameters:
+ * -----------
+ * url:				string
+ *					path and filename; path//js//example.js
+ *
+ */			
+	
+	var head = document.getElementsByTagName('head')[0];
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = url;
+    head.appendChild(script);
 }
 
 /*---------------------------------------------------------------------------------------------------*/
@@ -1612,5 +1611,4 @@ function isLeft (x, y, node) {
 	}
 	
 }
-
 
