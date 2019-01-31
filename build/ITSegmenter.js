@@ -13,7 +13,7 @@ var outputRects = {};
  
  var outputRects = {};
  
- function textSegment(imgPath, fThreshhold, eps, minPts, dia, amt, drawRects, splitRects, convertToImage, canvasId) {
+function textSegment(imgPath, fThreshhold, eps, minPts, dia, amt, drawRects, splitRects, convertToImage, canvasId) {
 /*
  * INFO:
  * -----
@@ -123,10 +123,10 @@ var outputRects = {};
 		
 		//Applies the sharpen filter to canvasf
 		if (dia != 0) {
-			sharpen(contextf, width*scale, height*scale, dia, amt);
+			sharpen(contextf, Math.round(width*scale), Math.round(height*scale), dia, amt);
 		}
 		//Find corners using FAST and stores the coordinates in an array
-		var corArr = findCorners(contextf, width*scale, height*scale, fThreshhold);	
+		var corArr = findCorners(contextf, Math.round(width*scale), Math.round(height*scale), fThreshhold);	
 		
 		//Group the corners together using DBSCAN and return clusters = {key = 1 : value = [[x1,y1],[x2,y2],...], ...}
  		var P = DBSCAN(corArr, eps, minPts); 
