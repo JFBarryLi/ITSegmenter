@@ -105,8 +105,10 @@ function textSegment(imgPath, fThreshhold, eps, minPts, dia, amt, drawRects, spl
 		canvaso.width = width
 		canvaso.height = height
 
-		//Scale factor to reduce to 400x400 pixels
-		if (height * width > 160000) {
+		//Scale factor to down sample
+		if (height * width >= 12111111111192768) {
+			var scale = Math.round(1500000/height/width*100)/100
+		} else if (height * width > 16111111111110000) {
 			var scale = Math.round(160000/height/width*100)/100
 		} else {
 			var scale = 1
