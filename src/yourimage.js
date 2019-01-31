@@ -41,12 +41,24 @@ function drawCanvas(src, canvasId) {
 		
 		ctx.drawImage(image, 0, 0, width, height);
 		$('#imgDim').text(width+"x"+height);	
+
+		$("#scaleRangeSlider").css("display", "block");
 		
+		var slider = document.getElementById("scaleRangeSlider");
+		var output = document.getElementById("sliderOutput");
+		output.innerHTML = slider.value;
+
 		var canvaso = document.createElement("canvas");
 		var ctxo = canvaso.getContext("2d");
 		canvaso.width = width;
 		canvaso.height = height;
 		ctxo.drawImage(canvas, 0, 0);
+		
+		slider.oninput = function() {
+			output.innerHTML = this.value;
+			scaleCanvas(this.value, canvas, canvaso);
+			$('#imgDim').text(canvas.width+"x"+canvas.height);	
+		}
 		
 	}
 }
