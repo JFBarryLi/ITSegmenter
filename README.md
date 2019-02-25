@@ -24,3 +24,4 @@ https://jfbarryli.github.io/ITSegmenter/
 * Finish Docs
 * KD-Tree Range Query define regions
 * Auto tune parameters
+* Add GPU support
