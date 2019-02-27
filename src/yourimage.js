@@ -43,6 +43,7 @@ function drawCanvas(src, canvasId) {
 		$('#imgDim').text(width+"x"+height);	
 
 		$("#scaleRangeSlider").css("display", "block");
+		$(".slider-text").css("display", "block");
 		
 		var slider = document.getElementById("scaleRangeSlider");
 		var output = document.getElementById("sliderOutput");
